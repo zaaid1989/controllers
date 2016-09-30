@@ -347,6 +347,7 @@ class Complaint extends CI_Controller {
 	
 	public function technical_service_pvr()
 	{
+		/*
 		$query="select `assign_to` from tbl_complaints where `pk_complaint_id` ='".$this->uri->segment(3)."'
 		AND `complaint_nature`='complaint'";
 		$query_db=$this->db->query($query);
@@ -354,11 +355,11 @@ class Complaint extends CI_Controller {
 		if ($user_complaints[0]['assign_to']!=$this->session->userdata('userid'))
 		{
 			show_404();
-		}/*
-		elseif($this->session->userdata('userrole')!='FSE' &&  $this->session->userdata('userrole')!='Supervisor' && $this->session->userdata('userrole')!='Salesman')
+		}
+		else*/if($this->session->userdata('userrole')=='Salesman')
 		{
 			show_404();
-		}*/
+		}
 		$this->load->view('complaint/technical_service_pvr');
 	}
 	
@@ -385,35 +386,32 @@ class Complaint extends CI_Controller {
 		
 		//$get_eng_dvr = $this->complaint_model->get_eng_asc_model();
 		//$this->load->view('complaint/sap_asc', array("get_eng_dvr" => $get_eng_dvr));
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' || $this->session->userdata('userrole')=='Salesman')
-		{
-			$this->load->model("complaint_model");
-			$get_eng_dvr = $this->complaint_model->get_eng_asc_model();
-			$dbresResult=array();
-			if(isset($_POST['engineer']))
-			{
-				$dbres = $this->db->query("SELECT * FROM tbl_dvr where fk_engineer_id = '".$_POST['engineer']."' order by date DESC");
+		
+			$engineer = $this->session->userdata('userid');
+			$start_date = date('Y-m-d');
+			$end_date = date('Y-m-d', strtotime('-30 days'));
+			if(isset($_POST['engineer'])){
+				$engineer = $_POST['engineer'];
+			}
+				$dbres = $this->db->query("SELECT tbl_dvr.*,
+				COALESCE(tbl_offices.office_name) AS office_name,
+				COALESCE(tbl_clients.client_name) AS client_name,
+				COALESCE(tbl_area.area) AS area
+				FROM tbl_dvr 
+				LEFT JOIN tbl_offices ON tbl_dvr.fk_customer_id = tbl_offices.client_option
+				LEFT JOIN tbl_clients ON tbl_dvr.fk_customer_id=tbl_clients.pk_client_id 
+				LEFT JOIN tbl_area ON tbl_clients.fk_area_id=tbl_area.pk_area_id 
+				where tbl_dvr.fk_engineer_id = '".$engineer."' AND CAST(tbl_dvr.`date` AS DATE) between '".$end_date."' AND '".$start_date."' 
+				order by tbl_dvr.date DESC");
 				$dbresResult=$dbres->result_array();
-				
-				$dbres2 = $this->db->query("SELECT * FROM user where id = '".$_POST['engineer']."' ");
+				$dbres2 = $this->db->query("SELECT * FROM user where id = '".$engineer."' ");
 				$dbresResult2=$dbres2->result_array();
 				
 				$this->load->view('complaint/employee_asc', array("get_eng_dvr" => $dbresResult,
-																"eng_id" 	 => $_POST['engineer'],
+																"eng_id" 	 => $engineer,
 																"userrole"   => $dbresResult2['0']['userrole']));
-			}
-			else
-			{
-				$this->load->view('complaint/employee_asc', array("get_eng_dvr" => $get_eng_dvr,
-																"eng_id" => $this->session->userdata('userid'),
-																"userrole" => $this->session->userdata('userrole')));
-			}
-		}
-		else
-		{
-			show_404();
-		}
-		
+			
+			
 	}
 	public function products()
 	{
@@ -3082,7 +3080,7 @@ class Complaint extends CI_Controller {
 	}
 	
 	/* Changes by Zohaib */
-	public function order_entry()
+	/*public function order_entry()
 	{
 		if($this->session->userdata('userrole')!='Admin')
 		{
@@ -3126,7 +3124,7 @@ class Complaint extends CI_Controller {
 			show_404();
 		}
 			$this->load->view('complaint/add_kitprice');
-	}
+	}*/
 	
 	
 	public function aux_equipments()
@@ -3188,14 +3186,9 @@ class Complaint extends CI_Controller {
 	
 	public function admin_dvr_new()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
-		{
+		
 			$this->load->view('complaint/admin_dvr_new');
-		}
-		else
-		{
-		show_404();
-		}
+		
 	}
 	
 	public function sap_dvr_history_new()
@@ -3779,6 +3772,11 @@ class Complaint extends CI_Controller {
 			 $current_time=date('H');
 			 if ($current_time<8) {$current_date = date('Y-m-d H:i:s',(strtotime ( '-1 day' , strtotime ( $current_date) ) ));}
 			///////////////////// zaaid
+			
+			// outstation scenario added in july
+			$outstation	=	0;
+			if (isset($_POST['outstation'][$key])) $outstation	=	'1';
+			//// outstation scenario
 			$dvr_date = date('Y-m-d',strtotime($current_date));
 			 $dvr_date = $dvr_date.' '.$re_start_hour;
 			
@@ -3787,14 +3785,25 @@ class Complaint extends CI_Controller {
 								`end_time`				=	'".$re_end_hour."',
 								`fk_city_id`			=	'".$_POST['city'][$key]."',
 								`fk_engineer_id`  		=	'".$_POST['engineer']."',
-								`fk_customer_id`		=	'".$_POST['customer'][$key]."',
-								`fk_business_id`		=	'".$_POST['business'][$key]."',
+								`fk_customer_id`		=	'".$_POST['customer'][$key]."',";
+			if(substr($_POST['business'][$key],0,1)=='t')
+			{ 
+				$compalintid = explode('_',$_POST['business'][$key]);
+				$query.="`fk_business_id`		=	'0',
+						 `fk_complaint_id`		=	'".$compalintid[1]."',";
+			}
+			else
+			{
+				$query.="`fk_business_id`		=	'".$_POST['business'][$key]."',
+						 `fk_complaint_id`		=	'0',";
+			}
+			$query.="
+								`outstation`			=	'".$outstation."',
 								`priority`				=	'".urlencode($_POST['business_description'][$key])."',
 								`timeline`				=	'".$_POST['time_elaped'][$key]."',
 								`summery`				=	'".urlencode($_POST['summery'][$key])."',
 								`next_plan`				=	'".urlencode($_POST['next_plan'][$key])."',
 								`date`					=	'".$current_date."'
-								
 							  ";
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
@@ -4272,7 +4281,7 @@ class Complaint extends CI_Controller {
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
 			  //
-			redirect(site_url() . 'complaint/ts_report_supervisor/'.$_POST['complaint_id']);
+			redirect(site_url() . 'complaint/technical_service_pvr/'.$_POST['complaint_id']);
 	}
 	public function supervisor_view_complaints()
 	{
