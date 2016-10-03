@@ -483,7 +483,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/news_z');
+        $this->load->view('complaint/news');
     }
 	public function add_news() {
         if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
@@ -809,7 +809,9 @@ class Complaint extends CI_Controller {
 
         $this->load->model("profile_model");
         $delete_allowed = '0';
-        $lq 			= $this->db->query("select * from tbl_leaves where pk_leave_id ='".$id."'");
+        $lq 			= $this->db->query("select tbl_leaves.*,user.total_leaves from tbl_leaves
+		LEFT JOIN user ON tbl_leaves.fk_employee_id = user.id
+		where pk_leave_id ='".$id."'");
         $lr 				= $lq->result_array();
 
         $current_month	=	date('m');
@@ -847,9 +849,9 @@ class Complaint extends CI_Controller {
 
         if($delete_allowed == '1') {
 
-			$dbres = $this->db->query("select * from user where id ='" . $lr[0]['fk_employee_id'] . "'");
-            $res = $dbres->result_array();
-            $total_leaves = $res[0]['total_leaves'];
+			// $dbres = $this->db->query("select * from user where id ='" . $lr[0]['fk_employee_id'] . "'");
+            // $res = $dbres->result_array();
+            $total_leaves = $lr[0]['total_leaves'];
 			
 			if($lr[0]['leave_type']=='1')
 			{
@@ -4858,21 +4860,20 @@ class Complaint extends CI_Controller {
 		//$this->load->model("complaint_model");
         //$get_complaint_list = $this->complaint_model->get_related_cities($client_name);
 		//
-		$dbres = $this->db->query("SELECT * FROM tbl_clients where pk_client_id = '".$client_id."'");
+		$dbres = $this->db->query("SELECT tbl_clients.*,tbl_cities.city_name FROM tbl_clients
+		LEFT JOIN tbl_cities ON tbl_clients.fk_city_id = tbl_cities.pk_city_id
+		where pk_client_id = '".$client_id."'");
         $dbresResult=$dbres->result_array();
 		//
 		echo '<select name="city" class="form-control" onchange="select_contact_no(this.value)" required>';
 		echo '<option value="">---Select---</option>';
-		$nn=$this->db->query("select * from tbl_cities where pk_city_id = '".$dbresResult[0]['fk_city_id']."'");
-		$nnm=$nn->result_array();
-		foreach($nnm as $drt)
-		{
+		
 			echo '<option value="';
-			echo $drt["pk_city_id"];
+			echo $dbresResult[0]["pk_city_id"];
 			echo '">';
-			echo $drt["city_name"];
+			echo $dbresResult[0]["city_name"];
 			echo '</option>';
-		}
+		
         echo '</select>';
 	}
 	
@@ -4901,7 +4902,11 @@ class Complaint extends CI_Controller {
 	public function customer_list_ajax()
 	{
         $city_id=$this->input->post('var_name');		//
-		$dbres = $this->db->query("SELECT * FROM tbl_clients where fk_city_id = '".$city_id."' AND delete_status='0'");
+		$dbres = $this->db->query("SELECT tbl_clients.*,tbl_cities.city_name,tbl_area.area 
+		FROM tbl_clients 
+		LEFT JOIN tbl_cities ON tbl_clients.fk_city_id = tbl_cities.pk_city_id
+		LEFT JOIN tbl_area ON tbl_clients.fk_area_id = tbl_area.pk_area_id
+		where tbl_clients.fk_city_id = '".$city_id."' AND delete_status='0'");
         $dbresResult=$dbres->result_array();
 		
 		$dbress = $this->db->query("SELECT * FROM tbl_offices where fk_city_id = '".$city_id."' ");
@@ -4914,8 +4919,7 @@ class Complaint extends CI_Controller {
 		{
 			?>
             <option value="<?php echo $value['client_option'];?>">
-			  <?php echo $value['office_name'];
-                  ?>			
+			  <?php echo $value['office_name'];?>			
             </option>
             <?php
 		}
@@ -4925,15 +4929,8 @@ class Complaint extends CI_Controller {
 			?>
             <option value="<?php echo $value['pk_client_id'];?>">
 			  <?php echo $value['client_name'];
-                          $qu2="SELECT * from tbl_cities where pk_city_id = '".$value['fk_city_id']."' ";
-                          $gh2=$this->db->query($qu2);
-                          $rt2=$gh2->result_array();
-                          echo '--('.$rt2[0]['city_name'].')';
-                          //
-                          $qu3="SELECT * from tbl_area where pk_area_id = '".$value['fk_area_id']."' ";
-                          $gh3=$this->db->query($qu3);
-                          $rt3=$gh3->result_array();
-                          echo '--('.$rt3[0]['area'].')';
+                          echo '--('.$value['city_name'].')';
+                          echo '--('.$value['area'].')';
                   ?>			
             </option>
             <?php
@@ -4951,9 +4948,7 @@ class Complaint extends CI_Controller {
 			echo '<option value="';
 			echo $drt["fk_office_id"];
 			echo '">';
-			$nn=$this->db->query("select * from tbl_offices where pk_office_id = '".$drt["fk_office_id"]."'");
-			$nnm=$nn->result_array();
-			echo $nnm[0]["office_name"];
+			echo $drt["office_name"];
 			echo '</option>';
 		}
         echo '</select>';
@@ -4962,7 +4957,10 @@ class Complaint extends CI_Controller {
 	public function vendor_based_on_product_ajax()
 	{
 		$category			=	$this->input->post('category');
-		$rrr				=	"select * from tbl_vendor_category_bridge where fk_category_id = '".$category."' ";
+		$rrr				=	"select tbl_vendor_category_bridge.*,COALESCE(tbl_vendors.vendor_name) AS vendor_name 
+								from tbl_vendor_category_bridge 
+								LEFT JOIN tbl_vendors ON tbl_vendor_category_bridge.fk_vendor_id = tbl_vendors.pk_vendor_id
+								where tbl_vendor_category_bridge.fk_category_id = '".$category."' tbl_vendors.status = '0'";
 		//echo $rrr;exit;
 		$nn=$this->db->query($rrr);
 		$nnm=$nn->result_array();
@@ -4970,19 +4968,12 @@ class Complaint extends CI_Controller {
 		echo '" class="form-control"';
 		echo ' required onchange="show_equipment(this.value)">';
 		echo '<option value="">---Select---</option>';
-		foreach($nnm as $drt)
-		{
-			$rrr2=	"select * from tbl_vendors where pk_vendor_id = '".$drt["fk_vendor_id"]."' AND status = '0' ";
-			//echo $rrr2;
-			$nn2=$this->db->query($rrr2);
-			if($nn2->num_rows() > 0)
-			{
+		foreach($nnm as $drt) {
+			if($drt['vendor_name']!=""){
 				echo '<option value="';
 				echo $drt["fk_vendor_id"];
 				echo '">';
-				
-				$nnm2=$nn2->result_array();
-				echo $nnm2[0]["vendor_name"];
+				echo $drt["vendor_name"];
 				echo '</option>';
 			}
 		}
@@ -4992,7 +4983,10 @@ class Complaint extends CI_Controller {
 	public function vendor_based_on_product_2_ajax()
 	{
 		$category			=	$this->input->post('category');
-		$rrr				=	"select * from tbl_vendor_product_bridge where fk_product_id = '".$category."' ";
+		$rrr				=	"select tbl_vendor_category_bridge.*,COALESCE(tbl_vendors.vendor_name) AS vendor_name 
+								from tbl_vendor_category_bridge 
+								LEFT JOIN tbl_vendors ON tbl_vendor_category_bridge.fk_vendor_id = tbl_vendors.pk_vendor_id
+								where tbl_vendor_category_bridge.fk_category_id = '".$category."' AND tbl_vendors.status = '0' ";
 		//echo $rrr;exit;
 		$nn=$this->db->query($rrr);
 		$nnm=$nn->result_array();
@@ -5000,19 +4994,12 @@ class Complaint extends CI_Controller {
 		echo '" class="form-control"';
 		echo ' required >';
 		echo '<option value="">---Select---</option>';
-		foreach($nnm as $drt)
-		{
-			$rrr2=	"select * from tbl_vendors where pk_vendor_id = '".$drt["fk_vendor_id"]."' AND status = '0' ";
-			//echo $rrr2;
-			$nn2=$this->db->query($rrr2);
-			if($nn2->num_rows() > 0)
-			{
+		foreach($nnm as $drt){
+			if($drt['vendor_name']!=""){
 				echo '<option value="';
 				echo $drt["fk_vendor_id"];
 				echo '">';
-				
-				$nnm2=$nn2->result_array();
-				echo $nnm2[0]["vendor_name"];
+				echo $drt["vendor_name"];
 				echo '</option>';
 			}
 		}
@@ -5048,7 +5035,10 @@ class Complaint extends CI_Controller {
 	public function vendors_based_on_category_ajax()
 	{
 		$category			=	$this->input->post('category');
-		$rrr				=	"select * from tbl_vendor_category_bridge where fk_category_id = '".$category."' ";
+		$rrr				=	"select tbl_vendor_category_bridge.*,COALESCE(tbl_vendors.vendor_name) AS vendor_name 
+								from tbl_vendor_category_bridge 
+								LEFT JOIN tbl_vendors ON tbl_vendor_category_bridge.fk_vendor_id = tbl_vendors.pk_vendor_id
+								where tbl_vendor_category_bridge.fk_category_id = '".$category."' AND tbl_vendors.status = '0' ";
 		//echo $rrr;exit;
 		$nn=$this->db->query($rrr);
 		$nnm=$nn->result_array();
@@ -5058,20 +5048,13 @@ class Complaint extends CI_Controller {
 		if(isset($_POST['mutiple'])){echo ' multiple="multiple"';}
 		echo ' required>';
 		//echo '<option value="">---Select---</option>';
-		foreach($nnm as $drt)
-		{
-			//
-			$rrr2	=	"select * from tbl_vendors where pk_vendor_id = '".$drt["fk_vendor_id"]."' AND status = '0'";
-			//echo $rrr;exit;
-			$nn2=$this->db->query($rrr2);
-			if($nn2->num_rows()>0)
-			{
-			  $nnm2=$nn2->result_array();
-			  echo '<option value="';
-			  echo $drt["fk_vendor_id"];
-			  echo '">';
-			  echo $nnm2[0]["vendor_name"];
-			  echo '</option>';
+		foreach($nnm as $drt) {
+			if($drt['vendor_name']!=""){
+				echo '<option value="';
+				echo $drt["fk_vendor_id"];
+				echo '">';
+				echo $drt["vendor_name"];
+				echo '</option>';
 			}
 		}
         echo '</select>';
@@ -5579,27 +5562,20 @@ class Complaint extends CI_Controller {
         $get_contact_no = $this->complaint_model->get_contact_no($city_id,$pk_client_id);
 		$clinet_id = $get_contact_no[0]['pk_client_id'];*/
 		//
-		$nn=$this->db->query("select * from tbl_instruments where fk_client_id = '".$pk_client_id."'");
+		$nn=$this->db->query("select tbl_instruments.*, COALESCE(tbl_products.product_name) AS product_name
+		from tbl_instruments 
+		LEFT JOIN tbl_products ON tbl_instruments.fk_product_id = tbl_products.pk_product_id
+		where tbl_instruments.fk_client_id = '".$pk_client_id."'");
 		$nnm_1=$nn->result_array();
 		echo '<select name="instrument_name" class="form-control" onchange="add_serial_no(this.value)" >';
 		echo '<option value="">---Select---</option>';
-		//print_r($neary_ids);
-		$product_array=array();
-		foreach($nnm_1 as $productids)
-		{
-			if(!in_array($productids['fk_product_id'], $product_array))
-			{
-				array_push($product_array, $productids['fk_product_id']);
-			}
-		}
-		foreach($product_array as $drt)
+		
+		foreach($nnm_1 as $drt)
 		{
 			echo '<option value="';
-			echo $drt;
+			echo $drt['fk_product_id'];
 			echo '">';
-			$nn=$this->db->query("select * from tbl_products where pk_product_id = '".$drt."' ");
-			$nnm=$nn->result_array();
-			echo $nnm[0]["product_name"];
+			echo $drt["product_name"];
 			echo '</option>';
 		}
         echo '</select>';
@@ -5628,28 +5604,27 @@ class Complaint extends CI_Controller {
 	public function slect_office_ajax_and_related_engineers()
 	{
 		$instrument_id			=	$this->input->post('instrument_id');
-		$rrr				=	"select * from tbl_instruments where pk_instrument_id = '".$instrument_id."' ";
+		$rrr				=	"select tbl_instruments.*,tbl_offices.office_name 
+								from tbl_instruments 
+								LEFT JOIN tbl_offices ON tbl_instruments.fk_office_id = tbl_offices.pk_office_id
+								where pk_instrument_id = '".$instrument_id."' ";
 		//echo $rrr;exit;
 		$nn=$this->db->query($rrr);
 		$nnm=$nn->result_array();
-		$rrr2				=	"select * from tbl_offices where pk_office_id = '".$nnm[0]['fk_office_id']."' ";
-		$nn2=$this->db->query($rrr2);
-		$nnm2=$nn2->result_array();
-		//
-		echo $nnm2[0]['office_name'];
+		echo $nnm[0]['office_name'];
 	}
 	public function slect_office_ajax_id()
 	{
 		$instrument_id			=	$this->input->post('instrument_id');
-		$rrr				=	"select * from tbl_instruments where pk_instrument_id = '".$instrument_id."' ";
-		//echo $rrr;exit;
+		$rrr				=	"select tbl_instruments.*,tbl_offices.office_name 
+								from tbl_instruments 
+								LEFT JOIN tbl_offices ON tbl_instruments.fk_office_id = tbl_offices.pk_office_id
+								where pk_instrument_id = '".$instrument_id."' ";
+	
 		$nn=$this->db->query($rrr);
 		$nnm=$nn->result_array();
-		$rrr2				=	"select * from tbl_offices where pk_office_id = '".$nnm[0]['fk_office_id']."' ";
-		$nn2=$this->db->query($rrr2);
-		$nnm2=$nn2->result_array();
-		//
-		echo $nnm2[0]['pk_office_id'];
+		
+		echo $nnm[0]['pk_office_id'];
 	}
 	public function submit_sprf()
 	{
@@ -5992,13 +5967,13 @@ class Complaint extends CI_Controller {
 			$client_id	=	$this->input->post('client_id');
 			$rowid	=	$this->input->post('rowid');
 			
-			$qu="SELECT * from tbl_clients where pk_client_id =  '".$client_id."'";
+			$qu="SELECT tbl_clients.*,tbl_cities.pk_city_id from tbl_clients
+			LEFT JOIN tbl_cities ON tbl_clients.fk_city_id = tbl_cities.pk_city_id
+			where pk_client_id =  '".$client_id."'";
 			$gh=$this->db->query($qu);
 			$rt=$gh->result_array();
-			$qu2="SELECT * from tbl_cities where pk_city_id =  '".$rt[0]['fk_city_id']."'";
-			$gh2=$this->db->query($qu2);
-			$rt2=$gh2->result_array();
-			echo $rt2[0]['pk_city_id'];
+			
+			echo $rt[0]['pk_city_id'];
 		}
 	}
 	// this is for new dvr form page
@@ -6028,14 +6003,14 @@ class Complaint extends CI_Controller {
 		{
 			$client_id	=	$this->input->post('client_id');
 			$rowid	=	$this->input->post('rowid');
-			$qu="SELECT * from tbl_clients where pk_client_id =  '".$client_id."'";
+			$qu="SELECT tbl_clients.*,tbl_cities.pk_city_id, tbl_cities.city_name from tbl_clients
+			LEFT JOIN tbl_cities ON tbl_clients.fk_city_id = tbl_cities.pk_city_id
+			where pk_client_id =  '".$client_id."'";
 			$gh=$this->db->query($qu);
 			$rt=$gh->result_array();
-			$qu2="SELECT * from tbl_cities where pk_city_id =  '".$rt[0]['fk_city_id']."'";
-			$gh2=$this->db->query($qu2);
-			$rt2=$gh2->result_array();
+			
 			echo '<select class="form-control  " name="city['.$rowid.']" onchange="show_business(this.value,'.$rowid.')"  id="city'.$rowid.'"  >';
-			foreach($rt2 as $value)
+			foreach($rt as $value)
 			{
 				echo '<option value="';
 				echo $value['pk_city_id'];
@@ -6076,14 +6051,14 @@ class Complaint extends CI_Controller {
 		{
 			$client_id	=	$this->input->post('client_id');
 			$rowid	=	$this->input->post('rowid');
-			$qu="SELECT * from tbl_clients where pk_client_id =  '".$client_id."'";
+			$qu="SELECT tbl_clients.*,tbl_cities.pk_city_id, tbl_cities.city_name from tbl_clients
+			LEFT JOIN tbl_cities ON tbl_clients.fk_city_id = tbl_cities.pk_city_id
+			where pk_client_id =  '".$client_id."'";
 			$gh=$this->db->query($qu);
 			$rt=$gh->result_array();
-			$qu2="SELECT * from tbl_cities where pk_city_id =  '".$rt[0]['fk_city_id']."'";
-			$gh2=$this->db->query($qu2);
-			$rt2=$gh2->result_array();
+			
 			echo '<select class="form-control  " name="city['.$rowid.']" onchange="show_business(this.value,'.$rowid.')"  id="city'.$rowid.'"  >';
-			foreach($rt2 as $value)
+			foreach($rt as $value)
 			{
 				echo '<option value="';
 				echo $value['pk_city_id'];
@@ -6101,14 +6076,14 @@ class Complaint extends CI_Controller {
 	{
 		
 			$client_id	=	$this->input->post('client_id');
-			$qu="SELECT * from tbl_clients where pk_client_id =  '".$client_id."'";
+			$qu="SELECT tbl_clients.*,tbl_cities.pk_city_id, tbl_cities.city_name from tbl_clients
+			LEFT JOIN tbl_cities ON tbl_clients.fk_city_id = tbl_cities.pk_city_id
+			where pk_client_id =  '".$client_id."'";
 			$gh=$this->db->query($qu);
 			$rt=$gh->result_array();
-			$qu2="SELECT * from tbl_cities where pk_city_id =  '".$rt[0]['fk_city_id']."'";
-			$gh2=$this->db->query($qu2);
-			$rt2=$gh2->result_array();
+			
 			echo '<select class="form-control  " name="City"   id="City"  >';
-			foreach($rt2 as $value)
+			foreach($rt as $value)
 			{
 				echo '<option value="';
 				echo $value['pk_city_id'];
@@ -6125,14 +6100,14 @@ class Complaint extends CI_Controller {
 	{
 		
 			$client_id	=	$this->input->post('client_id');
-			$qu="SELECT * from tbl_clients where pk_client_id =  '".$client_id."'";
+			$qu="SELECT tbl_clients.*, tbl_offices.office_name from tbl_clients
+			LEFT JOIN tbl_offices ON tbl_clients.fk_office_id = tbl_offices.pk_office_id
+			where pk_client_id =  '".$client_id."'";
 			$gh=$this->db->query($qu);
 			$rt=$gh->result_array();
-			$qu2="SELECT * from tbl_offices where pk_office_id =  '".$rt[0]['fk_office_id']."'";
-			$gh2=$this->db->query($qu2);
-			$rt2=$gh2->result_array();
+			
 			echo '<select class="form-control" name="Territory"   id="Territory"  >';
-			foreach($rt2 as $value)
+			foreach($rt as $value)
 			{
 				echo '<option value="';
 				echo $value['pk_office_id'];
@@ -6147,14 +6122,14 @@ class Complaint extends CI_Controller {
 	{
 		
 			$client_id	=	$this->input->post('client_id');
-			$qu="SELECT * from tbl_clients where pk_client_id =  '".$client_id."'";
+			$qu="SELECT tbl_clients.*, tbl_area.area from tbl_clients
+			LEFT JOIN tbl_area ON tbl_clients.fk_area_id = tbl_area.pk_area_id
+			where pk_client_id =  '".$client_id."'";
 			$gh=$this->db->query($qu);
 			$rt=$gh->result_array();
-			$qu2="SELECT * from tbl_area where pk_area_id =  '".$rt[0]['fk_area_id']."'";
-			$gh2=$this->db->query($qu2);
-			$rt2=$gh2->result_array();
+			
 			echo '<select class="form-control" name="Area"   id="Area"  >';
-			foreach($rt2 as $value)
+			foreach($rt as $value)
 			{
 				echo '<option value="';
 				echo $value['pk_area_id'];
@@ -6208,23 +6183,27 @@ class Complaint extends CI_Controller {
 		$gh6=$this->db->query($qu6);
 		$rt6=$gh6->result_array();
 
-		$qu="select * from business_data where Customer='".$cutomer_id."' AND City='".$city_id."' and status='0' 
-		AND Department='".$rt6[0]['department']."' And `Sales Person`='".$rt6[0]['id']."'";
+		$qu="SELECT business_data.*,tbl_business_types.businesstype_name 
+		from business_data 
+		LEFT JOIN tbl_business_types ON business_data.`Business Project` = tbl_business_types.pk_businesstype_id
+		WHERE business_data.Customer='".$cutomer_id."' AND business_data.City='".$city_id."' and business_data.status='0' AND business_data.`Sales Person`='".$rt6[0]['id']."'";
 		//echo $qu;exit;
 		$gh=$this->db->query($qu);
 		$rt=$gh->result_array();
 		//
 		
-		$ts_umber_quer="select * from tbl_complaints where fk_customer_id='".$cutomer_id."' AND assign_to='".$rt6[0]['id']."' 
-		AND status NOT IN ('Closed', 'Completed','Pending Verification','Pending Registration','Pending Verification (BB)','Pending SPRF')";
-		// New Query Above query is irrelevant.
-		$ts_umber_quer="select * from tbl_complaints where fk_customer_id='".$cutomer_id."' 
-		AND status NOT IN ('Closed', 'Completed','Pending Registration')";
 		
-		if (substr($cutomer_id,0,1)=='o')
-			$ts_umber_quer="select * from tbl_complaints where fk_customer_id IN (SELECT fk_client_id from tbl_offices WHERE client_option='".$cutomer_id."' )
-							AND status NOT IN ('Closed', 'Completed','Pending Registration')"; 
-		//echo $ts_umber_quer;exit;
+		$ts_umber_quer="
+		SELECT tbl_complaints.*, COALESCE(tbl_products.product_name) AS product_name, COALESCE(tbl_instruments.serial_no) AS serial_no
+		FROM tbl_complaints
+		LEFT JOIN tbl_instruments ON tbl_comments.fk_instrument_id = tbl_instruments.pk_instrument_id
+		LEFT JOIN tbl_products ON tbl_instruments.fk_product_id = tbl_products.pk_product_id 
+		";
+		
+		
+		if (substr($cutomer_id,0,1)=='o') $ts_umber_quer .= " where tbl_complaints.fk_customer_id IN (SELECT fk_client_id from tbl_offices WHERE client_option='".$cutomer_id."' ) AND tbl_complaints.status NOT IN ('Closed', 'Completed','Pending Registration')"; 
+		else $ts_umber_quer .= " where tbl_complaints.fk_customer_id='".$cutomer_id."' AND tbl_complaints.status NOT IN ('Closed', 'Completed','Pending Registration')";
+		
 		$gh_tsnumber=$this->db->query($ts_umber_quer);
 		$rt_ts_number=$gh_tsnumber->result_array();
 		//
@@ -6235,11 +6214,7 @@ class Complaint extends CI_Controller {
 			echo '<option value="';
 			echo $value['pk_businessproject_id'];
 			echo '">';
-			$qu5="select * from tbl_business_types where pk_businesstype_id='".$value['Business Project']."'";
-			$gh5=$this->db->query($qu5);
-			$rt5=$gh5->result_array();
-			
-			echo $rt5[0]['businesstype_name'];
+			echo $value['businesstype_name'];
 			echo '</option>';
 		}
 		//
@@ -6250,13 +6225,7 @@ class Complaint extends CI_Controller {
 			echo '">';
 			$cn = "TS";
 			if ($value['complaint_nature']=='PM') $cn = "PM";
-			$q = $this->db->query("SELECT first_name from user where id = '".$value['assign_to']."'");
-			$u = $q->result_array();
-			$q = $this->db->query("SELECT fk_product_id,serial_no from tbl_instruments where pk_instrument_id = '".$value['fk_instrument_id']."'");
-			$i = $q->result_array();
-			$q = $this->db->query("SELECT product_name from tbl_products where pk_product_id = '".$i[0]['fk_product_id']."'");
-			$p = $q->result_array();
-			echo $value['ts_number'].' - '.$cn.' - '.$p[0]['product_name'].' ('.$i[0]['serial_no'].') - '.$value['problem_summary'];//.$u[0]['first_name'];//.' - '//Removed first name and displayed problem_summary (Done by Zohaib)
+			echo $value['ts_number'].' - '.$cn.' - '.$value['product_name'].' ('.$value['serial_no'].') - '.$value['problem_summary'];//.$u[0]['first_name'];//.' - '//Removed first name and displayed problem_summary (Done by Zohaib)
 			echo '</option>';
 		}
 		
