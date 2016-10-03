@@ -483,7 +483,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/news');
+        $this->load->view('complaint/news_z');
     }
 	public function add_news() {
         if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
@@ -2095,7 +2095,7 @@ class Complaint extends CI_Controller {
 	public function engineer_dvr_form()
 	{
 		//echo $this->session->userdata('userrole');exit;
-		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor')
+		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor'  || $this->session->userdata('userrole')=='Salesman')
 		{
 			$this->load->model("complaint_model");
         $get_eng_dvr = $this->complaint_model->get_eng_dvr_model();
@@ -2350,9 +2350,33 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor')
 		{
-			$this->load->model("complaint_model");
-        	$get_eng_vs = $this->complaint_model->get_eng_vs_model();
-			$this->load->view('complaint/engineer_vs', array("get_eng_vs" => $get_eng_vs));
+			// $this->load->model("complaint_model");
+        	// $get_eng_vs = $this->complaint_model->get_eng_vs_model();
+			// $this->load->view('complaint/engineer_vs', array("get_eng_vs" => $get_eng_vs));
+			
+			$engineer = $this->session->userdata('userid');
+			$start_date = date('Y-m-d');
+			$end_date = date('Y-m-d', strtotime('-30 days'));
+			if(isset($_POST['engineer'])){
+				$engineer = $_POST['engineer'];
+			}
+				$dbres = $this->db->query("SELECT tbl_dvr.*,
+				COALESCE(tbl_offices.office_name) AS office_name,
+				COALESCE(tbl_clients.client_name) AS client_name,
+				COALESCE(tbl_area.area) AS area
+				FROM tbl_dvr 
+				LEFT JOIN tbl_offices ON tbl_dvr.fk_customer_id = tbl_offices.client_option
+				LEFT JOIN tbl_clients ON tbl_dvr.fk_customer_id=tbl_clients.pk_client_id 
+				LEFT JOIN tbl_area ON tbl_clients.fk_area_id=tbl_area.pk_area_id 
+				where tbl_dvr.fk_engineer_id = '".$engineer."' AND CAST(tbl_dvr.`date` AS DATE) between '".$end_date."' AND '".$start_date."' 
+				order by tbl_dvr.date DESC");
+				$dbresResult=$dbres->result_array();
+				$dbres2 = $this->db->query("SELECT * FROM user where id = '".$engineer."' ");
+				$dbresResult2=$dbres2->result_array();
+				
+				$this->load->view('complaint/engineer_vs', array("get_eng_dvr" => $dbresResult,
+																"eng_id" 	 => $engineer,
+																"userrole"   => $dbresResult2['0']['userrole']));
 		}
 		else
 		{
@@ -3840,7 +3864,7 @@ class Complaint extends CI_Controller {
 			}
 			else
 			{
-            redirect(site_url() . 'complaint/engineer_dvr?msg=success');
+            redirect(site_url() . 'complaint/engineer_dvr_form?msg=success');
 			}
 	}
 	
@@ -3984,26 +4008,23 @@ class Complaint extends CI_Controller {
 	{
 			foreach($_POST['starttime'] as $key=> $value)
 			{
-			 //echo 'start time'.$_POST['starttime'][$key].'<br> end time='.$_POST['endtime'][$key].'<br>';
+			//echo 'start time'.$_POST['starttime'][$key].'<br> end time='.$_POST['endtime'][$key].'<br>';
 			 $start_ampm=explode(' ',$_POST['starttime'][$key]);
 			 $start_ampm_minut=explode(':',$start_ampm[0]);
 			 $start_hour=explode(':',$_POST['starttime'][$key]);
-			// if($start_ampm[1]=='AM'){ $start_nhour=$start_hour[0]; }else{ $start_nhour=$start_hour[0]+12; } zaaid
-			if($start_ampm[1]=='PM' && $start_hour[0]<12){ $start_nhour=$start_hour[0]+12; }else{ $start_nhour=$start_hour[0]; }
+			 //if($start_ampm[1]=='AM'){ $start_nhour=$start_hour[0]; }else{ $start_nhour=$start_hour[0]+12; } zaaid
+			 if($start_ampm[1]=='PM' && $start_hour[0]<12){ $start_nhour=$start_hour[0]+12; }else{ $start_nhour=$start_hour[0]; }
 			 if($start_ampm[1]=='AM' && $start_nhour==12 ){ $start_nhour-=12;}
 			 $re_start_hour=$start_nhour.':'.$start_ampm_minut[1].':00';
 			 //
 			 $end_ampm=explode(' ',$_POST['endtime'][$key]);
 			 $end_ampm_minut=explode(':',$end_ampm[0]);
 			 $end_hour=explode(':',$_POST['endtime'][$key]);
-			 // if($end_ampm[1]=='AM'){ $end_nhour=$end_hour[0]; }else{ $end_nhour=$end_hour[0]+12; } zaaid
+			 //if($end_ampm[1]=='AM'){ $end_nhour=$end_hour[0]; }else{ $end_nhour=$end_hour[0]+12; } zaaid
 			 if($end_ampm[1]=='PM' && $end_hour[0]<12){ $end_nhour=$end_hour[0]+12; }else{ $end_nhour=$end_hour[0]; }
 			 if($end_ampm[1]=='AM' && $end_nhour==12 ){ $end_nhour-=12;}
 			 $re_end_hour=$end_nhour.':'.$end_ampm_minut[1].':00';
-			 //echo 'start time'.$re_start_hour.'<br> end time='.$re_end_hour;exit;
-			 //
-			 //
-			 //////////////////////zaaid
+			 
 			 $current_date=date('Y-m-d');
 			 $current_time=date('H');
 			 if ($current_time<8) {$current_date = date('Y-m-d H:i:s',(strtotime ( '-1 day' , strtotime ( $current_date) ) ));}
@@ -4044,13 +4065,32 @@ class Complaint extends CI_Controller {
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
 			}
+			
+			/////////////////////////// For entering strategy ////////////////////////////////
+			if (isset($_POST['strategy'])){
+				$this->load->model("profile_model");
+				$query ="INSERT INTO tbl_project_strategy SET 				  
+										`target_date`				=	'".$this->profile_model->change_date_to_mysql_style($_POST['target_date'])."',
+										`investment`				=	'".$_POST['investment']."',
+										`sales_per_month`			=	'".$_POST['sales_per_month']."',
+										`strategy`					=	'".urlencode($_POST['strategy'])."',
+										`tactics`					=	'".urlencode($_POST['tactics'])."',
+										`date`						=	'".date('Y-m-d H:i:s')."',
+										`strategy_status`			=	'".$_POST['strategy_status']."',
+										`fk_employee_id`			=	'".$this->session->userdata('userid')."',
+										`fk_project_id`				= 	'".$_POST['fk_project_id']."'";
+			
+			  $dbres = $this->db->query($query);
+			}
+			
+			//////////////////////////  End For entering Stratgey ////////////////////////////
 			if(isset($_POST['engineer_dvr_form']))
 			{
 				redirect(site_url() . 'complaint/engineer_dvr_form?msg=success');
 			}
 			else
 			{
-            redirect(site_url() . 'complaint/engineer_dvr?msg=success');
+            redirect(site_url() . 'complaint/engineer_dvr_form?msg=success');
 			}
 	}
 	
@@ -6233,9 +6273,11 @@ class Complaint extends CI_Controller {
 	{
 		$cutomer_id	=	$this->input->post('client_id');
 		$rowid	=	$this->input->post('rowid');
+		$user_id = $this->session->userdata('userid');
+		if(isset($_POST['user_id'])) $user_id = $this->input->post('user_id');
 		 //echo 'cutomer='.$cutomer_id.'city='.$city_id.'rowid='.$rowid;exit;
 
-		$qu="select * from business_data where Customer='".$cutomer_id."'  And `Sales Person`='".$this->session->userdata('userid')."'  and status='0'";
+		$qu="select * from business_data where Customer='".$cutomer_id."'  And `Sales Person`='".$user_id."'  and status='0'";
 		//echo $qu;exit;
 		$gh=$this->db->query($qu);
 		$rt=$gh->result_array();
