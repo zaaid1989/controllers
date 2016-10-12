@@ -820,7 +820,9 @@ print_r('</pre>');
 	public function select_products()
 	{
 		$vendor_id			=	$this->input->post('vendor_id');
-		$rrr				=	"select * from tbl_vendor_product_bridge where fk_vendor_id = '".$vendor_id."' ";
+		$rrr				=	"select tbl_vendor_product_bridge.*,tbl_products.product_name from tbl_vendor_product_bridge 
+		LEFT JOIN tbl_products ON tbl_vendor_product_bridge.fk_product_id = tbl_products.pk_product_id
+		where tbl_vendor_product_bridge.fk_vendor_id = '".$vendor_id."' ";
 		//echo $rrr;exit;
 		$nn=$this->db->query($rrr);
 		$nnm=$nn->result_array();
@@ -830,17 +832,12 @@ print_r('</pre>');
 		echo '<option value="">---Select---</option>';
 		foreach($nnm as $drt)
 		{
-			$rrr2=	"select * from tbl_products where pk_product_id = '".$drt["fk_product_id"]."' AND status = '0' ";
-			//echo $rrr2;
-			$nn2=$this->db->query($rrr2);
-			if($nn2->num_rows() > 0)
+			if($drt['product_name']!="")
 			{
 				echo '<option value="';
 				echo $drt["fk_product_id"];
 				echo '">';
-				
-				$nnm2=$nn2->result_array();
-				echo $nnm2[0]["product_name"];
+				echo $drt["product_name"];
 				echo '</option>';
 			}
 		}
@@ -1132,8 +1129,8 @@ print_r('</pre>');
             </tr>
 			<tr>
 			  <?php 
-              $query = $this->db->query("select * from tbl_offices");
-              $result = $query->result_array();
+              // $query = $this->db->query("select * from tbl_offices");
+              // $result = $query->result_array();
               foreach($result as $office)
               {
                 echo '<td>';

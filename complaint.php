@@ -93,6 +93,14 @@ class Complaint extends CI_Controller {
 		}
 		$this->load->view('complaint/chart_sap_territory_visit_review');
 	}
+	public function chart_sap_territory_visit_review_projects_customers()
+	{
+		if($this->session->userdata('userrole')!='Admin')
+		{
+			show_404();
+		}
+		$this->load->view('complaint/chart_sap_territory_visit_review_projects_customers');
+	}
 	public function chart_ongoing_projects_target_date()
 	{
 		if($this->session->userdata('userrole')!='Admin')
@@ -4345,7 +4353,6 @@ class Complaint extends CI_Controller {
 						$query.="`solution_date`								=	'".$this->profile_model->change_date_to_mysql_style($_POST['solution_date'])."',";
 			 }
 				$query.="		`reporting_time`								=	'".$_POST['reporting_time']."',
-								`ps_name`										=	'".$_POST['ps_name']."',
 								`customer_signing_complaint_form`				=	'".urlencode($_POST['customer_signing_complaint_form'])."',
 								`customer_mobile_signing_complaint_form`		=	'".urlencode($_POST['customer_mobile_signing_complaint_form'])."',
 								`customer_designation_signing_complaint_form`	=	'".urlencode($_POST['customer_designation_signing_complaint_form'])."',
@@ -4960,7 +4967,7 @@ class Complaint extends CI_Controller {
 		$rrr				=	"select tbl_vendor_category_bridge.*,COALESCE(tbl_vendors.vendor_name) AS vendor_name 
 								from tbl_vendor_category_bridge 
 								LEFT JOIN tbl_vendors ON tbl_vendor_category_bridge.fk_vendor_id = tbl_vendors.pk_vendor_id
-								where tbl_vendor_category_bridge.fk_category_id = '".$category."' tbl_vendors.status = '0'";
+								where tbl_vendor_category_bridge.fk_category_id = '".$category."' AND tbl_vendors.status = '0'";
 		//echo $rrr;exit;
 		$nn=$this->db->query($rrr);
 		$nnm=$nn->result_array();
@@ -4983,10 +4990,10 @@ class Complaint extends CI_Controller {
 	public function vendor_based_on_product_2_ajax()
 	{
 		$category			=	$this->input->post('category');
-		$rrr				=	"select tbl_vendor_category_bridge.*,COALESCE(tbl_vendors.vendor_name) AS vendor_name 
-								from tbl_vendor_category_bridge 
-								LEFT JOIN tbl_vendors ON tbl_vendor_category_bridge.fk_vendor_id = tbl_vendors.pk_vendor_id
-								where tbl_vendor_category_bridge.fk_category_id = '".$category."' AND tbl_vendors.status = '0' ";
+		$rrr				=	"select tbl_vendor_product_bridge.*,COALESCE(tbl_vendors.vendor_name) AS vendor_name 
+								from tbl_vendor_product_bridge 
+								LEFT JOIN tbl_vendors ON tbl_vendor_product_bridge.fk_vendor_id = tbl_vendors.pk_vendor_id
+								where tbl_vendor_product_bridge.fk_product_id = '".$category."' AND tbl_vendors.status = '0' ";
 		//echo $rrr;exit;
 		$nn=$this->db->query($rrr);
 		$nnm=$nn->result_array();
@@ -6100,7 +6107,7 @@ class Complaint extends CI_Controller {
 	{
 		
 			$client_id	=	$this->input->post('client_id');
-			$qu="SELECT tbl_clients.*, tbl_offices.office_name from tbl_clients
+			$qu="SELECT tbl_clients.*, tbl_offices.office_name,tbl_offices.pk_office_id from tbl_clients
 			LEFT JOIN tbl_offices ON tbl_clients.fk_office_id = tbl_offices.pk_office_id
 			where pk_client_id =  '".$client_id."'";
 			$gh=$this->db->query($qu);
@@ -6122,7 +6129,7 @@ class Complaint extends CI_Controller {
 	{
 		
 			$client_id	=	$this->input->post('client_id');
-			$qu="SELECT tbl_clients.*, tbl_area.area from tbl_clients
+			$qu="SELECT tbl_clients.*, tbl_area.area,tbl_area.pk_area_id from tbl_clients
 			LEFT JOIN tbl_area ON tbl_clients.fk_area_id = tbl_area.pk_area_id
 			where pk_client_id =  '".$client_id."'";
 			$gh=$this->db->query($qu);
@@ -6196,7 +6203,7 @@ class Complaint extends CI_Controller {
 		$ts_umber_quer="
 		SELECT tbl_complaints.*, COALESCE(tbl_products.product_name) AS product_name, COALESCE(tbl_instruments.serial_no) AS serial_no
 		FROM tbl_complaints
-		LEFT JOIN tbl_instruments ON tbl_comments.fk_instrument_id = tbl_instruments.pk_instrument_id
+		LEFT JOIN tbl_instruments ON tbl_complaints.fk_instrument_id = tbl_instruments.pk_instrument_id
 		LEFT JOIN tbl_products ON tbl_instruments.fk_product_id = tbl_products.pk_product_id 
 		";
 		
