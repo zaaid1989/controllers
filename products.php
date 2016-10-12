@@ -32,7 +32,7 @@ class Products extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/add_complaint');
+        $this->load->view('sys/add_complaint');
 	}
 	public function brands()
 	{
@@ -319,7 +319,7 @@ print_r('</pre>');
 	public function delete_complaint($id)
 	{
 		$dbres = $this->db->query("DELETE FROM tbl_complaints WHERE pk_complaint_id = $id");
-		redirect(site_url() . 'complaint/view_half_complaints?del=del');
+		redirect(site_url() . 'sys/view_half_complaints?del=del');
 	}
 	
 	public function delete_order($id)
@@ -536,7 +536,7 @@ print_r('</pre>');
 																			  fk_stock_id = '".$_POST['fk_stock_id']."',
 																			  `comments` =	'".urlencode($_POST['comments'])."'"
 												  );
-              redirect(site_url() . 'complaint/spare_parts_changed_report?msg=old_stock');
+              redirect(site_url() . 'sys/spare_parts_changed_report?msg=old_stock');
     }
 	
 	
@@ -1184,7 +1184,7 @@ print_r('</pre>');
             $this->load->model("complaint_model");
             $result = $this->complaint_model->insert_complaint($data);
             echo $this->db->insert_id();
-            redirect(site_url() . 'complaint/operator_view_complaints?msg=success');
+            redirect(site_url() . 'sys/operator_view_complaints?msg=success');
 	  }
 	// Delete Single Message.
 	
@@ -1197,11 +1197,11 @@ print_r('</pre>');
 			
 		if(isset($_POST['s_pm_form']))
 		{
-			redirect(site_url() . 'complaint/s_pm_form/'.$_POST['complaint_id'].'?msg_pend_ver=success');
+			redirect(site_url() . 'sys/s_pm_form/'.$_POST['complaint_id'].'?msg_pend_ver=success');
 		}
 		else
 		{
-			redirect(site_url() . 'complaint/pm_form/'.$_POST['complaint_id'].'?msg_pend_ver=success');
+			redirect(site_url() . 'sys/pm_form/'.$_POST['complaint_id'].'?msg_pend_ver=success');
 		}
 	}
 	public function supervisor_mark_completed()
@@ -1210,7 +1210,7 @@ print_r('</pre>');
 												finish_time	=	'".date('Y-m-d H:i:s')."'
 						 WHERE pk_complaint_id='" . $_POST['complaint_id'] . "'";
             $query=$this->db->query($updat_query);
-			redirect(site_url() . 'complaint/pm_form/'.$_POST['complaint_id'].'?msg_mark_comp=success');
+			redirect(site_url() . 'sys/pm_form/'.$_POST['complaint_id'].'?msg_mark_comp=success');
 	}
 	public function director_change_status()
 	{
@@ -1231,11 +1231,11 @@ print_r('</pre>');
 											 fk_complaint_id ='".$_POST['complaint_id']."', fk_employee_id='".$this->session->userdata('userid')."'");
 			if(isset($_POST['ts_report_director']))
 			{
-				redirect(site_url() . 'complaint/ts_report_director/'.$_POST['complaint_id'].'?msg_change_status=success');
+				redirect(site_url() . 'sys/ts_report_director/'.$_POST['complaint_id'].'?msg_change_status=success');
 			}
 			else
 			{
-				redirect(site_url() . 'complaint/pm_form/'.$_POST['complaint_id'].'?msg_change_status=success');
+				redirect(site_url() . 'sys/pm_form/'.$_POST['complaint_id'].'?msg_change_status=success');
 			}
 	}
 	
@@ -1243,7 +1243,7 @@ print_r('</pre>');
 	{
 		$updat_query="UPDATE tbl_complaints SET status			=	'Pending' WHERE pk_complaint_id='" . $_POST['complaint_id'] . "'";
             $query=$this->db->query($updat_query);
-			redirect(site_url() . 'complaint/pm_form/'.$_POST['complaint_id'].'?msg_mark_pend=success');
+			redirect(site_url() . 'sys/pm_form/'.$_POST['complaint_id'].'?msg_mark_pend=success');
 	}
 	
 	public function pm_form_other_details_insert()
@@ -1271,11 +1271,11 @@ print_r('</pre>');
 		//
 		if(isset($_POST['s_pm_form']))
 		{
-			redirect(site_url() . 'complaint/s_pm_form/'.$_POST['complaint_id'].'?msg_other_details=success');
+			redirect(site_url() . 'sys/s_pm_form/'.$_POST['complaint_id'].'?msg_other_details=success');
 		}
 		else
 		{
-			redirect(site_url() . 'complaint/pm_form/'.$_POST['complaint_id'].'?msg_other_details=success');
+			redirect(site_url() . 'sys/pm_form/'.$_POST['complaint_id'].'?msg_other_details=success');
 		}
 	}
 	
@@ -2439,7 +2439,7 @@ print_r('</pre>');
 			echo '</div>';
 			
         }
-		//redirect(site_url() . 'complaint/pm_form/'.$_POST['complaint_id']);
+		//redirect(site_url() . 'sys/pm_form/'.$_POST['complaint_id']);
 	}
 	public function delete_fine($id)
 	{
@@ -2448,7 +2448,7 @@ print_r('</pre>');
 							  ";
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
-		redirect(site_url() . 'complaint/all_fines?del=success');
+		redirect(site_url() . 'sys/all_fines?del=success');
 	}
 	public function delete_warning_letter($id)
 	{
@@ -2457,7 +2457,7 @@ print_r('</pre>');
 							  ";
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
-		redirect(site_url() . 'complaint/all_warning_letters?del=success');
+		redirect(site_url() . 'sys/all_warning_letters?del=success');
 	}
 	
 }

@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Complaint extends CI_Controller {
+class Sys extends CI_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -23,7 +23,7 @@ class Complaint extends CI_Controller {
 	
 	public function index()
 	{
-		redirect('complaint/operator_view_complaints');
+		redirect('sys/operator_view_complaints');
 	}
 	
 	public function test_cron()
@@ -39,7 +39,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/chart_territory_complaints');
+		$this->load->view('sys/chart_territory_complaints');
 	}
 	
 	public function chart_territory_task_distribution()
@@ -48,7 +48,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/chart_territory_task_distribution');
+		$this->load->view('sys/chart_territory_task_distribution');
 	}
 	
 	public function chart_real_time_territory_pm()
@@ -57,7 +57,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/chart_real_time_territory_pm');
+		$this->load->view('sys/chart_real_time_territory_pm');
 	}
 	
 	public function chart_real_time_territory_report()
@@ -66,7 +66,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/chart_real_time_territory_report');
+		$this->load->view('sys/chart_real_time_territory_report');
 	}
 	
 	public function chart_sap_projects_review_prod()
@@ -75,7 +75,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/chart_sap_projects_review_prod');
+		$this->load->view('sys/chart_sap_projects_review_prod');
 	}
 	public function chart_sap_projects_review_biz()
 	{
@@ -83,7 +83,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/chart_sap_projects_review_biz');
+		$this->load->view('sys/chart_sap_projects_review_biz');
 	}
 	public function chart_sap_territory_visit_review()
 	{
@@ -91,7 +91,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/chart_sap_territory_visit_review');
+		$this->load->view('sys/chart_sap_territory_visit_review');
 	}
 	public function chart_sap_territory_visit_review_projects_customers()
 	{
@@ -99,7 +99,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/chart_sap_territory_visit_review_projects_customers');
+		$this->load->view('sys/chart_sap_territory_visit_review_projects_customers');
 	}
 	public function chart_ongoing_projects_target_date()
 	{
@@ -107,7 +107,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/chart_ongoing_projects_target_date');
+		$this->load->view('sys/chart_ongoing_projects_target_date');
 	}
 	/*Zohaib*/
 	public function leaves_overview_all()
@@ -116,7 +116,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-				$this->load->view('complaint/leaves_overview_all');
+				$this->load->view('sys/leaves_overview_all');
 	}
 	
 	public function strategy_history()
@@ -125,7 +125,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-				$this->load->view('complaint/strategy_history');
+				$this->load->view('sys/strategy_history');
 	}
 	
 	public function mainpage_z()
@@ -136,7 +136,7 @@ class Complaint extends CI_Controller {
 			show_404();
 		}
 		
-		$this->load->view('complaint/mainpage_z');
+		$this->load->view('sys/mainpage_z');
 	}
 	/*Zohaib*/
 	
@@ -146,7 +146,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/fine');
+		$this->load->view('sys/fine');
 	}
 	public function warning_letter()
 	{
@@ -154,7 +154,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/warning_letter');
+		$this->load->view('sys/warning_letter');
 	}
 	public function leaves_statistics()
 	{
@@ -162,7 +162,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/leaves_statistics');
+		$this->load->view('sys/leaves_statistics');
 	}
 	
 	public function leaves_summary()
@@ -171,14 +171,14 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/leaves_summary');
+		$this->load->view('sys/leaves_summary');
 	}
 	
 	public function pending_sprf()
 	{
 		if($this->session->userdata('userrole')=='Supervisor' || $this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/pending_sprf');
+			$this->load->view('sys/pending_sprf');
 		}
 		else
 		{
@@ -193,7 +193,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/complaint_varification');
+		$this->load->view('sys/complaint_varification');
 	}
 	
 	public function ts_report_supervisor()
@@ -215,7 +215,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}*/
-		$this->load->view('complaint/ts_report_supervisor');
+		$this->load->view('sys/ts_report_supervisor');
 	}
 	
 	public function sub_menu()
@@ -224,7 +224,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/sub_menu');
+		$this->load->view('sys/sub_menu');
 	}
 	
 	public function edit_sub_menu()
@@ -233,7 +233,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/edit_sub_menu');
+		$this->load->view('sys/edit_sub_menu');
 	}
 	
 	public function add_sub_menu()
@@ -242,7 +242,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/add_sub_menu');
+		$this->load->view('sys/add_sub_menu');
 	}
 	
 	public function main_menu()
@@ -251,7 +251,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/main_menu');
+		$this->load->view('sys/main_menu');
 	}
 	
 	public function edit_main_menu()
@@ -260,7 +260,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/edit_main_menu');
+		$this->load->view('sys/edit_main_menu');
 	}
 	
 	public function add_main_menu()
@@ -269,7 +269,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/add_main_menu');
+		$this->load->view('sys/add_main_menu');
 	}
 	
 	public function ts_report_director()
@@ -278,7 +278,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/ts_report_director');
+		$this->load->view('sys/ts_report_director');
 	}
 	public function pm_form() {
 		$query="select `fk_office_id` from user where `id` ='".$this->session->userdata('userid')."'";
@@ -309,7 +309,7 @@ class Complaint extends CI_Controller {
 		
 		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor' || $this->session->userdata('userrole')=='secratery' || $this->session->userdata('userrole')=='Admin')
 		{	
-			$this->load->view('complaint/pm_form');
+			$this->load->view('sys/pm_form');
 		}
 		else
 		{
@@ -328,13 +328,13 @@ class Complaint extends CI_Controller {
 		}/*
 		if($this->session->userdata('userrole')=='Supervisor')
 		{	
-			$this->load->view('complaint/s_pm_form');
+			$this->load->view('sys/s_pm_form');
 		}
 		else
 		{
 			show_404();
 		}*/
-		$this->load->view('complaint/s_pm_form');
+		$this->load->view('sys/s_pm_form');
     }
 	public function projects_statistics()
 	{
@@ -342,7 +342,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/projects_statistics');
+		$this->load->view('sys/projects_statistics');
 	}
 	public function territory_statistics()
 	{
@@ -350,7 +350,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/territory_statistics');
+		$this->load->view('sys/territory_statistics');
 	}
 	
 	public function technical_service_pvr()
@@ -368,7 +368,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/technical_service_pvr');
+		$this->load->view('sys/technical_service_pvr');
 	}
 	
 	public function supervisor_assign_pm()
@@ -377,7 +377,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/supervisor_assign_pm');
+		$this->load->view('sys/supervisor_assign_pm');
 	}
 	
 	public function pm_statistics()
@@ -386,14 +386,14 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/pm_statistics');
+		$this->load->view('sys/pm_statistics');
 	}
 	
 	public function employee_asc()
 	{
 		
 		//$get_eng_dvr = $this->complaint_model->get_eng_asc_model();
-		//$this->load->view('complaint/sap_asc', array("get_eng_dvr" => $get_eng_dvr));
+		//$this->load->view('sys/sap_asc', array("get_eng_dvr" => $get_eng_dvr));
 		
 			$engineer = $this->session->userdata('userid');
 			$start_date = date('Y-m-d');
@@ -415,7 +415,7 @@ class Complaint extends CI_Controller {
 				$dbres2 = $this->db->query("SELECT * FROM user where id = '".$engineer."' ");
 				$dbresResult2=$dbres2->result_array();
 				
-				$this->load->view('complaint/employee_asc', array("get_eng_dvr" => $dbresResult,
+				$this->load->view('sys/employee_asc', array("get_eng_dvr" => $dbresResult,
 																"eng_id" 	 => $engineer,
 																"userrole"   => $dbresResult2['0']['userrole']));
 			
@@ -427,7 +427,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/products');
+		$this->load->view('sys/products');
 	}
 	public function categories()
 	{
@@ -435,7 +435,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/categories');
+		$this->load->view('sys/categories');
 	}
 	public function add_product()
 	{
@@ -443,7 +443,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/add_product');
+		$this->load->view('sys/add_product');
 	}
 	public function add_category()
 	{
@@ -451,25 +451,25 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/add_category');
+		$this->load->view('sys/add_category');
 	}
 	
 	public function delete_strategy($id)
 	{
 		$dbres = $this->db->query("DELETE FROM tbl_project_strategy WHERE pk_project_strategy_id = $id");
 		if (isset($_GET['proj']))
-			redirect(site_url() . 'complaint/strategy_history/'. $_GET['proj']);
+			redirect(site_url() . 'sys/strategy_history/'. $_GET['proj']);
 		else
-			redirect(site_url() . 'complaint/business_data');
+			redirect(site_url() . 'sys/business_data');
 	}
 	
 	public function delete_asc($id)
 	{
 		$dbres = $this->db->query("DELETE FROM tbl_customer_sap_bridge WHERE pk_customer_sap_bridge_id = $id");
 		if (isset($_GET['cust']))
-			redirect(site_url() . 'complaint/edit_customer/'. $_GET['cust']);
+			redirect(site_url() . 'sys/edit_customer/'. $_GET['cust']);
 		else
-		redirect(site_url() . 'complaint/acs?msg_del=success');
+		redirect(site_url() . 'sys/acs?msg_del=success');
 	}
 	
 	// Retive All Sent Messages
@@ -491,14 +491,14 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/news');
+        $this->load->view('sys/news');
     }
 	public function add_news() {
         if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
 		{
 			show_404();
 		}
-        $this->load->view('complaint/add_news');
+        $this->load->view('sys/add_news');
     }
 	
 	public function cities() {
@@ -506,42 +506,42 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/cities');
+        $this->load->view('sys/cities');
     }
 	public function areas() {
         if($this->session->userdata('userrole')!='Admin')
 		{
 			show_404();
 		}
-        $this->load->view('complaint/areas');
+        $this->load->view('sys/areas');
     }
 	public function add_city() {
         if($this->session->userdata('userrole')!='Admin')
 		{
 			show_404();
 		}
-        $this->load->view('complaint/add_city');
+        $this->load->view('sys/add_city');
     }
 	public function add_area() {
         if($this->session->userdata('userrole')!='Admin')
 		{
 			show_404();
 		}
-        $this->load->view('complaint/add_area');
+        $this->load->view('sys/add_area');
     }
 	public function update_city() {
         if($this->session->userdata('userrole')!='Admin')
 		{
 			show_404();
 		}
-        $this->load->view('complaint/update_city');
+        $this->load->view('sys/update_city');
     }
 	public function update_area() {
         if($this->session->userdata('userrole')!='Admin')
 		{
 			show_404();
 		}
-        $this->load->view('complaint/update_area');
+        $this->load->view('sys/update_area');
     }
 	
 	public function update_city_insert() {
@@ -550,7 +550,7 @@ class Complaint extends CI_Controller {
 			  `fk_office_id`							='".$_POST['office_name']."'
 			   where pk_city_id ='".$_POST['pk_city_id']."'";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/update_city/'.$_POST['pk_city_id'].'?msg=success');
+              redirect(site_url() . 'sys/update_city/'.$_POST['pk_city_id'].'?msg=success');
     }
 	public function update_area_insert() {
 		$query="update  `tbl_area` SET 	
@@ -558,7 +558,7 @@ class Complaint extends CI_Controller {
 			  `fk_city_id`							='".$_POST['city_name']."'
 			   where pk_area_id ='".$_POST['pk_area_id']."'";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/update_area/'.$_POST['pk_area_id'].'?msg=success');
+              redirect(site_url() . 'sys/update_area/'.$_POST['pk_area_id'].'?msg=success');
     }
 	
 	public function add_strategy() {
@@ -566,7 +566,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/add_strategy');
+        $this->load->view('sys/add_strategy');
     }
 	
 	public function edit_strategy() {
@@ -574,7 +574,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/edit_strategy');
+        $this->load->view('sys/edit_strategy');
     }
 	
 	public function update_submenu() {
@@ -602,7 +602,7 @@ class Complaint extends CI_Controller {
 			  `Salesman`						='".$salesman."'
 			   where pk_sub_menu_id ='".$_POST['pk_sub_menu_id']."'";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/edit_sub_menu/'.$_POST['pk_sub_menu_id'].'?msg=success');
+              redirect(site_url() . 'sys/edit_sub_menu/'.$_POST['pk_sub_menu_id'].'?msg=success');
     }
 	
 	public function insert_submenu() {
@@ -630,9 +630,9 @@ class Complaint extends CI_Controller {
 			  `Salesman`						='".$salesman."'";
 			  $dbres = $this->db->query($query);
 			  if (isset($_POST['re_id']) && $_POST['re_id']>0)
-				  redirect(site_url() . 'complaint/edit_main_menu/'.$_POST['re_id'].'?msg=added');
+				  redirect(site_url() . 'sys/edit_main_menu/'.$_POST['re_id'].'?msg=added');
 			  else
-				  redirect(site_url() . 'complaint/sub_menu?msg=success');
+				  redirect(site_url() . 'sys/sub_menu?msg=success');
     }
 	
 	public function update_mainmenu() {
@@ -643,7 +643,7 @@ class Complaint extends CI_Controller {
 			  `icon`							='".$_POST['icon']."'
 			   where pk_main_menu_id ='".$_POST['pk_main_menu_id']."'";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/edit_main_menu/'.$_POST['pk_main_menu_id'].'?msg=success');
+              redirect(site_url() . 'sys/edit_main_menu/'.$_POST['pk_main_menu_id'].'?msg=success');
     }
 	
 	public function insert_mainmenu() {
@@ -653,7 +653,7 @@ class Complaint extends CI_Controller {
 			  `icon`							='".$_POST['icon']."' ,
 			  `order`							='".$_POST['order']."'";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/main_menu?msg=success');
+              redirect(site_url() . 'sys/main_menu?msg=success');
     }
 	public function add_news_insert() {
 		$query="insert  `tbl_news` SET 	
@@ -661,7 +661,7 @@ class Complaint extends CI_Controller {
 			  `fk_office_id`				='".$_POST['office']."',
 			  `news_description`		='".urlencode($_POST['news_description'])."'";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/news?msg=success');
+              redirect(site_url() . 'sys/news?msg=success');
     }
 	
 	public function add_policy_insert() {
@@ -670,7 +670,7 @@ class Complaint extends CI_Controller {
 			  `order`				='".$_POST['order']."',
 			  `policy`		='".$_POST['policy']."'";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/add_policy?msg=success');
+              redirect(site_url() . 'sys/add_policy?msg=success');
     }
 	
 	public function update_policy() {
@@ -680,13 +680,13 @@ class Complaint extends CI_Controller {
 			  `policy`				='".$_POST['policy']."'
 			  WHERE `pk_policy_id`	='".$_POST['pk_policy_id']."'";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/policies?update_msg=success');
+              redirect(site_url() . 'sys/policies?update_msg=success');
     }
 	
 	public function delete_policy($policy_id) {
 		
 			  $dbres = $this->db->query("DELETE FROM tbl_policies WHERE pk_policy_id='".$policy_id."'");
-              redirect(site_url() . 'complaint/policies?delete_msg=success');
+              redirect(site_url() . 'sys/policies?delete_msg=success');
     }
 	
 	public function insert_strategy() {
@@ -704,9 +704,9 @@ class Complaint extends CI_Controller {
 			
 			  $dbres = $this->db->query($query);
 			  if ($this->session->userdata('userrole')!= "Salesman")
-				redirect(site_url() . 'complaint/business_data');
+				redirect(site_url() . 'sys/business_data');
 			  else
-				redirect(site_url() . 'complaint/sap_projects');
+				redirect(site_url() . 'sys/sap_projects');
     }
 	
 	public function update_strategy() {
@@ -723,10 +723,10 @@ class Complaint extends CI_Controller {
 				$dbres = $this->db->query($query);
 				
 				if ($_POST['proj']==0)
-              redirect(site_url() . 'complaint/pending_business_data');
+              redirect(site_url() . 'sys/pending_business_data');
 				else
-					redirect(site_url() . 'complaint/details_business_project/'.$_POST['fk_project_id']);
-				//redirect(site_url() . 'complaint/strategy_history/'.$_POST['fk_project_id']);
+					redirect(site_url() . 'sys/details_business_project/'.$_POST['fk_project_id']);
+				//redirect(site_url() . 'sys/strategy_history/'.$_POST['fk_project_id']);
     }
 	
 	public function disapprove_strategy($id) {
@@ -735,7 +735,7 @@ class Complaint extends CI_Controller {
 								`strategy_status`			=	'4'
 						WHERE 	`pk_project_strategy_id`	=	'".$id."'";
 				$dbres = $this->db->query($query);
-				redirect(site_url() . 'complaint/pending_business_data');
+				redirect(site_url() . 'sys/pending_business_data');
     }
 	
 	public function insert_warning_letter() {
@@ -746,7 +746,7 @@ class Complaint extends CI_Controller {
 			  `employee_comments`			='".urlencode($_POST['employee_comments'])."',
 			  `date`						='".$this->profile_model->change_date_to_mysql_style($_POST['date'])."'";
 			  $dbres = $this->db->query($query);
-			  redirect(site_url() . 'complaint/all_warning_letters?msg=success');
+			  redirect(site_url() . 'sys/all_warning_letters?msg=success');
 	}
 	public function insert_fine() {
 		$this->load->model("profile_model");
@@ -810,7 +810,7 @@ class Complaint extends CI_Controller {
 			mail($to, $subject, $body, $headers);
 			  //
 			  
-              redirect(site_url() . 'complaint/all_fines?msg=success');
+              redirect(site_url() . 'sys/all_fines?msg=success');
     }
 
     public function delete_leave($id) {
@@ -899,7 +899,7 @@ class Complaint extends CI_Controller {
         $query="delete from  tbl_leaves  where `pk_leave_id` =$id";
         $dbres = $this->db->query($query);
 
-        redirect(site_url() . 'complaint/all_leaves?msg_delete=success');
+        redirect(site_url() . 'sys/all_leaves?msg_delete=success');
     }
 	
 	public function delete_temporary_leave($id) {
@@ -908,7 +908,7 @@ class Complaint extends CI_Controller {
         $query="delete from  tbl_temporary_leaves  where `pk_temporary_leave_id` =$id";
         $dbres = $this->db->query($query);
 
-        redirect(site_url() . 'complaint/pending_leaves?msg_delete=success');
+        redirect(site_url() . 'sys/pending_leaves?msg_delete=success');
     }
 	
 	
@@ -929,7 +929,7 @@ class Complaint extends CI_Controller {
 				  ";
             $dbres = $this->db->query($query);
 
-            redirect(site_url() . 'complaint/leave_form_t?msg=success');
+            redirect(site_url() . 'sys/leave_form_t?msg=success');
 	}
     public function insert_leave() {
         //check if temperary leave is filled then delete it
@@ -943,7 +943,7 @@ class Complaint extends CI_Controller {
         $lr 				= $lq->result_array();
 		$fineid		=	0;
         if(sizeof($lr)>=1) {
-            redirect(site_url() . 'complaint/leave_form?msg=already_exists');
+            redirect(site_url() . 'sys/leave_form?msg=already_exists');
         }
         else {
             if ($_POST['fine'] != 'Leave is taken within limit of 21 days') {
@@ -1027,7 +1027,7 @@ class Complaint extends CI_Controller {
 			if ($fineid != 0) $query.= ",`fk_fine_id` = '" . $fineid . "'";
             $dbres = $this->db->query($query);
 
-            redirect(site_url() . 'complaint/leave_form?msg=success');
+            redirect(site_url() . 'sys/leave_form?msg=success');
         }
     }
 
@@ -1041,7 +1041,7 @@ class Complaint extends CI_Controller {
         $lr 				= $lq->result_array();
 		$fineid		=	0;
         if(sizeof($lr)>=1) {
-            redirect(site_url() . 'complaint/update_leave_form/'.$leave_id.'?msg=already_exists');
+            redirect(site_url() . 'sys/update_leave_form/'.$leave_id.'?msg=already_exists');
         }
         else {
 		
@@ -1210,7 +1210,7 @@ class Complaint extends CI_Controller {
 			if ($fineid != 0) $query.= ",`fk_fine_id` = '" . $fineid . "'";
             $dbres = $this->db->query($query);
 
-            redirect(site_url() . 'complaint/all_leaves?msg_update=success');
+            redirect(site_url() . 'sys/all_leaves?msg_update=success');
         }
     }
 
@@ -1229,7 +1229,7 @@ class Complaint extends CI_Controller {
 			  where pk_fine_id = '".$_POST['pk_fine_id']."'";
 		}
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/all_fines?msg_update=success');
+              redirect(site_url() . 'sys/all_fines?msg_update=success');
     }
 	public function update_warning_letter_insert() {
 		if(isset($_POST['employee_comments']))
@@ -1246,7 +1246,7 @@ class Complaint extends CI_Controller {
 			  where pk_warning_letter_id = '".$_POST['pk_warning_letter_id']."'";
 		}
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/all_warning_letters?msg_update=success');
+              redirect(site_url() . 'sys/all_warning_letters?msg_update=success');
     }
 	public function select_fine_amount_ajax() {
 		if ($this->input->post('fine_id')!='')
@@ -1561,16 +1561,16 @@ class Complaint extends CI_Controller {
 		//$query="update tbl_complaints SET status='Pending Verification' where pk_complaint_id='".$this->input->post('complaint_id')."'";
 		$dbres = $this->db->query($query);
 		//echo 'Status Updated to Pending SV';
-		redirect(site_url() . 'complaint/technical_service_pvr/'.$this->input->post('complaint_id'));
+		redirect(site_url() . 'sys/technical_service_pvr/'.$this->input->post('complaint_id'));
     }
 	
 	public function all_fines() {
 		
-		$this->load->view("complaint/all_fines");
+		$this->load->view("sys/all_fines");
     }
 	public function all_warning_letters() {
 		
-		$this->load->view("complaint/all_warning_letters");
+		$this->load->view("sys/all_warning_letters");
     }
 	public function assign_pm() {
 		
@@ -1591,7 +1591,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view("complaint/assign_pm");
+		$this->load->view("sys/assign_pm");
     }
 	public function update_fine($id) {
 		if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
@@ -1604,10 +1604,10 @@ class Complaint extends CI_Controller {
 				show_404();
 			}
 		}
-		$this->load->view("complaint/update_fine");
+		$this->load->view("sys/update_fine");
     }
 	public function update_warning_letter($id) {
-		$this->load->view("complaint/update_warning_letter");
+		$this->load->view("sys/update_warning_letter");
     }
 	
 	public function update_news() {
@@ -1615,14 +1615,14 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/update_news');
+        $this->load->view('sys/update_news');
     }
 	public function sap_statistics() {
         if($this->session->userdata('userrole')!='Salesman')
 		{
 			show_404();
 		}
-        $this->load->view('complaint/sap_statistics');
+        $this->load->view('sys/sap_statistics');
     }
 	
 	public function update_product() {
@@ -1630,14 +1630,14 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/update_product');
+        $this->load->view('sys/update_product');
     }
 	public function update_category() {
         if($this->session->userdata('userrole')!='Admin')
 		{
 			show_404();
 		}
-        $this->load->view('complaint/update_categories');
+        $this->load->view('sys/update_categories');
     }
 	
 	public function update_category_insert() {
@@ -1646,7 +1646,7 @@ class Complaint extends CI_Controller {
 			   where pk_category_id ='".$_POST['pk_category_id']."'";
 			  //`fk_type_id`							='".$_POST['type_name']."'
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/update_category/'.$_POST['pk_category_id'].'?msg=success');
+              redirect(site_url() . 'sys/update_category/'.$_POST['pk_category_id'].'?msg=success');
     }
 	public function update_news_insert() {
 		$query="update  `tbl_news` SET 	
@@ -1656,12 +1656,12 @@ class Complaint extends CI_Controller {
 			  
 			  where `pk_news_id` ='".$_POST['pk_news_id']."'";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/update_news/'.$_POST['pk_news_id'].'?msg=success');
+              redirect(site_url() . 'sys/update_news/'.$_POST['pk_news_id'].'?msg=success');
     }
 	public function delete_news($id) {
 		$query="delete from  tbl_news  where `pk_news_id` =$id";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/news?msg_delete=success');
+              redirect(site_url() . 'sys/news?msg_delete=success');
     }
 	public function delete_vendor($id) {
 		//$query="delete from  tbl_vendors  where `pk_vendor_id` =$id";
@@ -1674,7 +1674,7 @@ class Complaint extends CI_Controller {
 		$query3="delete from  tbl_vendor_product_bridge  where `fk_vendor_id` =$id";
 		$dbres3 = $this->db->query($query3);
 		//
-		redirect(site_url() . 'complaint/vendors?msg_delete=success');
+		redirect(site_url() . 'sys/vendors?msg_delete=success');
     }
 	
 	public function delete_category($id) {
@@ -1683,7 +1683,7 @@ class Complaint extends CI_Controller {
 			   `status`				='1'
 				where `pk_category_id` =$id";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/categories?msg_delete=success');
+              redirect(site_url() . 'sys/categories?msg_delete=success');
     }
 	
 	public function delete_city($id) {
@@ -1692,13 +1692,13 @@ class Complaint extends CI_Controller {
 			   `status`				='1'
 				where `pk_city_id` =$id";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/cities?msg_delete=success');
+              redirect(site_url() . 'sys/cities?msg_delete=success');
     }
 	public function delete_area($id) {
 		$query="delete from  tbl_area 
 				where `pk_area_id` =$id";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/areas?msg_delete=success');
+              redirect(site_url() . 'sys/areas?msg_delete=success');
     }
 	
 	public function delete_product($id) {
@@ -1707,19 +1707,19 @@ class Complaint extends CI_Controller {
 			   `status`				='1'
 				where `pk_product_id` =$id";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/products?msg_delete=success');
+              redirect(site_url() . 'sys/products?msg_delete=success');
     }
 	
 	public function delete_complaint($id) {
 		$query="delete from  tbl_complaints  where `pk_complaint_id` =$id";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/director_view_complaints?msg_delete=success');
+              redirect(site_url() . 'sys/director_view_complaints?msg_delete=success');
     }
 	
 	public function delete_pm($id) {
 		$query="delete from  tbl_complaints  where `pk_complaint_id` =$id";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/director_view_pm?msg_delete=success');
+              redirect(site_url() . 'sys/director_view_pm?msg_delete=success');
     }
 	
 	public function business_data() {
@@ -1727,7 +1727,7 @@ class Complaint extends CI_Controller {
 		{
 			$this->load->model("complaint_model");
 			$business_data = $this->complaint_model->get_business_data_model();
-			$this->load->view('/complaint/business_data', array("business_data" => $business_data));
+			$this->load->view('/sys/business_data', array("business_data" => $business_data));
 		}
 		else
 		{
@@ -1740,7 +1740,7 @@ class Complaint extends CI_Controller {
 		{
 			$this->load->model("complaint_model");
 			$business_data = $this->complaint_model->get_deleted_business_data_model();
-			$this->load->view('/complaint/deleted_business_data', array("business_data" => $business_data));
+			$this->load->view('/sys/deleted_business_data', array("business_data" => $business_data));
 		}
 		else
 		{
@@ -1753,7 +1753,7 @@ class Complaint extends CI_Controller {
 		{
 			$this->load->model("complaint_model");
 			$business_data = $this->complaint_model->get_pending_business_data_model();
-			$this->load->view('/complaint/pending_business_data', array("business_data" => $business_data));
+			$this->load->view('/sys/pending_business_data', array("business_data" => $business_data));
 		}
 		else
 		{
@@ -1774,7 +1774,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/vendor_registration');
+        $this->load->view('sys/vendor_registration');
     }
 	
 	public function equipment_registration() {
@@ -1782,7 +1782,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/equipment_registration');
+        $this->load->view('sys/equipment_registration');
     }
 	
 	public function policies() {
@@ -1812,9 +1812,9 @@ class Complaint extends CI_Controller {
 	public function insert_acs() {
         $sad=$this->db->query("insert into tbl_customer_sap_bridge set fk_user_id='".$_POST['user']."', fk_client_id='".$_POST['client']."'");
 		if ($_POST['redirect_customer']=="yes")
-			redirect(site_url() . 'complaint/edit_customer/'.$_POST['client']);
+			redirect(site_url() . 'sys/edit_customer/'.$_POST['client']);
 		else
-		redirect(site_url() . 'complaint/acs?msg=success');
+		redirect(site_url() . 'sys/acs?msg=success');
     }
 	
 	// Delete Compose Message.
@@ -1824,11 +1824,11 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/add_complaint');
+		$this->load->view('sys/add_complaint');
 	}
 	public function add_complaint_half()
 	{
-        $this->load->view('complaint/add_complaint_half');
+        $this->load->view('sys/add_complaint_half');
 	}
 	
 	public function comments() {
@@ -1883,7 +1883,7 @@ class Complaint extends CI_Controller {
 				$query_db=$this->db->query($query);
 			}
 		} 
-		$this->load->view('complaint/comments');
+		$this->load->view('sys/comments');
 	}
 	
 	public function add_comment() {
@@ -1899,7 +1899,7 @@ class Complaint extends CI_Controller {
 								`comment`					=	'".urlencode($comment)."'
 							  ";
 		$dbres = $this->db->query($query);
-		redirect(site_url() . 'complaint/comments/'.$_POST['fk_complaint_id']);
+		redirect(site_url() . 'sys/comments/'.$_POST['fk_complaint_id']);
 	}
 	
 	public function add_comment_2() {
@@ -1915,7 +1915,7 @@ class Complaint extends CI_Controller {
 								`comment`					=	'".urlencode($comment)."'
 							  ";
 		$dbres = $this->db->query($query);
-		redirect(site_url() . 'complaint/'.$_POST['page_name'].'/'.$_POST['fk_complaint_id']."#messages");
+		redirect(site_url() . 'sys/'.$_POST['page_name'].'/'.$_POST['fk_complaint_id']."#messages");
 	}
 	public function add_customer()
 	{
@@ -1923,7 +1923,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/add_customer');
+        $this->load->view('sys/add_customer');
 	}
 	
 	public function director_view_complaints()
@@ -1934,7 +1934,7 @@ class Complaint extends CI_Controller {
 		}
 		$this->load->model("complaint_model");
         $get_complaint_list = $this->complaint_model->get_complaint_model();
-		$this->load->view('complaint/director_view_complaints', array("get_complaint_list" => $get_complaint_list));
+		$this->load->view('sys/director_view_complaints', array("get_complaint_list" => $get_complaint_list));
 	}
 	public function director_view_pm()
 	{
@@ -1942,7 +1942,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/director_view_pm');
+		$this->load->view('sys/director_view_pm');
 	}
 
 	public function update_pm()
@@ -1951,7 +1951,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/update_pm');
+		$this->load->view('sys/update_pm');
 	} 
 
 	public function update_pm_insert() {
@@ -1961,7 +1961,7 @@ class Complaint extends CI_Controller {
 			  `assign_to`							='".$_POST['assign_to']."'
 			   where pk_complaint_id ='".$_POST['pk_complaint_id']."'";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'complaint/update_pm/'.$_POST['pk_complaint_id'].'?msg=success');
+              redirect(site_url() . 'sys/update_pm/'.$_POST['pk_complaint_id'].'?msg=success');
     }
 	
 	public function operator_view_complaints()
@@ -1973,9 +1973,9 @@ class Complaint extends CI_Controller {
         $this->load->model("complaint_model");
         $get_complaint_list = $this->complaint_model->get_complaint_model();
 		if ($this->session->userdata('userrole')=='Admin')
-			$this->load->view('complaint/director_view_complaints', array("get_complaint_list" => $get_complaint_list));
+			$this->load->view('sys/director_view_complaints', array("get_complaint_list" => $get_complaint_list));
 		else
-			$this->load->view('complaint/operator_view_complaints', array("get_complaint_list" => $get_complaint_list));
+			$this->load->view('sys/operator_view_complaints', array("get_complaint_list" => $get_complaint_list));
 	}
 	public function view_half_complaints()
 	{
@@ -1983,7 +1983,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/view_half_complaints');
+		$this->load->view('sys/view_half_complaints');
 	}
 	public function add_complaint_registration()
 	{
@@ -1991,7 +1991,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/add_complaint_registration');
+		$this->load->view('sys/add_complaint_registration');
 	}
 	
 	public function supervisor_dvr()
@@ -2002,7 +2002,7 @@ class Complaint extends CI_Controller {
 		}
 		$this->load->model("complaint_model");
         $get_sup_dvr = $this->complaint_model->get_sup_dvr_model();
-		$this->load->view('complaint/supervisor_dvr', array("get_sup_dvr" => $get_sup_dvr));
+		$this->load->view('sys/supervisor_dvr', array("get_sup_dvr" => $get_sup_dvr));
 	}
 	public function supervisor_vs()
 	{
@@ -2010,20 +2010,20 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/supervisor_vs');
+		$this->load->view('sys/supervisor_vs');
 	}
 	public function engineer_dvr()
 	{
 		$this->load->model("complaint_model");
         $get_eng_dvr = $this->complaint_model->get_eng_dvr_model();
-		$this->load->view('complaint/engineer_dvr', array("get_eng_dvr" => $get_eng_dvr));
+		$this->load->view('sys/engineer_dvr', array("get_eng_dvr" => $get_eng_dvr));
 	}
 	
 	public function admin_dvr_form()
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/admin_dvr_form');
+			$this->load->view('sys/admin_dvr_form');
 		}
 		else
 		{
@@ -2037,7 +2037,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/create_pef');
+		$this->load->view('sys/create_pef');
 	}
 	public function pef_schedule_insert()
 	{
@@ -2054,16 +2054,16 @@ class Complaint extends CI_Controller {
 			 $today_date = date('Ymd');
 			 if($maxdate > $today_date)
 			 {
-				 redirect(site_url() . 'complaint/create_pef?msg=failure');
+				 redirect(site_url() . 'sys/create_pef?msg=failure');
 			 }
 			 elseif($maxdate >= $expiry_date)
 			 {
 				 $maxdate2 = date('d-M-Y',strtotime($prvoios_result[0]['maxdate']));
-				 redirect(site_url() . "complaint/create_pef?msg=failure2&maxdat=$maxdate2");
+				 redirect(site_url() . "sys/create_pef?msg=failure2&maxdat=$maxdate2");
 			 }
 			 elseif($today_date == $expiry_date)
 			 {
-				 redirect(site_url() . "complaint/create_pef?msg=failure3");
+				 redirect(site_url() . "sys/create_pef?msg=failure3");
 			 }
 			 else
 			 {
@@ -2082,16 +2082,16 @@ class Complaint extends CI_Controller {
 				  //echo $query;exit;
 				  $dbres = $this->db->query($query);
 			  }
-              redirect(site_url() . 'complaint/create_pef?msg=success');
+              redirect(site_url() . 'sys/create_pef?msg=success');
 			 }
 	}
 	public function employee_view_pef()
 	{
-		$this->load->view('complaint/employee_view_pef');
+		$this->load->view('sys/employee_view_pef');
 	}
 	public function pef_employee()
 	{
-		$this->load->view('complaint/pef_employee');
+		$this->load->view('sys/pef_employee');
 	}
 	public function director_view_pef()
 	{
@@ -2099,7 +2099,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/director_view_pef');
+		$this->load->view('sys/director_view_pef');
 	}
 	
 	public function engineer_dvr_form()
@@ -2109,7 +2109,7 @@ class Complaint extends CI_Controller {
 		{
 			$this->load->model("complaint_model");
         $get_eng_dvr = $this->complaint_model->get_eng_dvr_model();
-		$this->load->view('complaint/engineer_dvr_form', array("get_eng_dvr" => $get_eng_dvr));
+		$this->load->view('sys/engineer_dvr_form', array("get_eng_dvr" => $get_eng_dvr));
 		}
 		else
 		{
@@ -2120,7 +2120,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/leave_form');
+			$this->load->view('sys/leave_form');
 		}
 		else
 		{
@@ -2129,7 +2129,7 @@ class Complaint extends CI_Controller {
 	}
 	public function leave_form_t()
 	{
-		$this->load->view('complaint/leave_form_t');
+		$this->load->view('sys/leave_form_t');
 		/*if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
 			
@@ -2144,7 +2144,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/update_leave_form');
+			$this->load->view('sys/update_leave_form');
 		}
 		else
 		{
@@ -2157,7 +2157,7 @@ class Complaint extends CI_Controller {
 		//if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		if($this->session->userdata('userrole')!='')
 		{
-			$this->load->view('complaint/all_leaves');
+			$this->load->view('sys/all_leaves');
 		}
 		else
 		{
@@ -2170,7 +2170,7 @@ class Complaint extends CI_Controller {
 		//if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		if($this->session->userdata('userrole')!='')
 		{
-			$this->load->view('complaint/submitted_leaves');
+			$this->load->view('sys/submitted_leaves');
 		}
 		else
 		{
@@ -2183,14 +2183,14 @@ class Complaint extends CI_Controller {
 		//if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		$myquery=" UPDATE tbl_temporary_leaves SET `status`='1' WHERE `pk_temporary_leave_id` =  '".$id."'";
 		$ty22=$this->db->query($myquery);
-		redirect(site_url() . 'complaint/pending_leaves?msg_disapproved=success');
+		redirect(site_url() . 'sys/pending_leaves?msg_disapproved=success');
 	}
 	
 	public function pending_leaves()
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/pending_leaves');
+			$this->load->view('sys/pending_leaves');
 		}
 		else
 		{
@@ -2212,7 +2212,7 @@ class Complaint extends CI_Controller {
 			}
 			///////////// ABOVE is NEW code for saving previous year employee data
 			$maxqu = $this->db->query("update user SET total_leaves='0'");
-			redirect(site_url() . 'complaint/all_leaves?msg_set_total=success');
+			redirect(site_url() . 'sys/all_leaves?msg_set_total=success');
 		}
 		else
 		{
@@ -2225,7 +2225,7 @@ class Complaint extends CI_Controller {
 	{
 		$this->load->model("complaint_model");
         $get_eng_dvr = $this->complaint_model->get_eng_dvr_model();
-		$this->load->view('complaint/sap_dvr', array("get_eng_dvr" => $get_eng_dvr));
+		$this->load->view('sys/sap_dvr', array("get_eng_dvr" => $get_eng_dvr));
 	}
 	public function sap_dvr_form()
 	{
@@ -2235,7 +2235,7 @@ class Complaint extends CI_Controller {
 		}
 		$this->load->model("complaint_model");
         $get_eng_dvr = $this->complaint_model->get_eng_dvr_model();
-		$this->load->view('complaint/sap_dvr_form', array("get_eng_dvr" => $get_eng_dvr));
+		$this->load->view('sys/sap_dvr_form', array("get_eng_dvr" => $get_eng_dvr));
 	}
 	public function sap_asc()
 	{
@@ -2245,14 +2245,14 @@ class Complaint extends CI_Controller {
 		}
 		$this->load->model("complaint_model");
         $get_eng_dvr = $this->complaint_model->get_eng_asc_model();
-		$this->load->view('complaint/sap_asc', array("get_eng_dvr" => $get_eng_dvr));
+		$this->load->view('sys/sap_asc', array("get_eng_dvr" => $get_eng_dvr));
 	}
 	//
 	public function all_employee_dvr_vs_y()
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/all_employee_dvr_vs_y');
+			$this->load->view('sys/all_employee_dvr_vs_y');
 		}
 		else
 		{
@@ -2263,7 +2263,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/all_employee_dvr_vs');
+			$this->load->view('sys/all_employee_dvr_vs');
 		}
 		else
 		{
@@ -2275,7 +2275,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/all_employee_dvr');
+			$this->load->view('sys/all_employee_dvr');
 		}
 		else
 		{
@@ -2288,7 +2288,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/all_employee_vs');
+			$this->load->view('sys/all_employee_vs');
 		}
 		else
 		{
@@ -2299,7 +2299,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/dc');
+			$this->load->view('sys/dc');
 		}
 		else
 		{
@@ -2310,7 +2310,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/dc_print');
+			$this->load->view('sys/dc_print');
 		}
 		else
 		{
@@ -2325,7 +2325,7 @@ class Complaint extends CI_Controller {
 		{
 			$this->load->model("complaint_model");
         	$get_eng_dvr = $this->complaint_model->get_eng_asc_model();
-			$this->load->view('complaint/engineer_asc', array("get_eng_dvr" => $get_eng_dvr));
+			$this->load->view('sys/engineer_asc', array("get_eng_dvr" => $get_eng_dvr));
 		}
 		else
 		{
@@ -2338,7 +2338,7 @@ class Complaint extends CI_Controller {
 		{
 			$this->load->model("complaint_model");
         	$get_eng_dvr = $this->complaint_model->get_eng_asc_model();
-			$this->load->view('complaint/engineer_statistics', array("get_eng_dvr" => $get_eng_dvr));
+			$this->load->view('sys/engineer_statistics', array("get_eng_dvr" => $get_eng_dvr));
 		}
 		else
 		{
@@ -2349,7 +2349,7 @@ class Complaint extends CI_Controller {
 		
 		if($this->session->userdata('userrole')=='Admin')
 		{
-			$this->load->view('complaint/director_statistics');
+			$this->load->view('sys/director_statistics');
 		}
 		else
 		{
@@ -2362,7 +2362,7 @@ class Complaint extends CI_Controller {
 		{
 			// $this->load->model("complaint_model");
         	// $get_eng_vs = $this->complaint_model->get_eng_vs_model();
-			// $this->load->view('complaint/engineer_vs', array("get_eng_vs" => $get_eng_vs));
+			// $this->load->view('sys/engineer_vs', array("get_eng_vs" => $get_eng_vs));
 			
 			$engineer = $this->session->userdata('userid');
 			$start_date = date('Y-m-d');
@@ -2384,7 +2384,7 @@ class Complaint extends CI_Controller {
 				$dbres2 = $this->db->query("SELECT * FROM user where id = '".$engineer."' ");
 				$dbresResult2=$dbres2->result_array();
 				
-				$this->load->view('complaint/engineer_vs', array("get_eng_dvr" => $dbresResult,
+				$this->load->view('sys/engineer_vs', array("get_eng_dvr" => $dbresResult,
 																"eng_id" 	 => $engineer,
 																"userrole"   => $dbresResult2['0']['userrole']));
 		}
@@ -2400,7 +2400,7 @@ class Complaint extends CI_Controller {
 		{
 			$this->load->model("complaint_model");
         	$get_eng_vs = $this->complaint_model->get_eng_vs_model();
-			$this->load->view('complaint/engineer_vs_new', array("get_eng_vs" => $get_eng_vs));
+			$this->load->view('sys/engineer_vs_new', array("get_eng_vs" => $get_eng_vs));
 		}
 		else
 		{
@@ -2416,7 +2416,7 @@ class Complaint extends CI_Controller {
 		}
 		$this->load->model("complaint_model");
         $get_eng_vs = $this->complaint_model->get_eng_vs_model();
-		$this->load->view('complaint/sap_vs', array("get_eng_vs" => $get_eng_vs));
+		$this->load->view('sys/sap_vs', array("get_eng_vs" => $get_eng_vs));
 	}
 	public function sap_dvr_history()
 	{
@@ -2424,13 +2424,13 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/sap_dvr_history');
+		$this->load->view('sys/sap_dvr_history');
 	}
 	public function engineer_dvr_history()
 	{
 		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor')
 		{
-			$this->load->view('complaint/engineer_dvr_history');
+			$this->load->view('sys/engineer_dvr_history');
 		}
 		else
 		{
@@ -2554,7 +2554,7 @@ class Complaint extends CI_Controller {
 		$this->load->model("complaint_model");
 		//
         $get_sup_dvr = $this->complaint_model->get_date_dvr_model($start_mydate,$end_mydate,$engineer, 'tbl_dvr');
-		$this->load->view('complaint/sap_dvr_history', array("get_sup_dvr" => $get_sup_dvr,
+		$this->load->view('sys/sap_dvr_history', array("get_sup_dvr" => $get_sup_dvr,
 		 												"mystartdate" => $start_mydate,
 														"myenddate" => $end_mydate,
 														"myengineer" => $engineer
@@ -2571,7 +2571,7 @@ class Complaint extends CI_Controller {
 		$this->load->model("complaint_model");
 		//
         $get_sup_dvr = $this->complaint_model->get_date_dvr_model($start_mydate,$end_mydate,$engineer, 'tbl_vs');
-		 $this->load->view('complaint/admin_vs', array("get_sup_dvr" => $get_sup_dvr,
+		 $this->load->view('sys/admin_vs', array("get_sup_dvr" => $get_sup_dvr,
 		 												"mystartdate" => $start_mydate,
 														"myenddate" => $end_mydate,
 														"myengineer" => $engineer
@@ -2679,7 +2679,7 @@ class Complaint extends CI_Controller {
 					echo urldecode($sup_dvr['summery']);
 					echo '</textarea> </td>';
 					echo '<td>
-								<a class="btn btn-default" href="'. base_url() .'complaint/update_vs_project/'.$sup_dvr['pk_vs_id'].'">
+								<a class="btn btn-default" href="'. base_url() .'sys/update_vs_project/'.$sup_dvr['pk_vs_id'].'">
 									Update
 								</a>
 							  </td>';
@@ -2697,7 +2697,7 @@ class Complaint extends CI_Controller {
 		$this->load->model("complaint_model");
 		//
         $get_sup_dvr = $this->complaint_model->get_date_dvr_model($start_mydate,$end_mydate,$engineer, 'tbl_dvr');
-		 $this->load->view('complaint/admin_dvr', array("get_sup_dvr" => $get_sup_dvr,
+		 $this->load->view('sys/admin_dvr', array("get_sup_dvr" => $get_sup_dvr,
 		 												"mystartdate" => $start_mydate,
 														"myenddate" => $end_mydate,
 														"myengineer" => $engineer
@@ -2900,7 +2900,7 @@ class Complaint extends CI_Controller {
 					echo urldecode($sup_dvr['summery']);
 					echo '</textarea> </td>';
 					echo '<td>
-												<a class="btn btn-default" href="'. base_url() .'complaint/update_dvr_project/'.$sup_dvr['pk_dvr_id'].'">
+												<a class="btn btn-default" href="'. base_url() .'sys/update_dvr_project/'.$sup_dvr['pk_dvr_id'].'">
 													Update
 												</a>
 											  </td>';
@@ -2917,7 +2917,7 @@ class Complaint extends CI_Controller {
 		}
         $this->load->model("complaint_model");
         $get_complaint_list = $this->complaint_model->get_supervisor_complaint_model();
-		$this->load->view('complaint/supervisor_my_complaints', array("get_complaint_list" => $get_complaint_list));
+		$this->load->view('sys/supervisor_my_complaints', array("get_complaint_list" => $get_complaint_list));
 	}
 	public function supervisor_pm()
 	{
@@ -2925,8 +2925,8 @@ class Complaint extends CI_Controller {
 		{
 			//$this->load->model("complaint_model");
 			//$get_complaint_list = $this->complaint_model->get_supervisor_pm_model();
-			//$this->load->view('complaint/supervisor_pm', array("get_complaint_list" => $get_complaint_list));
-			$this->load->view('complaint/supervisor_pm');
+			//$this->load->view('sys/supervisor_pm', array("get_complaint_list" => $get_complaint_list));
+			$this->load->view('sys/supervisor_pm');
 		}
 		else
 		{
@@ -2940,7 +2940,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/supervisor_pm_completed');
+		$this->load->view('sys/supervisor_pm_completed');
 	}
 	public function sap_projects()
 	{
@@ -2950,7 +2950,7 @@ class Complaint extends CI_Controller {
 		}
 		$this->load->model("complaint_model");
         $get_sap_projects = $this->complaint_model->get_sap_projects();
-		$this->load->view('complaint/sap_projects', array("get_sap_projects" => $get_sap_projects));
+		$this->load->view('sys/sap_projects', array("get_sap_projects" => $get_sap_projects));
 	}
 	public function engineer_projects()
 	{
@@ -2958,7 +2958,7 @@ class Complaint extends CI_Controller {
 		{
 			$this->load->model("complaint_model");
         	$get_engineer_projects = $this->complaint_model->get_sap_projects();
-			$this->load->view('complaint/engineer_projects', array("get_engineer_projects" => $get_engineer_projects));
+			$this->load->view('sys/engineer_projects', array("get_engineer_projects" => $get_engineer_projects));
 		}
 		else
 		{
@@ -2974,7 +2974,7 @@ class Complaint extends CI_Controller {
 		}
         $this->load->model("complaint_model");
         $get_complaint_list = $this->complaint_model->get_engineer_complaints_model();
-		$this->load->view('complaint/engineer_view_complaints', array("get_complaint_list" => $get_complaint_list));
+		$this->load->view('sys/engineer_view_complaints', array("get_complaint_list" => $get_complaint_list));
 	}
 	public function customers_view()
 	{
@@ -2982,7 +2982,7 @@ class Complaint extends CI_Controller {
 		{
 			$this->load->model("complaint_model");
 			$get_customers_list = $this->complaint_model->get_customer_view_model();
-			$this->load->view('complaint/customers_view', array("get_customers_list" => $get_customers_list));
+			$this->load->view('sys/customers_view', array("get_customers_list" => $get_customers_list));
 		}
 		else
 		{
@@ -2997,7 +2997,7 @@ class Complaint extends CI_Controller {
 		}
         $this->load->model("complaint_model");
         $get_customers_list = $this->complaint_model->get_customer_edit_model($client_id);
-		$this->load->view('complaint/edit_customer', array("get_customers_list" => $get_customers_list));
+		$this->load->view('sys/edit_customer', array("get_customers_list" => $get_customers_list));
 	}
 	
 	public function engineer_view_pm()
@@ -3008,7 +3008,7 @@ class Complaint extends CI_Controller {
 		}
         $this->load->model("complaint_model");
         $get_complaint_list = $this->complaint_model->get_engineer_pm_model();
-		$this->load->view('complaint/engineer_view_pm', array("get_complaint_list" => $get_complaint_list));
+		$this->load->view('sys/engineer_view_pm', array("get_complaint_list" => $get_complaint_list));
 	}
 	public function insert_customer()
 	{
@@ -3025,7 +3025,7 @@ class Complaint extends CI_Controller {
             $this->load->model("complaint_model");
             $result = $this->complaint_model->insert_customer($data);
             $ins_id =$this->db->insert_id();
-            redirect(site_url() . 'complaint/customers_view?msg=success');
+            redirect(site_url() . 'sys/customers_view?msg=success');
 	}
 	public function update_customer($client_id)
 	{
@@ -3057,7 +3057,7 @@ class Complaint extends CI_Controller {
 			}
             $this->load->model("complaint_model");
             $result = $this->complaint_model->update_my_customer($data,$client_id);
-            redirect(site_url() . 'complaint/customers_view?msg_update=updated successfully');
+            redirect(site_url() . 'sys/customers_view?msg_update=updated successfully');
 	}
 	public function add_business_project()
 	{
@@ -3065,7 +3065,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/add_business_project');
+			$this->load->view('sys/add_business_project');
 	}
 	
 	public function add_policy()
@@ -3074,7 +3074,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/add_policy');
+			$this->load->view('sys/add_policy');
 	}
 	
 	public function edit_policy()
@@ -3083,7 +3083,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/edit_policy');
+			$this->load->view('sys/edit_policy');
 	}
 	
 	public function vendors()
@@ -3092,7 +3092,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/vendors');
+			$this->load->view('sys/vendors');
 	}
 	
 	public function equipments()
@@ -3101,7 +3101,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/equipments');
+			$this->load->view('sys/equipments');
 	}
 	
 	public function kits()
@@ -3110,7 +3110,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/kits');
+			$this->load->view('sys/kits');
 	}
 	
 	/* Changes by Zohaib */
@@ -3121,7 +3121,7 @@ class Complaint extends CI_Controller {
 			show_404();
 		}
 		
-			$this->load->view('complaint/order_entry');
+			$this->load->view('sys/order_entry');
 	}
 	
 	public function order_view()
@@ -3130,7 +3130,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/order_view');
+			$this->load->view('sys/order_view');
 	}
 	
 	public function create_invoice()
@@ -3139,7 +3139,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/create_invoice');
+			$this->load->view('sys/create_invoice');
 	}
 	
 	public function view_invoice()
@@ -3148,7 +3148,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/view_invoice');
+			$this->load->view('sys/view_invoice');
 	}
 	
 	public function add_kitprice()
@@ -3157,7 +3157,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/add_kitprice');
+			$this->load->view('sys/add_kitprice');
 	}*/
 	
 	
@@ -3167,7 +3167,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/aux_equipments');
+			$this->load->view('sys/aux_equipments');
 	}
 	
 	public function aux_equipment_registration()
@@ -3176,7 +3176,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/aux_equipment_registration');
+			$this->load->view('sys/aux_equipment_registration');
 	}
 	
 	public function aux_equipment_registration_new()
@@ -3185,7 +3185,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/aux_equipment_registration_new');
+			$this->load->view('sys/aux_equipment_registration_new');
 	}
 	
 	public function equipments_under_warranty()
@@ -3194,7 +3194,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/equipments_under_warranty');
+			$this->load->view('sys/equipments_under_warranty');
 	}
 	
 	public function equipments_statistics()
@@ -3203,14 +3203,14 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-			$this->load->view('complaint/equipments_statistics');
+			$this->load->view('sys/equipments_statistics');
 	}
 	
 	public function admin_dvr()
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/admin_dvr');
+			$this->load->view('sys/admin_dvr');
 		}
 		else
 		{
@@ -3221,7 +3221,7 @@ class Complaint extends CI_Controller {
 	public function admin_dvr_new()
 	{
 		
-			$this->load->view('complaint/admin_dvr_new');
+			$this->load->view('sys/admin_dvr_new');
 		
 	}
 	
@@ -3229,7 +3229,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Salesman')
 		{
-			$this->load->view('complaint/sap_dvr_history_new');
+			$this->load->view('sys/sap_dvr_history_new');
 		}
 		else
 		{
@@ -3241,7 +3241,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' || $this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor' || $this->session->userdata('userrole')=='Salesman')
 		{
-			$this->load->view('complaint/monthly_report');
+			$this->load->view('sys/monthly_report');
 		}
 		else
 		{
@@ -3253,7 +3253,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('complaint/equipment_audit');
+			$this->load->view('sys/equipment_audit');
 		}
 		else
 		{
@@ -3265,7 +3265,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('complaint/product_audit');
+			$this->load->view('sys/product_audit');
 		}
 		else
 		{
@@ -3277,7 +3277,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('complaint/complaint_statistics');
+			$this->load->view('sys/complaint_statistics');
 		}
 		else
 		{
@@ -3289,7 +3289,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('complaint/spare_parts_changed_report');
+			$this->load->view('sys/spare_parts_changed_report');
 		}
 		else
 		{
@@ -3301,7 +3301,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('complaint/parts_received_report');
+			$this->load->view('sys/parts_received_report');
 		}
 		else
 		{
@@ -3313,7 +3313,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('complaint/spare_parts_swap_report');
+			$this->load->view('sys/spare_parts_swap_report');
 		}
 		else
 		{
@@ -3325,7 +3325,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('complaint/complaint_statistics_new');
+			$this->load->view('sys/complaint_statistics_new');
 		}
 		else
 		{
@@ -3337,7 +3337,7 @@ class Complaint extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->view('complaint/admin_vs');
+			$this->load->view('sys/admin_vs');
 		}
 		else
 		{
@@ -3350,7 +3350,7 @@ class Complaint extends CI_Controller {
 		{
         $this->load->model("complaint_model");
         $get_business_projects_list = $this->complaint_model->get_update_business_project_model($business_project_id);
-		$this->load->view('complaint/update_business_project', array("get_business_projects_list" => $get_business_projects_list));
+		$this->load->view('sys/update_business_project', array("get_business_projects_list" => $get_business_projects_list));
 		}
 		else
 		{
@@ -3364,7 +3364,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/update_equipment');
+		$this->load->view('sys/update_equipment');
 	}
 	
 	public function update_aux_equipment()
@@ -3373,7 +3373,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/update_aux_equipment');
+		$this->load->view('sys/update_aux_equipment');
 	}
 	
 	public function update_equipment_location()
@@ -3382,19 +3382,19 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/update_equipment_location');
+		$this->load->view('sys/update_equipment_location');
 	}
 
     public function delete_equipment($id) {
         $query="delete from  tbl_instruments  where `pk_instrument_id` =$id";
         $dbres = $this->db->query($query);
-        redirect(site_url() . 'complaint/equipments?msg_delete=success');
+        redirect(site_url() . 'sys/equipments?msg_delete=success');
     }
 	
 	public function delete_aux_equipment($id) {
         $query="delete from  tbl_instruments  where `pk_instrument_id` =$id";
         $dbres = $this->db->query($query);
-        redirect(site_url() . 'complaint/aux_equipments?msg_delete=success');
+        redirect(site_url() . 'sys/aux_equipments?msg_delete=success');
     }
 	
 	public function update_equipment_insert()
@@ -3421,7 +3421,7 @@ class Complaint extends CI_Controller {
 			  $dbres = $this->db->query($query);
 			  //
 			  
-            redirect(site_url() . 'complaint/equipments?msg_update=success');
+            redirect(site_url() . 'sys/equipments?msg_update=success');
 	}
 	
 	public function update_aux_equipment_insert()
@@ -3460,7 +3460,7 @@ class Complaint extends CI_Controller {
 			  $dbres = $this->db->query($query);
 			  //
 			  
-            redirect(site_url() . 'complaint/aux_equipments?msg_update=success');
+            redirect(site_url() . 'sys/aux_equipments?msg_update=success');
 	}
 	
 	public function update_equipment_location_insert()
@@ -3502,14 +3502,14 @@ class Complaint extends CI_Controller {
 			  $dbres = $this->db->query($query);
 			 
 			  
-            redirect(site_url() . 'complaint/update_equipment_location?msg_success=success&equipment='.$_POST["pk_instrument_id"]);
+            redirect(site_url() . 'sys/update_equipment_location?msg_success=success&equipment='.$_POST["pk_instrument_id"]);
 	}
 	
 	public function details_business_project($business_project_id)
 	{
 		if($this->session->userdata('userrole')!='')
 		{
-		$this->load->view('complaint/details_business_project');
+		$this->load->view('sys/details_business_project');
 		}
 		else
 		{
@@ -3524,7 +3524,7 @@ class Complaint extends CI_Controller {
 		}
 		$this->load->model("complaint_model");
         $get_update_vs_project_list = $this->complaint_model->get_update_vs_project($vs_id);
-		$this->load->view('complaint/update_vs_project', array("get_update_vs_project_list" => $get_update_vs_project_list));
+		$this->load->view('sys/update_vs_project', array("get_update_vs_project_list" => $get_update_vs_project_list));
 	}
 	public function update_dvr_project($vs_id)
 	{
@@ -3534,7 +3534,7 @@ class Complaint extends CI_Controller {
 		}
 		$this->load->model("complaint_model");
         $get_update_dvr_project_list = $this->complaint_model->get_update_dvr_project($vs_id);
-		$this->load->view('complaint/update_dvr_project', array("get_update_dvr_project_list" => $get_update_dvr_project_list));
+		$this->load->view('sys/update_dvr_project', array("get_update_dvr_project_list" => $get_update_dvr_project_list));
 	}
 	public function insert_business_project()
 	{
@@ -3559,9 +3559,9 @@ class Complaint extends CI_Controller {
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
 			if ($_POST['redirect_customer']=="yes")
-				redirect(site_url() . 'complaint/edit_customer/'.$_POST['Customer']);
+				redirect(site_url() . 'sys/edit_customer/'.$_POST['Customer']);
 			else
-				redirect(site_url() . 'complaint/business_data?msg=success');//redirect(site_url() . 'complaint/add_business_project?msg=success');
+				redirect(site_url() . 'sys/business_data?msg=success');//redirect(site_url() . 'sys/add_business_project?msg=success');
 			
 	}
 	public function pef_insert()
@@ -3621,7 +3621,7 @@ class Complaint extends CI_Controller {
 			  `comments`								='".$_POST['comments']."'";
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
-     redirect(site_url().'complaint/pef_employee/'.$_POST['fk_engineer_id'].'/'.$_POST['schedule_id'].'/'.$_POST['evaluater_role'].'/'.$_POST['fk_evaluater_id'].'?msg=success');
+     redirect(site_url().'sys/pef_employee/'.$_POST['fk_engineer_id'].'/'.$_POST['schedule_id'].'/'.$_POST['evaluater_role'].'/'.$_POST['fk_evaluater_id'].'?msg=success');
 	}
 	
 	public function add_category_insert()
@@ -3631,7 +3631,7 @@ class Complaint extends CI_Controller {
 			  //`fk_type_id`							='".$_POST['type_name']."'";
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
-			  redirect(site_url().'complaint/categories/?msg=success');
+			  redirect(site_url().'sys/categories/?msg=success');
 	}
 	
 	public function add_city_insert()
@@ -3641,7 +3641,7 @@ class Complaint extends CI_Controller {
 			  `fk_office_id`							='".$_POST['office_name']."'";
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
-			  redirect(site_url().'complaint/cities/?msg=success');
+			  redirect(site_url().'sys/cities/?msg=success');
 	}
 	public function add_area_insert()
 	{
@@ -3650,7 +3650,7 @@ class Complaint extends CI_Controller {
 			  `fk_city_id`					='".$_POST['city_name']."'";
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
-			  redirect(site_url().'complaint/areas/?msg=success');
+			  redirect(site_url().'sys/areas/?msg=success');
 	}
 	
 	public function add_tagg_insert()
@@ -3669,7 +3669,7 @@ class Complaint extends CI_Controller {
 				  $dbres = $this->db->query($query);
 			}
 		}
-		redirect(site_url().'complaint/mainpage_z?msg=success');
+		redirect(site_url().'sys/mainpage_z?msg=success');
 	}
 	
 	public function add_product_insert()
@@ -3693,7 +3693,7 @@ class Complaint extends CI_Controller {
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
 			  }
-			  redirect(site_url().'complaint/products/?msg=success');
+			  redirect(site_url().'sys/products/?msg=success');
 	}
 	public function update_product_insert()
 	{
@@ -3716,7 +3716,7 @@ class Complaint extends CI_Controller {
 								`fk_product_id`		=	'".$insert_id."'";
 				  $dbres = $this->db->query($query);
 			  }
-			  redirect(site_url().'complaint/products/?msg=success');
+			  redirect(site_url().'sys/products/?msg=success');
 	}
 	public function delete_business_project($id)
 	{
@@ -3729,16 +3729,16 @@ class Complaint extends CI_Controller {
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
 		if (isset($_GET['cust']))
-			redirect(site_url() . 'complaint/edit_customer/'. $_GET['cust']);
+			redirect(site_url() . 'sys/edit_customer/'. $_GET['cust']);
 		else
-		redirect(site_url() . 'complaint/business_data?del=success');
+		redirect(site_url() . 'sys/business_data?del=success');
 	}
 	
 	public function restore_business_project($id)
 	{
 		$query="update business_data SET `status` = '0' where pk_businessproject_id	= '".$id."'";
 		$dbres = $this->db->query($query);
-		redirect(site_url() . 'complaint/deleted_business_data?restore=success');
+		redirect(site_url() . 'sys/deleted_business_data?restore=success');
 	}
 	
 	public function edit_business_project()
@@ -3771,9 +3771,9 @@ class Complaint extends CI_Controller {
 
 			
 			if ($_POST['redirect_customer']=="yes")
-				redirect(site_url() . 'complaint/edit_customer/'.$_POST['customer_id']);
+				redirect(site_url() . 'sys/edit_customer/'.$_POST['customer_id']);
 			else
-				redirect(site_url() . 'complaint/business_data?upt=success');//redirect(site_url() . 'complaint/update_business_project/'.$_POST["businessproject_hidden_id"].'?upt=success');
+				redirect(site_url() . 'sys/business_data?upt=success');//redirect(site_url() . 'sys/update_business_project/'.$_POST["businessproject_hidden_id"].'?upt=success');
 			
 	}
 	public function insert_dvr_sap()
@@ -3865,16 +3865,16 @@ class Complaint extends CI_Controller {
 			{
 				if($_POST['form_name']=='sap_dvr_form')
 				{
-					redirect(site_url() . 'complaint/sap_dvr_form?msg=success');
+					redirect(site_url() . 'sys/sap_dvr_form?msg=success');
 				}
 				else
 				{
-					redirect(site_url() . 'complaint/sap_dvr?msg=success');
+					redirect(site_url() . 'sys/sap_dvr?msg=success');
 				}
 			}
 			else
 			{
-            redirect(site_url() . 'complaint/engineer_dvr_form?msg=success');
+            redirect(site_url() . 'sys/engineer_dvr_form?msg=success');
 			}
 	}
 	
@@ -3937,10 +3937,10 @@ class Complaint extends CI_Controller {
 			  $dbres = $this->db->query($query);
 			}
             if(isset($_POST['engineer']) && isset($_POST['start_mydate']) && isset($_POST['end_mydate'])) {
-				redirect(site_url() . 'complaint/admin_dvr_new?msg=success&engineer='.$_POST['engineer'].'&start_mydate='.$_POST['start_mydate'].'&end_mydate='.$_POST['end_mydate']);
+				redirect(site_url() . 'sys/admin_dvr_new?msg=success&engineer='.$_POST['engineer'].'&start_mydate='.$_POST['start_mydate'].'&end_mydate='.$_POST['end_mydate']);
 			}
 			else {
-            redirect(site_url() . 'complaint/update_dvr_project/'.$dvr_id.'?msg=success');
+            redirect(site_url() . 'sys/update_dvr_project/'.$dvr_id.'?msg=success');
 			}
 	}
 	
@@ -3948,10 +3948,10 @@ class Complaint extends CI_Controller {
 	{
 		$dbres = $this->db->query("DELETE FROM tbl_dvr WHERE pk_dvr_id = $id");
 		if(isset($_GET['engineer']) && isset($_GET['start_mydate']) && isset($_GET['end_mydate'])) {
-				redirect(site_url() . 'complaint/admin_dvr_new?delete_msg=success&engineer='.$_GET['engineer'].'&start_mydate='.$_GET['start_mydate'].'&end_mydate='.$_GET['end_mydate']);
+				redirect(site_url() . 'sys/admin_dvr_new?delete_msg=success&engineer='.$_GET['engineer'].'&start_mydate='.$_GET['start_mydate'].'&end_mydate='.$_GET['end_mydate']);
 			}
 			else {
-            redirect(site_url() . 'complaint/update_dvr_project/'.$id.'?delete_msg=success');
+            redirect(site_url() . 'sys/update_dvr_project/'.$id.'?delete_msg=success');
 			}
 	}
 	
@@ -3959,10 +3959,10 @@ class Complaint extends CI_Controller {
 	{
 		$dbres = $this->db->query("DELETE FROM tbl_vs WHERE pk_vs_id = $id");
 		if(isset($_GET['engineer']) && isset($_GET['start_mydate']) && isset($_GET['end_mydate'])) {
-				redirect(site_url() . 'complaint/admin_dvr_new?delete_msgvs=success&engineer='.$_GET['engineer'].'&start_mydate='.$_GET['start_mydate'].'&end_mydate='.$_GET['end_mydate']);
+				redirect(site_url() . 'sys/admin_dvr_new?delete_msgvs=success&engineer='.$_GET['engineer'].'&start_mydate='.$_GET['start_mydate'].'&end_mydate='.$_GET['end_mydate']);
 			}
 			else {
-            redirect(site_url() . 'complaint/update_vs_project/'.$id.'?delete_msgvs=success');
+            redirect(site_url() . 'sys/update_vs_project/'.$id.'?delete_msgvs=success');
 			}
 	}
 	public function edit_vs_business($vs_id)
@@ -4007,10 +4007,10 @@ class Complaint extends CI_Controller {
 			  $dbres = $this->db->query($query);
 			}
             if(isset($_POST['engineer']) && isset($_POST['start_mydate']) && isset($_POST['end_mydate'])) {
-				redirect(site_url() . 'complaint/admin_dvr_new?msgvs=success&engineer='.$_POST['engineer'].'&start_mydate='.$_POST['start_mydate'].'&end_mydate='.$_POST['end_mydate']);
+				redirect(site_url() . 'sys/admin_dvr_new?msgvs=success&engineer='.$_POST['engineer'].'&start_mydate='.$_POST['start_mydate'].'&end_mydate='.$_POST['end_mydate']);
 			}
 			else {
-            redirect(site_url() . 'complaint/update_vs_project/'.$vs_id.'?msg=success');
+            redirect(site_url() . 'sys/update_vs_project/'.$vs_id.'?msg=success');
 			}
 	}
 	
@@ -4096,11 +4096,11 @@ class Complaint extends CI_Controller {
 			//////////////////////////  End For entering Stratgey ////////////////////////////
 			if(isset($_POST['engineer_dvr_form']))
 			{
-				redirect(site_url() . 'complaint/engineer_dvr_form?msg=success');
+				redirect(site_url() . 'sys/engineer_dvr_form?msg=success');
 			}
 			else
 			{
-            redirect(site_url() . 'complaint/engineer_dvr_form?msg=success');
+            redirect(site_url() . 'sys/engineer_dvr_form?msg=success');
 			}
 	}
 	
@@ -4130,7 +4130,7 @@ class Complaint extends CI_Controller {
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
 			  }
-            redirect(site_url() . 'complaint/vendor_registration?msg=success');
+            redirect(site_url() . 'sys/vendor_registration?msg=success');
 	}
 	
 	public function update_vendor_insert()
@@ -4163,7 +4163,7 @@ class Complaint extends CI_Controller {
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
 			  }
-            redirect(site_url() . 'complaint/vendors?msg_upt=success');
+            redirect(site_url() . 'sys/vendors?msg_upt=success');
 	}
 	
 	public function insert_equipment_registration()
@@ -4190,7 +4190,7 @@ class Complaint extends CI_Controller {
 			  $dbres = $this->db->query($query);
 			  //
 			  
-            redirect(site_url() . 'complaint/equipment_registration?msg=success');
+            redirect(site_url() . 'sys/equipment_registration?msg=success');
 	}
 	
 	public function insert_aux_equipment_registration()
@@ -4224,7 +4224,7 @@ class Complaint extends CI_Controller {
 			  $dbres = $this->db->query($query);
 			  //
 			  
-            redirect(site_url() . 'complaint/aux_equipment_registration?msg=success');
+            redirect(site_url() . 'sys/aux_equipment_registration?msg=success');
 	}
 	
 	public function add_working_details_insert()
@@ -4245,8 +4245,8 @@ class Complaint extends CI_Controller {
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
 			  //
-			 //echo site_url() . 'complaint/technical_service_pvr/'.$fk_complaint_id."#working_details";
-            redirect(site_url() . 'complaint/technical_service_pvr/'.$fk_complaint_id."#working_details");
+			 //echo site_url() . 'sys/technical_service_pvr/'.$fk_complaint_id."#working_details";
+            redirect(site_url() . 'sys/technical_service_pvr/'.$fk_complaint_id."#working_details");
 			
 	}
 	
@@ -4266,7 +4266,7 @@ class Complaint extends CI_Controller {
 			  $dbres = $this->db->query($query);
 			  //
 			  
-            redirect(site_url() . 'complaint/technical_service_pvr/'.trim($fk_complaint_id)."#qc_dataa");
+            redirect(site_url() . 'sys/technical_service_pvr/'.trim($fk_complaint_id)."#qc_dataa");
 	}
 	
 	public function update_ts_report_supervisor()
@@ -4331,7 +4331,7 @@ class Complaint extends CI_Controller {
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
 			  //
-			redirect(site_url() . 'complaint/technical_service_pvr/'.$_POST['complaint_id']);
+			redirect(site_url() . 'sys/technical_service_pvr/'.$_POST['complaint_id']);
 	}
 	public function supervisor_view_complaints()
 	{
@@ -4339,7 +4339,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/supervisor_view_complaints');
+		$this->load->view('sys/supervisor_view_complaints');
 	}
 	public function update_ts_report()
 	{
@@ -4394,7 +4394,7 @@ class Complaint extends CI_Controller {
             mysql_query("UPDATE tbl_complaints SET image='" . $ext . "' WHERE pk_complaint_id='" . $get_users_lists[0]["pk_complaint_id"] . "' ");
         }
 			  
-			redirect(site_url() . 'complaint/technical_service_pvr/'.$_POST['complaint_id']);
+			redirect(site_url() . 'sys/technical_service_pvr/'.$_POST['complaint_id']);
 	}
 	
 	
@@ -4452,7 +4452,7 @@ class Complaint extends CI_Controller {
 							  ";
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
-				redirect(site_url() . 'complaint/admin_dvr_form?msg=success');
+				redirect(site_url() . 'sys/admin_dvr_form?msg=success');
 			}
 	}
 	public function insert_vs()
@@ -4501,8 +4501,8 @@ class Complaint extends CI_Controller {
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
 			}
-			if(isset($_POST['redirect_project'])) redirect(site_url() . 'complaint/sap_vs?msg=success&p='.$_POST['redirect_project']);
-            else redirect(site_url() . 'complaint/sap_vs?msg=success');
+			if(isset($_POST['redirect_project'])) redirect(site_url() . 'sys/sap_vs?msg=success&p='.$_POST['redirect_project']);
+            else redirect(site_url() . 'sys/sap_vs?msg=success');
 	}
 	
 	
@@ -4552,7 +4552,7 @@ class Complaint extends CI_Controller {
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
 			}
-            redirect(site_url() . 'complaint/engineer_vs?msg=success');
+            redirect(site_url() . 'sys/engineer_vs?msg=success');
 	}
 	public function insert_complaint() {
 		$this->load->model("profile_model");
@@ -4660,7 +4660,7 @@ class Complaint extends CI_Controller {
 					  </tr>				  
 					</table>';
 			mail($to, $subject, $body, $headers);
-            redirect(site_url() . 'complaint/operator_view_complaints?msg=success');
+            redirect(site_url() . 'sys/operator_view_complaints?msg=success');
 	  }
 	//complete complaint registration
 	public function complete_complaint_resgistration() {
@@ -4730,7 +4730,7 @@ class Complaint extends CI_Controller {
             $result = $this->complaint_model->complete_complaint($data,$_POST['complaint_hidden_id']);
             //echo $this->db->insert_id();
 			
-            redirect(site_url() . 'complaint/director_view_complaints?msg_update=success');
+            redirect(site_url() . 'sys/director_view_complaints?msg_update=success');
 	  }
 	//half insert
 	public function insert_complaint_half() {
@@ -4799,7 +4799,7 @@ class Complaint extends CI_Controller {
             $this->load->model("complaint_model");
             $result = $this->complaint_model->insert_complaint($data);
             //echo $this->db->insert_id();
-            redirect(site_url() . 'complaint/add_complaint_half?msg=Complaint Added Successfully');
+            redirect(site_url() . 'sys/add_complaint_half?msg=Complaint Added Successfully');
 	  }
 	// Delete Single Message.
 	
@@ -4808,7 +4808,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-        $this->load->view('complaint/shift_complaint');
+        $this->load->view('sys/shift_complaint');
     }
 
     public function shift_complaint_update() {
@@ -4825,7 +4825,7 @@ class Complaint extends CI_Controller {
 
     	$query="update tbl_complaints SET status='Shifted', assign_to='".$this->input->post('assign_to')."', fk_office_id='".$s."' where pk_complaint_id='".$this->input->post('complaint_id')."'";
 		$dbres = $this->db->query($query);
-		redirect(site_url() . 'complaint/shift_complaint/'.$this->input->post('complaint_id')."?msg=success");
+		redirect(site_url() . 'sys/shift_sys/'.$this->input->post('complaint_id')."?msg=success");
         
     }
 
@@ -4859,7 +4859,7 @@ class Complaint extends CI_Controller {
 								
 			";
 			 $dbres = $this->db->query($data);
-            redirect(site_url() . 'complaint/supervisor_assign_pm?msg=success');
+            redirect(site_url() . 'sys/supervisor_assign_pm?msg=success');
 	  }
 	public function city_list_ajax()
 	{
@@ -5877,8 +5877,8 @@ class Complaint extends CI_Controller {
 		// Make complaint status SPRF approved
 		$qu="update tbl_complaints set status = 'SPRF Approved', sprf_approve_date = '$date' where pk_complaint_id='".$_POST['complaint_id']."'";
 		$gh=$this->db->query($qu);
-		//redirect(site_url() . 'products/supervisor_sprf/'.$_POST['complaint_id'].'?msgapprove=success'); //complaint/pending_sprf
-		redirect( site_url() . 'complaint/pending_sprf?msgapprove=success');
+		//redirect(site_url() . 'products/supervisor_sprf/'.$_POST['complaint_id'].'?msgapprove=success'); //sys/pending_sprf
+		redirect( site_url() . 'sys/pending_sprf?msgapprove=success');
 	}
 	
 	public function submit_sprf_pending()
@@ -5903,7 +5903,7 @@ class Complaint extends CI_Controller {
 	{
 		$this->load->model("complaint_model");
         $get_complaint_list = $this->complaint_model->get_operator_view_dc_model();
-		$this->load->view('complaint/operator_view_dc', array("get_complaint_list" => $get_complaint_list));
+		$this->load->view('sys/operator_view_dc', array("get_complaint_list" => $get_complaint_list));
 	}
 	public function update_vendor()
 	{
@@ -5911,7 +5911,7 @@ class Complaint extends CI_Controller {
 		{
 			show_404();
 		}
-		$this->load->view('complaint/update_vendor');
+		$this->load->view('sys/update_vendor');
 	}
 	
 	public function update_print_count_ajax()
