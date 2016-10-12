@@ -20,7 +20,7 @@ class Products extends CI_Controller {
 	}
 	public function index()
 	{
-		redirect('products/brands');
+		redirect('sys/brands');
 	}
 	// Retive All Sent Messages
 	
@@ -38,33 +38,33 @@ class Products extends CI_Controller {
 	{
         $this->load->model("products_model");
         $get_brands_list = $this->products_model->get_brands_model();
-		$this->load->view('products/brands', array("get_brands_list" => $get_brands_list));
+		$this->load->view('sys/brands', array("get_brands_list" => $get_brands_list));
 	}
 	public function instruments_view()
 	{
         $this->load->model("products_model");
         $get_instruments_list = $this->products_model->get_instruments_model();
-		$this->load->view('products/instruments_view', array("get_instruments_list" => $get_instruments_list));
+		$this->load->view('sys/instruments_view', array("get_instruments_list" => $get_instruments_list));
 	}
 	public function parts_view()
 	{
         $this->load->model("products_model");
         $get_parts_list = $this->products_model->get_parts_model();
-		$this->load->view('products/parts_view', array("get_parts_list" => $get_parts_list));
+		$this->load->view('sys/parts_view', array("get_parts_list" => $get_parts_list));
 	}
 	public function spare_part_registration()
 	{
-		$this->load->view('products/spare_part_registration');
+		$this->load->view('sys/spare_part_registration');
 	}
 	public function spare_part_stock_entry()
 	{
-		$this->load->view('products/spare_part_stock_entry');
+		$this->load->view('sys/spare_part_stock_entry');
 	}
 	
 	public function part_transfer_office()
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-			$this->load->view('products/part_transfer_office');
+			$this->load->view('sys/part_transfer_office');
 		else
 			show_404();
 	}
@@ -73,7 +73,7 @@ class Products extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('products/add_order');
+			$this->load->view('sys/add_order');
 		}
 		else
 		{
@@ -85,7 +85,7 @@ class Products extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('products/update_order');
+			$this->load->view('sys/update_order');
 		}
 		else
 		{
@@ -99,7 +99,7 @@ class Products extends CI_Controller {
 		
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('products/orders');
+			$this->load->view('sys/orders');
 		}
 		else
 		{
@@ -112,7 +112,7 @@ class Products extends CI_Controller {
 		
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('products/parts_ordered');
+			$this->load->view('sys/parts_ordered');
 		}
 		else
 		{
@@ -125,7 +125,7 @@ class Products extends CI_Controller {
 		
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('products/parts_received');
+			$this->load->view('sys/parts_received');
 		}
 		else
 		{
@@ -138,7 +138,7 @@ class Products extends CI_Controller {
 		
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('products/ledger');
+			$this->load->view('sys/ledger');
 		}
 		else
 		{
@@ -151,7 +151,7 @@ class Products extends CI_Controller {
 		
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('products/warranty_claims');
+			$this->load->view('sys/warranty_claims');
 		}
 		else
 		{
@@ -163,7 +163,7 @@ class Products extends CI_Controller {
 	{
 		if($this->session->userdata('userrole')=='Admin')
 		{
-			$this->load->view('products/test_product');
+			$this->load->view('sys/test_product');
 		}
 		else
 		{
@@ -176,7 +176,7 @@ class Products extends CI_Controller {
 		
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('products/parts_against_sprf');
+			$this->load->view('sys/parts_against_sprf');
 		}
 		else
 		{
@@ -189,7 +189,7 @@ class Products extends CI_Controller {
 		
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('products/dc_in');
+			$this->load->view('sys/dc_in');
 		}
 		else
 		{
@@ -197,12 +197,12 @@ class Products extends CI_Controller {
 		}
 	}
 	
-	public function dc_print()
+	public function dc_print_in()
 	{
 		
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('products/dc_print');
+			$this->load->view('sys/dc_print_in');
 		}
 		else
 		{
@@ -215,7 +215,7 @@ class Products extends CI_Controller {
 		
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('products/stock_list');
+			$this->load->view('sys/stock_list');
 		}
 		else
 		{
@@ -228,7 +228,7 @@ class Products extends CI_Controller {
 		
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
-			$this->load->view('products/stock_list_new');
+			$this->load->view('sys/stock_list_new');
 		}
 		else
 		{
@@ -241,7 +241,7 @@ class Products extends CI_Controller {
 		
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' || $this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor')
 		{
-			$this->load->view('products/spare_parts');
+			$this->load->view('sys/spare_parts');
 		}
 		else
 		{
@@ -250,19 +250,19 @@ class Products extends CI_Controller {
 	}
 	public function update_part()
 	{
-		$this->load->view('products/update_part');
+		$this->load->view('sys/update_part');
 	}
 	public function delete_part($id)
 	{
 		//$dbres = $this->db->query("DELETE FROM tbl_parts WHERE pk_part_id = $id");
 		$dbres = $this->db->query("update tbl_parts SET delete_status='1' where pk_part_id = $id ");
-		redirect(site_url() . 'products/spare_parts?msg=del');
+		redirect(site_url() . 'sys/spare_parts?msg=del');
 	}
 	
 	public function order_booked($id)
 	{
 		$dbres = $this->db->query("UPDATE tbl_parts SET `order_status`='Order Booked' WHERE pk_part_id = $id");
-		redirect(site_url() . 'products/orders?msg=ordered');
+		redirect(site_url() . 'sys/orders?msg=ordered');
 	}
 	
 	public function test_sms()
@@ -312,9 +312,9 @@ print_r('</pre>');
 	{
 		$dbres = $this->db->query("DELETE FROM tbl_sprf WHERE pk_sprf_id = $id");
 		if (isset($_GET['complaint_id']))
-			redirect(site_url() . 'products/sprf/'.$_GET['complaint_id'].'?msg=del');
+			redirect(site_url() . 'sys/sprf/'.$_GET['complaint_id'].'?msg=del');
 		else
-			redirect(site_url() . 'products/parts_against_sprf?msg=del');
+			redirect(site_url() . 'sys/parts_against_sprf?msg=del');
 	}
 	public function delete_complaint($id)
 	{
@@ -326,14 +326,14 @@ print_r('</pre>');
 	{
 		$query="UPDATE tbl_orders SET `status` = '0' WHERE pk_order_id = $id";
 		$dbres = $this->db->query($query);
-		redirect(site_url() . 'products/parts_ordered?delete=success');
+		redirect(site_url() . 'sys/parts_ordered?delete=success');
 	}
 	
 	public function approve_dc()
 	{
 		$query="UPDATE tbl_stock SET `in_status` = 'approved' WHERE in_status = 'pending_approval' AND dc_type = 'in'";
 		$dbres = $this->db->query($query);
-		redirect(site_url() . 'products/spare_part_stock_entry?dc=success');
+		redirect(site_url() . 'sys/spare_part_stock_entry?dc=success');
 	}
 	
 	public function delete_stock($id)
@@ -350,9 +350,9 @@ print_r('</pre>');
 			$sprfq = $this->db->query("DELETE FROM tbl_sprf WHERE pk_sprf_id = '".$sprf_id."'");
 		}
 		if (isset($_GET['part']))
-			redirect(site_url() . 'products/ledger?part='.$_GET['part'].'&delete=success');
+			redirect(site_url() . 'sys/ledger?part='.$_GET['part'].'&delete=success');
 		else
-		redirect(site_url() . 'products/spare_part_stock_entry?delete=success');
+		redirect(site_url() . 'sys/spare_part_stock_entry?delete=success');
 	}
 	
 	public function spare_part_order_insert() {
@@ -422,9 +422,9 @@ print_r('</pre>');
 		
 		
 		if ($_POST['ur_id'] == "z")
-			redirect(site_url() . 'products/add_order?msg=order');
+			redirect(site_url() . 'sys/add_order?msg=order');
 		else
-              redirect(site_url() . 'products/orders?msg=success');
+              redirect(site_url() . 'sys/orders?msg=success');
     }
 	//
 	
@@ -494,9 +494,9 @@ print_r('</pre>');
 		//} // end of else
 		
 		if ($_POST['ur_id'] == "z")
-			redirect(site_url() . "products/spare_part_stock_entry?msg=success&p=".$_POST['part_number']."&t=".$_POST['stock_type']."&on=".$order_number[0]."&id=".$invoice_date."&in=".$_POST['invoice_number']."&d=".$date."&es=".$_POST['equipment_serial']."&off=".$_POST['stock_location']);
+			redirect(site_url() . "sys/spare_part_stock_entry?msg=success&p=".$_POST['part_number']."&t=".$_POST['stock_type']."&on=".$order_number[0]."&id=".$invoice_date."&in=".$_POST['invoice_number']."&d=".$date."&es=".$_POST['equipment_serial']."&off=".$_POST['stock_location']);
 		else
-              redirect(site_url() . 'products/spare_parts?msg=stock');
+              redirect(site_url() . 'sys/spare_parts?msg=stock');
     }
 	
 	public function add_part_received() {
@@ -609,9 +609,9 @@ print_r('</pre>');
 		
 		
 		if ($_POST['ur_id'] == "z")
-			redirect(site_url() . 'products/part_transfer_office?msg=success');
+			redirect(site_url() . 'sys/part_transfer_office?msg=success');
 		else
-              redirect(site_url() . 'products/part_transfer_office?msg=stock');
+              redirect(site_url() . 'sys/part_transfer_office?msg=stock');
 	}
 	public function spare_part_stock_entry_insert_new() {
 	/*
@@ -659,9 +659,9 @@ print_r('</pre>');
 		//} // end of else
 		
 		if ($_POST['ur_id'] == "z")
-			redirect(site_url() . 'products/spare_part_stock_entry?msg=success');
+			redirect(site_url() . 'sys/spare_part_stock_entry?msg=success');
 		else
-              redirect(site_url() . 'products/spare_parts?msg=stock');
+              redirect(site_url() . 'sys/spare_parts?msg=stock');
 		  */
 		  echo "zaaid";
 		  
@@ -734,7 +734,7 @@ print_r('</pre>');
 			
         }
 	   //
-              redirect(site_url() . 'products/spare_parts?msg=success');
+              redirect(site_url() . 'sys/spare_parts?msg=success');
     }
 	
 	public function spare_part_update_order_insert() {
@@ -752,9 +752,9 @@ print_r('</pre>');
 		
 		/*
 		if ($_POST['ur_id'] == "z")
-			redirect(site_url() . 'products/add_order?msg=order');
+			redirect(site_url() . 'sys/add_order?msg=order');
 		else*/
-              redirect(site_url() . 'products/parts_ordered?msg=success_update');
+              redirect(site_url() . 'sys/parts_ordered?msg=success_update');
     }
 	
 	public function part_update_insert() {
@@ -815,7 +815,7 @@ print_r('</pre>');
 			
         }
 	   //
-              redirect(site_url() . 'products/spare_parts?msg=upt');
+              redirect(site_url() . 'sys/spare_parts?msg=upt');
     }
 	public function select_products()
 	{
@@ -1060,7 +1060,7 @@ print_r('</pre>');
 		{
 			$this->load->model("products_model");
 			$get_complaint_list = $this->products_model->get_complaint_data($complaint_id);
-			$this->load->view('products/sprf', array("get_complaint_list" => $get_complaint_list));
+			$this->load->view('sys/sprf', array("get_complaint_list" => $get_complaint_list));
 		}
 		else
 		{
@@ -1074,7 +1074,7 @@ print_r('</pre>');
 		{
 			$this->load->model("products_model");
 			$get_complaint_list = $this->products_model->get_complaint_data($complaint_id);
-			$this->load->view('products/supervisor_sprf', array("get_complaint_list" => $get_complaint_list));
+			$this->load->view('sys/supervisor_sprf', array("get_complaint_list" => $get_complaint_list));
 		}
 		else
 		{

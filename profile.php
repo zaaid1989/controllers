@@ -52,7 +52,7 @@ class Profile extends CI_Controller {
             //update column Image_url
             mysql_query("UPDATE user SET image='" . $ext . "' WHERE id='" . $get_users_lists[0]["id"] . "' ");
             /*             * * ** */
-			redirect(site_url() . 'profile?msg_img=success');
+			redirect(site_url() . 'sys/profile?msg_img=success');
         }
 	}
 	
@@ -61,13 +61,13 @@ class Profile extends CI_Controller {
 		//$dbres = $this->db->query("delete from user where id = $id");
 		$termination_date = date("Y-m-d H:i");
 		$dbres = $this->db->query("update user SET delete_status='1',termination_date='$termination_date' where id = $id ");
-		redirect(site_url() . 'profile/get_employees?msg_del=success');
+		redirect(site_url() . 'sys/get_employees?msg_del=success');
 	}
 	public function recover_user($id)
 	{
 		//$dbres = $this->db->query("delete from user where id = $id");
 		$dbres = $this->db->query("update user SET delete_status='0' where id = $id ");
-		redirect(site_url() . 'profile/get_employees?msg_rec=success');
+		redirect(site_url() . 'sys/get_employees?msg_rec=success');
 	}
 	public function changepassword()
 	{
@@ -91,7 +91,7 @@ class Profile extends CI_Controller {
             	);
 			$this->load->model("profile_model");
 			$result = $this->profile_model->update_user($data);
-			redirect(site_url() . 'profile?msg_pass=success');
+			redirect(site_url() . 'sys/profile?msg_pass=success');
 		  }
 	}
 	public function get_users() {
@@ -223,7 +223,7 @@ class Profile extends CI_Controller {
 							  $dbres = $this->db->query($query);
 				}
 			}
-        redirect(site_url() . "profile/get_employees?upt=success");
+        redirect(site_url() . "sys/get_employees?upt=success");
     }
 	//
 	public function insert_user() {
@@ -289,10 +289,10 @@ class Profile extends CI_Controller {
             mysql_query("UPDATE user SET image='" . $ext . "' WHERE id='" . mysql_insert_id() . "' ");
             /*             * * ** */
 
-            redirect(site_url() . 'profile/get_users?msg=success');
+            redirect(site_url() . 'sys/get_users?msg=success');
         } if ($isDo == "false")  {
             $this->session->set_flashdata('message', 'resrtict upload file type to jpg, png and tiff.');
-            redirect(site_url() . 'profile/add_user');
+            redirect(site_url() . 'sys/add_user');
         }
 	  }
     }
@@ -313,7 +313,7 @@ class Profile extends CI_Controller {
             );
         $this->load->model("profile_model");
         $result = $this->profile_model->update_user($data);
-        redirect(site_url() . "profile?msg=success");
+        redirect(site_url() . "sys/profile?msg=success");
     }
 	
 	//inser Employee here
@@ -406,7 +406,7 @@ class Profile extends CI_Controller {
 				}
 			}
 
-            redirect(site_url() . 'profile/get_employees?msg=success');
+            redirect(site_url() . 'sys/get_employees?msg=success');
         
 	  
     }
