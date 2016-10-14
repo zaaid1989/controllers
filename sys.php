@@ -6401,14 +6401,14 @@ class Sys extends CI_Controller {
 
 	public function instruments_view()
 	{
-        $this->load->model("products_model");
-        $get_instruments_list = $this->products_model->get_instruments_model();
+        $this->load->model("complaint_model");
+        $get_instruments_list = $this->complaint_model->get_instruments_model();
 		$this->load->view('sys/instruments_view', array("get_instruments_list" => $get_instruments_list));
 	}
 	public function parts_view()
 	{
-        $this->load->model("products_model");
-        $get_parts_list = $this->products_model->get_parts_model();
+        $this->load->model("complaint_model");
+        $get_parts_list = $this->complaint_model->get_parts_model();
 		$this->load->view('sys/parts_view', array("get_parts_list" => $get_parts_list));
 	}
 	public function spare_part_registration()
@@ -7416,8 +7416,8 @@ print_r('</pre>');
 	{
 		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor' || $this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->model("products_model");
-			$get_complaint_list = $this->products_model->get_complaint_data($complaint_id);
+			$this->load->model("complaint_model");
+			$get_complaint_list = $this->complaint_model->get_complaint_data($complaint_id);
 			$this->load->view('sys/sprf', array("get_complaint_list" => $get_complaint_list));
 		}
 		else
@@ -7430,8 +7430,8 @@ print_r('</pre>');
 	{
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='Supervisor' || $this->session->userdata('userrole')=='secratery')
 		{
-			$this->load->model("products_model");
-			$get_complaint_list = $this->products_model->get_complaint_data($complaint_id);
+			$this->load->model("complaint_model");
+			$get_complaint_list = $this->complaint_model->get_complaint_data($complaint_id);
 			$this->load->view('sys/supervisor_sprf', array("get_complaint_list" => $get_complaint_list));
 		}
 		else
