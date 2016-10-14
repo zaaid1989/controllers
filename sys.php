@@ -692,7 +692,7 @@ class Sys extends CI_Controller {
 	public function insert_strategy() {
 		$this->load->model("profile_model");
 		$query ="INSERT INTO tbl_project_strategy SET 				  
-								`target_date`				=	'".$this->profile_model->change_date_to_mysql_style($_POST['target_date'])."',
+								`target_date`				=	'".date('Y-m-d',strtotime($_POST['target_date']))."',
 								`investment`				=	'".$_POST['investment']."',
 								`sales_per_month`			=	'".$_POST['sales_per_month']."',
 								`strategy`					=	'".urlencode($_POST['strategy'])."',
@@ -710,9 +710,9 @@ class Sys extends CI_Controller {
     }
 	
 	public function update_strategy() {
-		$this->load->model("profile_model");
+		
 				$query ="UPDATE tbl_project_strategy SET 				  
-								`target_date`				=	'".$this->profile_model->change_date_to_mysql_style($_POST['target_date'])."',
+								`target_date`				=	'".date('Y-m-d',strtotime($_POST['target_date']))."',
 								`investment`				=	'".$_POST['investment']."',
 								`sales_per_month`			=	'".$_POST['sales_per_month']."',
 								`strategy`					=	'".urlencode($_POST['strategy'])."',
@@ -739,24 +739,22 @@ class Sys extends CI_Controller {
     }
 	
 	public function insert_warning_letter() {
-		$this->load->model("profile_model");
 		$query="insert  into `tbl_warning_letters` SET 	
 			  `fk_employee_id`				='".$_POST['employee']."',
 			  `official_comments`			='".urlencode($_POST['official_comments'])."',
 			  `employee_comments`			='".urlencode($_POST['employee_comments'])."',
-			  `date`						='".$this->profile_model->change_date_to_mysql_style($_POST['date'])."'";
+			  `date`						='".date('Y-m-d',strtotime($_POST['date']))."'";
 			  $dbres = $this->db->query($query);
 			  redirect(site_url() . 'sys/all_warning_letters?msg=success');
 	}
 	public function insert_fine() {
-		$this->load->model("profile_model");
 		$query="insert  into `tbl_fine` SET 	
 			  `fk_employee_id`				='".$_POST['employee']."',
 			  `fk_fine_code_id`				='".$_POST['fine']."',
 			  `amount`						='".$_POST['amount']."',
 			  `comments`					='".urlencode($_POST['comments'])."',
 			  `status`						='Pending',
-			  `date`						='".$this->profile_model->change_date_to_mysql_style($_POST['date'])."'";
+			  `date`						='".date('Y-m-d',strtotime($_POST['date']))."'";
 			  $dbres = $this->db->query($query);
 			  
 			  //
@@ -914,12 +912,12 @@ class Sys extends CI_Controller {
 	
 	public function insert_temporary_leaves()
 	{
-            $this->load->model("profile_model");
+            
 			$query = "insert  into `tbl_temporary_leaves` SET
 				  `fk_employee_id`					='" . $_POST['employee'] . "',
-				  `application_date`				='" . $this->profile_model->change_date_to_mysql_style($_POST['application_date']) . "',
-				  `start_date`						='" . $this->profile_model->change_date_to_mysql_style($_POST['start_date']) . "',
-				  `end_date`						='" . $this->profile_model->change_date_to_mysql_style($_POST['end_date']) . "',
+				  `application_date`				='" . date('Y-m-d',strtotime($_POST['application_date'])) . "',
+				  `start_date`						='" . date('Y-m-d',strtotime($_POST['start_date'])) . "',
+				  `end_date`						='" . date('Y-m-d',strtotime($_POST['end_date'])) . "',
 				  `back_up`							='" . $_POST['backup_person'] . "',
 				  `reason_of_leave`					='" . urlencode($_POST['reason_of_leave']) . "',
 				  `fine_amount`						='" . $_POST['fine_amount'] . "',
@@ -938,8 +936,8 @@ class Sys extends CI_Controller {
 				$query7 = "delete from   `tbl_temporary_leaves` where pk_temporary_leave_id = '".$_POST['temprary_id']."'";
                 $dbres7 = $this->db->query($query7);
 				}
-		$this->load->model("profile_model");
-        $lq 			= $this->db->query("select * from tbl_leaves where fk_employee_id ='".$_POST['employee']."' AND start_date='".$this->profile_model->change_date_to_mysql_style($_POST['start_date'])."'");
+		
+        $lq 			= $this->db->query("select * from tbl_leaves where fk_employee_id ='".$_POST['employee']."' AND start_date='".date('Y-m-d',strtotime($_POST['start_date']))."'");
         $lr 				= $lq->result_array();
 		$fineid		=	0;
         if(sizeof($lr)>=1) {
@@ -947,10 +945,10 @@ class Sys extends CI_Controller {
         }
         else {
             if ($_POST['fine'] != 'Leave is taken within limit of 21 days') {
-                $this->load->model("profile_model");
+                
                 $query = "insert  into `tbl_fine` SET
 				  `fk_employee_id`				='" . $_POST['employee'] . "',
-				  `date`						='" . $this->profile_model->change_date_to_mysql_style($_POST['application_date']) . "',
+				  `date`						='" . date('Y-m-d',strtotime($_POST['application_date'])) . "',
 				  `fk_fine_code_id`				='" . $_POST['fine'] . "',
 				  `amount`						='" . $_POST['amount'] . "',
 				  `comments`					='" . urlencode($_POST['official_comments']) . "',
@@ -963,7 +961,7 @@ class Sys extends CI_Controller {
 				//Get Fine Id of the Fine inserted above
 				$fquery = "Select * from `tbl_fine` WHERE
 					  `fk_employee_id`				='" . $_POST['employee'] . "' AND 
-					  `date`						='" . $this->profile_model->change_date_to_mysql_style($_POST['application_date']) . "  00:00:00' AND 
+					  `date`						='" . date('Y-m-d',strtotime($_POST['application_date'])) . "  00:00:00' AND 
 					  `fk_fine_code_id`				='" . $_POST['fine'] . "' AND 
 					  `amount`						='" . $_POST['amount'] . "' AND 
 					  `comments`					='" . urlencode($_POST['official_comments']) . "' AND 
@@ -987,8 +985,8 @@ class Sys extends CI_Controller {
 			}
 			else
 			{
-				$start_date = strtotime($this->profile_model->change_date_to_mysql_style($_POST['start_date']));
-				$end_date = strtotime($this->profile_model->change_date_to_mysql_style($_POST['end_date']));
+				$start_date = strtotime($_POST['start_date']);
+				$end_date = strtotime($_POST['end_date']);
 				$datediff = $end_date - $start_date;
 				$mydiffrence = floor($datediff / (60 * 60 * 24));
 				///////////// New Code ////////////////
@@ -1013,9 +1011,9 @@ class Sys extends CI_Controller {
             //insert Leaves record in tbl_leave
             $query = "insert  into `tbl_leaves` SET
 				  `fk_employee_id`					='" . $_POST['employee'] . "',
-				  `application_date`				='" . $this->profile_model->change_date_to_mysql_style($_POST['application_date']) . "',
-				  `start_date`						='" . $this->profile_model->change_date_to_mysql_style($_POST['start_date']) . "',
-				  `end_date`						='" . $this->profile_model->change_date_to_mysql_style($_POST['end_date']) . "',
+				  `application_date`				='" . date('Y-m-d',strtotime($_POST['application_date'])) . "',
+				  `start_date`						='" . date('Y-m-d',strtotime($_POST['start_date'])) . "',
+				  `end_date`						='" . date('Y-m-d',strtotime($_POST['end_date'])) . "',
 				  `back_up`							='" . $_POST['backup_person'] . "',
 				  `official_comments`				='" . urlencode($_POST['official_comments']) . "',
 				  `reason_of_leave`					='" . urlencode($_POST['reason_of_leave']) . "',
@@ -1036,8 +1034,8 @@ class Sys extends CI_Controller {
 		$leave_id		=	$_POST['leave_id'];
 		$leave_fine_id	=	$_POST['leave_fine_id'];
 		
-		$this->load->model("profile_model");
-        $lq 			= $this->db->query("select * from tbl_leaves where pk_leave_id!='".$leave_id."' AND fk_employee_id ='".$_POST['employee']."' AND start_date='".$this->profile_model->change_date_to_mysql_style($_POST['start_date'])."'");
+		
+        $lq 			= $this->db->query("select * from tbl_leaves where pk_leave_id!='".$leave_id."' AND fk_employee_id ='".$_POST['employee']."' AND start_date='".date('Y-m-d',strtotime($_POST['start_date']))."'");
         $lr 				= $lq->result_array();
 		$fineid		=	0;
         if(sizeof($lr)>=1) {
@@ -1132,10 +1130,10 @@ class Sys extends CI_Controller {
 		
         
             if ($_POST['fine'] != 'Leave is taken within limit of 21 days') {
-                $this->load->model("profile_model");
+                
                 $query = "insert  into `tbl_fine` SET
 				  `fk_employee_id`				='" . $_POST['employee'] . "',
-				  `date`						='" . $this->profile_model->change_date_to_mysql_style($_POST['application_date']) . "',
+				  `date`						='" . date('Y-m-d',strtotime($_POST['application_date'])) . "',
 				  `fk_fine_code_id`				='" . $_POST['fine'] . "',
 				  `amount`						='" . $_POST['amount'] . "',
 				  `comments`					='" . urlencode($_POST['official_comments']) . "',
@@ -1146,7 +1144,7 @@ class Sys extends CI_Controller {
 				//Get Fine Id of the Fine inserted above
 				$fquery = "Select * from `tbl_fine` WHERE
 					  `fk_employee_id`				='" . $_POST['employee'] . "' AND 
-					  `date`						='" . $this->profile_model->change_date_to_mysql_style($_POST['application_date']) . "  00:00:00' AND 
+					  `date`						='" . date('Y-m-d',strtotime($_POST['application_date'])) . "  00:00:00' AND 
 					  `fk_fine_code_id`				='" . $_POST['fine'] . "' AND 
 					  `amount`						='" . $_POST['amount'] . "' AND 
 					  `comments`					='" . urlencode($_POST['official_comments']) . "' AND 
@@ -1170,8 +1168,8 @@ class Sys extends CI_Controller {
 			}
 			else
 			{
-				$start_date = strtotime($this->profile_model->change_date_to_mysql_style($_POST['start_date']));
-				$end_date = strtotime($this->profile_model->change_date_to_mysql_style($_POST['end_date']));
+				$start_date = strtotime($_POST['start_date']);
+				$end_date = strtotime($_POST['end_date']);
 				$datediff = $end_date - $start_date;
 				$mydiffrence = floor($datediff / (60 * 60 * 24));
 				///////////// New Code ////////////////
@@ -1196,9 +1194,9 @@ class Sys extends CI_Controller {
             //insert Leaves record in tbl_leave
             $query = "insert  into `tbl_leaves` SET
 				  `fk_employee_id`					='" . $_POST['employee'] . "',
-				  `application_date`				='" . $this->profile_model->change_date_to_mysql_style($_POST['application_date']) . "',
-				  `start_date`						='" . $this->profile_model->change_date_to_mysql_style($_POST['start_date']) . "',
-				  `end_date`						='" . $this->profile_model->change_date_to_mysql_style($_POST['end_date']) . "',
+				  `application_date`				='" . date('Y-m-d',strtotime($_POST['application_date'])) . "',
+				  `start_date`						='" . date('Y-m-d',strtotime($_POST['start_date'])) . "',
+				  `end_date`						='" . date('Y-m-d',strtotime($_POST['end_date'])) . "',
 				  `back_up`							='" . $_POST['backup_person'] . "',
 				  `official_comments`				='" . urlencode($_POST['official_comments']) . "',
 				  `reason_of_leave`					='" . urlencode($_POST['reason_of_leave']) . "',
@@ -1267,8 +1265,8 @@ class Sys extends CI_Controller {
 				else
 				{
 					$this->load->model('profile_model');
-					$start_date = strtotime($this->profile_model->change_date_to_mysql_style($_POST['start_date']));
-					$end_date = strtotime($this->profile_model->change_date_to_mysql_style($_POST['end_date']));
+					$start_date = strtotime($_POST['start_date']);
+					$end_date = strtotime($_POST['end_date']);
 					$datediff = $end_date - $start_date;
 					$mydiffrence = floor($datediff / (60 * 60 * 24));
 					$mydiffrence = $mydiffrence + 1;
@@ -1304,9 +1302,9 @@ class Sys extends CI_Controller {
 				}
 				else
 				{
-					$this->load->model('profile_model');
-					$start_date = strtotime($this->profile_model->change_date_to_mysql_style($_POST['start_date']));
-					$end_date = strtotime($this->profile_model->change_date_to_mysql_style($_POST['end_date']));
+					
+					$start_date = strtotime($_POST['start_date']);
+					$end_date = strtotime($_POST['end_date']);
 					$datediff = $end_date - $start_date;
 					$mydiffrence = floor($datediff / (60 * 60 * 24));
 					$mydiffrence = $mydiffrence + 1;
@@ -1408,16 +1406,16 @@ class Sys extends CI_Controller {
 					$per_day_salary = $per_day_salary * 0.5;
 				}
 				//else {
-					$this->load->model('profile_model');
+					
 					
 					if ($_POST['start_date'] != "" && $_POST['end_date']!="") {
 						$show_code_amount = 1;
-						$start_date = strtotime($this->profile_model->change_date_to_mysql_style($_POST['start_date']));
-						$end_date = strtotime($this->profile_model->change_date_to_mysql_style($_POST['end_date']));
+						$start_date = strtotime($_POST['start_date']);
+						$end_date = strtotime($_POST['end_date']);
 					}
 					else {
-					$start_date = strtotime($this->profile_model->change_date_to_mysql_style(date('Y-m-d')));
-					$end_date = strtotime($this->profile_model->change_date_to_mysql_style(date('Y-m-d')));
+					$start_date = strtotime(date('Y-m-d'));
+					$end_date = strtotime(date('Y-m-d'));
 					}
 								////////////////// Finding form submission as a side activity
 								$today = date('Y-m-d');
@@ -1467,7 +1465,7 @@ class Sys extends CI_Controller {
 					$fine_amount = round($these_days_salary,0);
 					$fk_fine_code_id = 21;
 				}
-				//$start_date = strtotime($this->profile_model->change_date_to_mysql_style($_POST['start_date']));
+				
 				
 				//if ($show_code_amount == 1 && date('Y-m-d',$_POST['start_date']) < date('Y-m-d',$_POST['end_date']))  {
 				if ($show_code_amount == 1)  { 
@@ -2041,14 +2039,13 @@ class Sys extends CI_Controller {
 	}
 	public function pef_schedule_insert()
 	{
-			 //echo "sana";exit;
-			 $this->load->model("profile_model");
+			 
 			 $prevoios_pef=$this->db->query("select MAX(due_date) as maxdate from tbl_pef_schedule");
 			 $prvoios_result = $prevoios_pef->result_array();
 			 //
 			 //echo $prvoios_result['maxdate'];exit;
 			 $maxdate = date('Ymd',strtotime($prvoios_result[0]['maxdate']));
-			 $expiry_date = $this->profile_model->change_date_to_mysql_style($_POST['expiry_date']);
+			 $expiry_date = date('Y-m-d',strtotime($_POST['expiry_date']));
 			 $expiry_date = date('Ymd',strtotime($expiry_date));
 			 //echo "maxdate=".$maxdate."    expiry_date=".$expiry_date;exit;
 			 $today_date = date('Ymd');
@@ -2070,14 +2067,14 @@ class Sys extends CI_Controller {
 			  $employees = implode(",",$_POST['employees']);
 			  $query="insert  `tbl_pef_schedule` SET 	
 			  `duration`		='".$_POST['duration']."',
-			  `due_date`		='".$this->profile_model->change_date_to_mysql_style($_POST['expiry_date'])."',
+			  `due_date`		='".date('Y-m-d',strtotime($_POST['expiry_date']))."',
 			   user_ids          ='$employees'";
 			  //echo $query;exit;
 			  $dbres = $this->db->query($query);
 			  foreach($_POST['employees'] as $myemployee)
 			  {
 				  $query="update user   SET 	
-				  `pef_expriy_date`		='".$this->profile_model->change_date_to_mysql_style($_POST['expiry_date'])."'
+				  `pef_expriy_date`		='".date('Y-m-d',strtotime($_POST['expiry_date']))."'
 				   where id             ='$myemployee'";
 				  //echo $query;exit;
 				  $dbres = $this->db->query($query);
@@ -3399,7 +3396,7 @@ class Sys extends CI_Controller {
 	
 	public function update_equipment_insert()
 	{
-			 $this->load->model("profile_model");
+			 
 			$query="update tbl_instruments SET 				  
 								`serial_no`				=	'".$_POST['serial_no']."',
 								
@@ -3410,10 +3407,10 @@ class Sys extends CI_Controller {
 								`fk_product_id`			=	'".$_POST['equipment']."',
 								
 								`invoice_number`		=	'".$_POST['invoice_number']."',
-								`invoice_date`			=	'".$this->profile_model->change_date_to_mysql_style($_POST['invoice_date'])."',
+								`invoice_date`			=	'".date('Y-m-d',strtotime($_POST['invoice_date']))."',
 								`equipment_price`		=	'".$_POST['equipment_price']."',
 								`warranty_months`		=	'".$_POST['warranty_months']."',
-								`warranty_start_date`	=	'".$this->profile_model->change_date_to_mysql_style($_POST['warranty_start_date'])."',
+								`warranty_start_date`	=	'".date('Y-m-d',strtotime($_POST['warranty_start_date']))."',
 								`status`				=	'".$_POST['status']."',
 								`details`				=	'".$_POST['description']."'
 								 where pk_instrument_id = '".$_POST['pk_instrument_id']."'";
@@ -3437,7 +3434,7 @@ class Sys extends CI_Controller {
 		  // removing this line after serial_no line in the query below -> `main_equipment`		=	'".ltrim($main_equipment_string, ',')."',
 		  //												`fk_client_id`			=	'".$_POST['cutomer']."',
 		  //												`fk_office_id`			=	'".$_POST['office']."',
-			 $this->load->model("profile_model");
+			 
 			$query="update tbl_instruments SET 				  
 								`serial_no`				=	'".$_POST['serial_no']."',
 								
@@ -3448,10 +3445,10 @@ class Sys extends CI_Controller {
 								`fk_product_id`			=	'".$_POST['equipment']."',
 								
 								`invoice_number`		=	'".$_POST['invoice_number']."',
-								`invoice_date`			=	'".$this->profile_model->change_date_to_mysql_style($_POST['invoice_date'])."',
+								`invoice_date`			=	'".date('Y-m-d',strtotime($_POST['invoice_date']))."',
 								`equipment_price`		=	'".$_POST['equipment_price']."',
 								`warranty_months`		=	'".$_POST['warranty_months']."',
-								`warranty_start_date`	=	'".$this->profile_model->change_date_to_mysql_style($_POST['warranty_start_date'])."',
+								`warranty_start_date`	=	'".date('Y-m-d',strtotime($_POST['warranty_start_date']))."',
 								`status`				=	'".$_POST['status']."',
 								`details`				=	'".$_POST['description']."'
 								
@@ -3539,8 +3536,7 @@ class Sys extends CI_Controller {
 	public function insert_business_project()
 	{
 			
-			$this->load->model("profile_model");
-			 $this->load->model("profile_model");
+			
 			 $query="insert into business_data SET 				  
 								`Territory`							=	'".$_POST['Territory']."',
 								`City`								=	'".$_POST['City']."',
@@ -3548,7 +3544,7 @@ class Sys extends CI_Controller {
 								`Area`  							=	'".$_POST['Area']."',
 								`Department`						=	'".$_POST['Department']."',
 								`Sales Person`						=	'".$_POST['Sales_Person']."',
-								`Date`								=	'".$this->profile_model->change_date_to_mysql_style($_POST['date'])."',";
+								`Date`								=	'".date('Y-m-d',strtotime($_POST['date']))."',";
 			  if(isset($_POST['priority']))
 			  {
 				  $query.="`priority`			=	'1',";
@@ -3743,7 +3739,7 @@ class Sys extends CI_Controller {
 	
 	public function edit_business_project()
 	{
-			$this->load->model("profile_model");
+			
 			 $query="update business_data SET 				  
 								`Territory`							=	'".$_POST['Territory']."',
 								`City`								=	'".$_POST['City']."',
@@ -3751,7 +3747,7 @@ class Sys extends CI_Controller {
 								`Area`  							=	'".$_POST['Area']."',
 								`Department`						=	'".$_POST['Department']."',
 								`Sales Person`						=	'".$_POST['Sales_Person']."',
-								`Date`								=	'".$this->profile_model->change_date_to_mysql_style($_POST['date'])."',";
+								`Date`								=	'".date('Y-m-d',strtotime($_POST['date']))."',";
 			  if(isset($_POST['priority']))
 			  {
 				  $query.="`priority`			=	'1',";
@@ -3845,9 +3841,8 @@ class Sys extends CI_Controller {
 			
 			/////////////////////////// For entering strategy ////////////////////////////////
 			if (isset($_POST['strategy'])){
-				$this->load->model("profile_model");
 				$query ="INSERT INTO tbl_project_strategy SET 				  
-										`target_date`				=	'".$this->profile_model->change_date_to_mysql_style($_POST['target_date'])."',
+										`target_date`				=	'".date('Y-m-d',strtotime($_POST['target_date']))."',
 										`investment`				=	'".$_POST['investment']."',
 										`sales_per_month`			=	'".$_POST['sales_per_month']."',
 										`strategy`					=	'".urlencode($_POST['strategy'])."',
@@ -3880,7 +3875,7 @@ class Sys extends CI_Controller {
 	
 	public function edit_dvr_business($dvr_id)
 	{
-			$this->load->model("profile_model");
+			
 			foreach($_POST['starttime'] as $key=> $value)
 			{
 			
@@ -3913,7 +3908,7 @@ class Sys extends CI_Controller {
 			 $query="update tbl_dvr SET 				  
 								`start_time`			=	'".$re_start_hour."',
 								`end_time`				=	'".$re_end_hour."',
-								`date`					=	'".$this->profile_model->change_date_to_mysql_style($_POST['date'])."',
+								`date`					=	'".date('Y-m-d',strtotime($_POST['date']))."',
 								`fk_customer_id`		=	'".$_POST['customer'][$key]."',
 								`fk_city_id`			=	'".$_POST['city'][$key]."',";
 			if(substr($_POST['business'][$key],0,1)=='t')
@@ -4078,9 +4073,8 @@ class Sys extends CI_Controller {
 			
 			/////////////////////////// For entering strategy ////////////////////////////////
 			if (isset($_POST['strategy'])){
-				$this->load->model("profile_model");
 				$query ="INSERT INTO tbl_project_strategy SET 				  
-										`target_date`				=	'".$this->profile_model->change_date_to_mysql_style($_POST['target_date'])."',
+										`target_date`				=	'".date('Y-m-d',strtotime($_POST['target_date']))."',
 										`investment`				=	'".$_POST['investment']."',
 										`sales_per_month`			=	'".$_POST['sales_per_month']."',
 										`strategy`					=	'".urlencode($_POST['strategy'])."',
@@ -4168,7 +4162,7 @@ class Sys extends CI_Controller {
 	
 	public function insert_equipment_registration()
 	{
-			 $this->load->model("profile_model");
+			 
 			$query="insert into tbl_instruments SET 				  
 								`serial_no`				=	'".$_POST['serial_no']."',
 								`fk_client_id`			=	'".$_POST['cutomer']."',
@@ -4179,10 +4173,10 @@ class Sys extends CI_Controller {
 								`fk_product_id`			=	'".$_POST['equipment']."',
 								`fk_office_id`			=	'".$_POST['office']."',
 								`invoice_number`		=	'".$_POST['invoice_number']."',
-								`invoice_date`			=	'".$this->profile_model->change_date_to_mysql_style($_POST['invoice_date'])."',
+								`invoice_date`			=	'".date('Y-m-d',strtotime($_POST['invoice_date']))."',
 								`equipment_price`		=	'".$_POST['equipment_price']."',
 								`warranty_months`		=	'".$_POST['warranty_months']."',
-								`warranty_start_date`	=	'".$this->profile_model->change_date_to_mysql_style($_POST['warranty_start_date'])."',
+								`warranty_start_date`	=	'".date('Y-m-d',strtotime($_POST['warranty_start_date']))."',
 								`status`				=	'".$_POST['status']."',
 								`details`				=	'".$_POST['description']."'
 								";
@@ -4201,7 +4195,6 @@ class Sys extends CI_Controller {
 				  $main_equipment_string .= ",".$main_equipment;
 			  }
 			  
-			 $this->load->model("profile_model");
 			$query="insert into tbl_instruments SET 				  
 								`serial_no`				=	'".$_POST['serial_no']."',
 								`main_equipment`		=	'".ltrim($main_equipment_string, ',')."',
@@ -4213,10 +4206,10 @@ class Sys extends CI_Controller {
 								`fk_product_id`			=	'".$_POST['equipment']."',
 								`fk_office_id`			=	'".$_POST['office']."',
 								`invoice_number`		=	'".$_POST['invoice_number']."',
-								`invoice_date`			=	'".$this->profile_model->change_date_to_mysql_style($_POST['invoice_date'])."',
+								`invoice_date`			=	'".date('Y-m-d',strtotime($_POST['invoice_date']))."',
 								`equipment_price`		=	'".$_POST['equipment_price']."',
 								`warranty_months`		=	'".$_POST['warranty_months']."',
-								`warranty_start_date`	=	'".$this->profile_model->change_date_to_mysql_style($_POST['warranty_start_date'])."',
+								`warranty_start_date`	=	'".date('Y-m-d',strtotime($_POST['warranty_start_date']))."',
 								`status`				=	'".$_POST['status']."',
 								`details`				=	'".$_POST['description']."'
 								";
@@ -4231,10 +4224,9 @@ class Sys extends CI_Controller {
 	{
 			$fk_complaint_id=$_POST['fk_complaint_id'];
 			$fk_complaint_id=trim($fk_complaint_id);
-			 $this->load->model("profile_model");
 			$query="insert into tbl_working_details SET 				  
 								`fk_complaint_id`		=	'".$fk_complaint_id."',
-								`date`					=	'".$this->profile_model->change_date_to_mysql_style($_POST['wd_date'])."',
+								`date`					=	'".date('Y-m-d',strtotime($_POST['wd_date']))."',
 								`time`					=	'".$_POST['wd_time']."',
 								`action_taken`			=	'".urlencode($_POST['action_taken'])."',
 								`result`				=	'".urlencode($_POST['result'])."',
@@ -4343,14 +4335,14 @@ class Sys extends CI_Controller {
 	}
 	public function update_ts_report()
 	{
-			 $this->load->model("profile_model");
+			 
 			 
 			 $query="UPDATE tbl_complaints SET ";
 			 if ($_POST['reporting_date']!=""){				  
-						$query.="`reporting_date`								=	'".$this->profile_model->change_date_to_mysql_style($_POST['reporting_date'])."',";
+						$query.="`reporting_date`								=	'".date('Y-m-d',strtotime($_POST['reporting_date']))."',";
 			 }
 			 if ($_POST['solution_date']!=""){				  
-						$query.="`solution_date`								=	'".$this->profile_model->change_date_to_mysql_style($_POST['solution_date'])."',";
+						$query.="`solution_date`								=	'".date('Y-m-d',strtotime($_POST['solution_date']))."',";
 			 }
 				$query.="		`reporting_time`								=	'".$_POST['reporting_time']."',
 								`customer_signing_complaint_form`				=	'".urlencode($_POST['customer_signing_complaint_form'])."',
@@ -4422,7 +4414,6 @@ class Sys extends CI_Controller {
 			 //echo 'start time'.$re_start_hour.'<br> end time='.$re_end_hour;exit;
 			 //
 			 //echo $_POST['city'][$key];exit;
-			 $this->load->model("profile_model");
 			 $dvr_date = date('Y-m-d',strtotime($_POST['date'][$key]));
 			 $dvr_date = $dvr_date.' '.$re_start_hour;
 			 $query="insert into tbl_dvr SET 				  
@@ -4447,7 +4438,7 @@ class Sys extends CI_Controller {
 								`timeline`				=	'".$_POST['time_elaped'][$key]."',
 								`summery`				=	'".urlencode($_POST['summery'][$key])."',
 								`next_plan`				=	'".urlencode($_POST['next_plan'][$key])."',
-								`date`					=	'".$this->profile_model->change_date_to_mysql_style($_POST['date'][$key])."'
+								`date`					=	'".date('Y-m-d',strtotime($_POST['date'][$key]))."'
 								
 							  ";
 			  //echo $query;exit;
@@ -4555,11 +4546,10 @@ class Sys extends CI_Controller {
             redirect(site_url() . 'sys/engineer_vs?msg=success');
 	}
 	public function insert_complaint() {
-		$this->load->model("profile_model");
 		$problem_summery=$_POST['instrument_prob'].' '.$_POST['kit_prob_des_cus'];
 		if(!empty($_POST['call_date']))
 		{
-			$newdelevrydate = $this->profile_model->change_date_to_mysql_style($_POST['call_date']);
+			$newdelevrydate = date('Y-m-d',strtotime($_POST['call_date']));
 		}
 		
 		$client_temp = '';
@@ -4590,7 +4580,7 @@ class Sys extends CI_Controller {
 						'instrument_prob'				=> 	$_POST['instrument_prob'],
 						'instrument_error_msg'			=> 	$_POST['instrument_error_msg'],
 						'error_no'						=> 	$_POST['error_no'],
-						'last_ok_time'					=> 	$this->profile_model->change_date_to_mysql_style($_POST['last_ok_time']),
+						'last_ok_time'					=> 	date('Y-m-d',strtotime($_POST['last_ok_time'])),
 						'action_after_problem'			=> 	$_POST['action_after_problem'],
 						'is_done_before'				=> 	$_POST['is_done_before'],
 						
@@ -4664,11 +4654,11 @@ class Sys extends CI_Controller {
 	  }
 	//complete complaint registration
 	public function complete_complaint_resgistration() {
-		$this->load->model("profile_model");
+		
 		$problem_summery=$_POST['instrument_prob'].' '.$_POST['kit_prob_des_cus'];
 		if(!empty($_POST['call_date']))
 		{
-			$newdelevrydate = $this->profile_model->change_date_to_mysql_style($_POST['call_date']);
+			$newdelevrydate = date('Y-m-d',strtotime($_POST['call_date']));
 		}
 		
 		$client_temp = '';
@@ -4701,7 +4691,7 @@ class Sys extends CI_Controller {
 						'instrument_prob'				=> 	$_POST['instrument_prob'],
 						'instrument_error_msg'			=> 	$_POST['instrument_error_msg'],
 						'error_no'						=> 	$_POST['error_no'],
-						'last_ok_time'					=> 	$this->profile_model->change_date_to_mysql_style($_POST['last_ok_time']),
+						'last_ok_time'					=> 	date('Y-m-d',strtotime($_POST['last_ok_time'])),
 						'action_after_problem'			=> 	$_POST['action_after_problem'],
 						'is_done_before'				=> 	$_POST['is_done_before'],
 						
@@ -4734,11 +4724,10 @@ class Sys extends CI_Controller {
 	  }
 	//half insert
 	public function insert_complaint_half() {
-		$this->load->model("profile_model");
 		$problem_summery=$_POST['instrument_prob'].' '.$_POST['kit_prob_des_cus'];
 		if(!empty($_POST['call_date']))
 		{
-			$newdelevrydate = $this->profile_model->change_date_to_mysql_style($_POST['call_date']);
+			$newdelevrydate = date('Y-m-d',strtotime($_POST['call_date']));
 		}
 		 //$dbres2 = $this->db->query("select * from tbl_cities where pk_city_id = '".$_POST['city']."'");
 		$data = array(
@@ -4759,7 +4748,7 @@ class Sys extends CI_Controller {
 						'instrument_prob'				=> 	$_POST['instrument_prob'],
 						'instrument_error_msg'			=> 	$_POST['instrument_error_msg'],
 						'error_no'						=> 	$_POST['error_no'],
-						'last_ok_time'					=> 	$this->profile_model->change_date_to_mysql_style($_POST['last_ok_time']),
+						'last_ok_time'					=> 	date('Y-m-d',strtotime($_POST['last_ok_time'])),
 						'action_after_problem'			=> 	$_POST['action_after_problem'],
 						'is_done_before'				=> 	$_POST['is_done_before'],
 						
@@ -4841,11 +4830,11 @@ class Sys extends CI_Controller {
 		 $disp_no=$cur_date.$exceded_no;
 
                                  
-		$this->load->model("profile_model");		
+				
 		$date = explode(' ',$_POST['date']);
 		$date_date= $date[0];
 		$date_time = $date[1];
-		$new_date = $this->profile_model->change_date_to_mysql_style($date_date).' '.$date_time.':0';	 			 
+		$new_date = date('Y-m-d',strtotime($date_date)).' '.$date_time.':0';	 			 
 		$data = "insert into tbl_complaints SET
 								`fk_city_id`			=	'".$_POST['fk_city_id']."',
 								`fk_customer_id`		=	'".$_POST['fk_customer_id']."',
@@ -6737,9 +6726,9 @@ print_r('</pre>');
 	}
 	
 	public function spare_part_order_insert() {
-		$this->load->model("profile_model");
+		
 		if ($_POST['date'] != "")
-			$date	=	$this->profile_model->change_date_to_mysql_style($_POST['date']);
+			$date	=	date('Y-m-d',strtotime($_POST['date']));
 		else $date = date('Y-m-d H:i:s');
 		$query_ins   =     $this->db->query("insert into  tbl_orders SET order_quantity= '".$_POST['order_quantity']."',  
 												  fk_part_id='".$_POST['part_number']."',  
@@ -6810,12 +6799,12 @@ print_r('</pre>');
 	//
 	
 	public function spare_part_stock_entry_insert() {
-		$this->load->model("profile_model");
+		
 		$invoice_date	=	"0000-00-00 00:00:00";
 		if ($_POST['invoice_date'] != "")
-			$invoice_date	=	$this->profile_model->change_date_to_mysql_style($_POST['invoice_date']);
+			$invoice_date	=	date('Y-m-d',strtotime($_POST['invoice_date']));
 		if ($_POST['date'] != "")
-			$date	=	$this->profile_model->change_date_to_mysql_style($_POST['date']);
+			$date	=	date('Y-m-d',strtotime($_POST['date']));
 		else $date = date('Y-m-d H:i:s');
 		$dbres = $this->db->query("UPDATE tbl_parts SET `order_status`='No Order Booked' WHERE pk_part_id = '".$_POST['part_number']."'");
 		
@@ -6922,9 +6911,9 @@ print_r('</pre>');
 	
 	
 	public function part_transfer_office_insert() {
-		$this->load->model("profile_model");
+		
 		if ($_POST['date'] != "")
-			$date	=	$this->profile_model->change_date_to_mysql_style($_POST['date']);
+			$date	=	date('Y-m-d',strtotime($_POST['date']));
 		else $date = date('Y-m-d H:i:s');
 		
 		
@@ -7119,9 +7108,9 @@ print_r('</pre>');
     }
 	
 	public function spare_part_update_order_insert() {
-		$this->load->model("profile_model");
+		
 		if ($_POST['date'] != "")
-			$date	=	$this->profile_model->change_date_to_mysql_style($_POST['date']);
+			$date	=	date('Y-m-d',strtotime($_POST['date']));
 		else $date = date('Y-m-d H:i:s');
 		$query_ins   =     $this->db->query("UPDATE  tbl_orders SET order_quantity= '".$_POST['order_quantity']."',  
 												  fk_part_id='".$_POST['part_number']."',  
@@ -7629,8 +7618,8 @@ print_r('</pre>');
 	
 	public function pm_form_other_details_insert()
 	{
-		$this->load->model("profile_model");
-		$updat_query="UPDATE tbl_complaints SET reporting_date		=	'".$this->profile_model->change_date_to_mysql_style($_POST['start_date']).' '.$_POST['start_time'].":0',
+		
+		$updat_query="UPDATE tbl_complaints SET reporting_date		=	'".date('Y-m-d',strtotime($_POST['start_date'])).' '.$_POST['start_time'].":0',
 												name_of_customer_sign_pm_form				=	'".$_POST['name_of_customer_sign_pm_form']."',";
 		//for AC?AU400
 		if(isset($_POST['counter_in_front_of_equipment']))
@@ -8967,7 +8956,7 @@ print_r('</pre>');
 			$userrole = "Salesman";
 			$sap_supervisor = 1;
 		}
-		//echo $this->profile_model->change_date_to_mysql_style($_POST['DOB']);exit;
+		
 		$data = array(
                 'first_name' 			=> 	$_POST['first_name'],
                 //'last_name'  			=> 	$_POST['last_name'],
@@ -8976,7 +8965,7 @@ print_r('</pre>');
                 'mobile'				=>  $_POST['mobile'],
 				'landline'				=> 	$_POST['landline'],
 				'address'				=> 	$_POST['address'],
-                'DOB'					=>  $this->profile_model->change_date_to_mysql_style($_POST['DOB']),
+                'DOB'					=>  date('Y-m-d',strtotime($_POST['DOB'])),
                 'department' 			  => 	$_POST['department'],
 				'fk_city_id'			  => 	$_POST['cities'],
                 'fk_office_id'			=>  $_POST['offices'],
@@ -8988,7 +8977,7 @@ print_r('</pre>');
 				'passport'			   		=>  $_POST['passport'],
 				'company_mobile'		 	=>  $_POST['company_mobile'],
 				'company_email'		  		=>  $_POST['company_email'],
-				'date_of_joining'			=>  $this->profile_model->change_date_to_mysql_style($_POST['date_of_joining']),
+				'date_of_joining'			=>  date('Y-m-d',strtotime($_POST['date_of_joining'])),
 				'is_laptop_provided'	 	=>  $_POST['is_laptop_provided'],
 				'laptop_brand'		   		=>  $_POST['laptop_brand'],
 				'laptop_serial'		  		=>  $_POST['laptop_serial'],
@@ -9039,8 +9028,8 @@ print_r('</pre>');
 								`fk_engineer_id`			=	'".$new_user_id."',
 								`fk_user_id`  				=	'".$new_user_id."',
 								`fk_brand_id`				=	'".$_POST['training_equipment'][$key]."',
-								`start_date`				=	'".$this->profile_model->change_date_to_mysql_style($_POST['training_date_from'][$key])."',
-								`end_date`					=	'".$this->profile_model->change_date_to_mysql_style($_POST['training_date_to'][$key])."',
+								`start_date`				=	'".date('Y-m-d',strtotime($_POST['training_date_from'][$key]))."',
+								`end_date`					=	'".date('Y-m-d',strtotime($_POST['training_date_to'][$key]))."',
 								`location`					=	'".$_POST['training_location'][$key]."',
 								`bill_of_training`			=	'".$_POST['bill_of_training'][$key]."',
 								`expense`					=	'".$_POST['training_expence'][$key]."'
@@ -9123,14 +9112,14 @@ print_r('</pre>');
 	  }
     }
 	public function updateuser() {
-		$this->load->model("profile_model");
+		
 		$data = array(
                 'first_name' 	=> 	$_POST['first_name'],
 				'email'  		=> 	$_POST['email'],
                 'mobile'		=> 	$_POST['mobile'],
 				'landline' 		=> 	$_POST['landline'],
 				'address'  		=> 	$_POST['address'],
-				'DOB'  			=> 	$this->profile_model->change_date_to_mysql_style($_POST['DOB']),/*
+				'DOB'  			=> 	date('Y-m-d',strtotime($_POST['DOB'])),/*
 				'fk_office_id'	=> 	$_POST['office'],
                 'department'	=> 	$_POST['department'],
                 'fk_city_id' 	=> 	$_POST['fk_city_id'],
@@ -9144,7 +9133,7 @@ print_r('</pre>');
 	
 	//inser Employee here
 	public function insert_employee() {
-			$this->load->model("profile_model");
+			
 			$userrole = $_POST['userrole'];
 			$sap_supervisor = 0;
 			if ($userrole=="SAP Supervisor") {
@@ -9160,7 +9149,7 @@ print_r('</pre>');
                 'mobile'					=>  $_POST['mobile'],
 				'landline'					=> 	$_POST['landline'],
 				'address'					=> 	$_POST['address'],
-                'DOB'						=>  $this->profile_model->change_date_to_mysql_style($_POST['DOB']),
+                'DOB'						=>  date('Y-m-d',strtotime($_POST['DOB'])),
                 'department' 				=> 	$_POST['department'],
 				'fk_city_id'				=> 	$_POST['cities'],
                 'fk_office_id'				=>  $_POST['offices'],
@@ -9170,7 +9159,7 @@ print_r('</pre>');
 				'passport'					=>  $_POST['passport'],
 				'company_mobile'			=>  $_POST['company_mobile'],
 				'company_email'				=>  $_POST['company_email'],
-				'date_of_joining'			=>  $this->profile_model->change_date_to_mysql_style($_POST['date_of_joining']),
+				'date_of_joining'			=>  date('Y-m-d',strtotime($_POST['date_of_joining'])),
 				'is_laptop_provided'		=>  $_POST['is_laptop_provided'],
 				'laptop_brand'				=>  $_POST['laptop_brand'],
 				'laptop_serial'				=>  $_POST['laptop_serial'],
@@ -9221,8 +9210,8 @@ print_r('</pre>');
 								`fk_engineer_id`			=	'".$new_user_id."',
 								`fk_user_id`  				=	'".$new_user_id."',
 								`fk_brand_id`				=	'".$_POST['training_equipment'][$key]."',
-								`start_date`				=	'".$this->profile_model->change_date_to_mysql_style($_POST['training_date_from'][$key])."',
-								`end_date`					=	'".$this->profile_model->change_date_to_mysql_style($_POST['training_date_to'][$key])."',
+								`start_date`				=	'".date('Y-m-d',strtotime($_POST['training_date_from'][$key]))."',
+								`end_date`					=	'".date('Y-m-d',strtotime($_POST['training_date_to'][$key]))."',
 								`location`					=	'".$_POST['training_location'][$key]."',
 								`bill_of_training`			=	'".$_POST['bill_of_training'][$key]."',
 								`expense`					=	'".$_POST['training_expence'][$key]."'
