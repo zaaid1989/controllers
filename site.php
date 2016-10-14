@@ -91,7 +91,6 @@ class Site extends CI_Controller {
 							$str = ""; // for explanation of fine generated
 							if ($count_dvr ==0) $str .= "DVR ($previous_date), ";
 							if ($count_vs ==0) $str .= "VS ($td) ";
-							$this->load->model("profile_model");
 							$query="insert  into `tbl_fine` SET 	
 								  `fk_employee_id`				='".$user['id']."',
 								  `fk_fine_code_id`				='1',

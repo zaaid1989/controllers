@@ -141,7 +141,6 @@ class Profile extends CI_Controller {
 			$userrole = "Salesman";
 			$sap_supervisor = 1;
 		}
-		//echo $this->profile_model->change_date_to_mysql_style($_POST['DOB']);exit;
 		$data = array(
                 'first_name' 			=> 	$_POST['first_name'],
                 //'last_name'  			=> 	$_POST['last_name'],
@@ -150,7 +149,7 @@ class Profile extends CI_Controller {
                 'mobile'				=>  $_POST['mobile'],
 				'landline'				=> 	$_POST['landline'],
 				'address'				=> 	$_POST['address'],
-                'DOB'					=>  $this->profile_model->change_date_to_mysql_style($_POST['DOB']),
+                'DOB'					=>  date('Y-m-d',strtotime($_POST['DOB'])),
                 'department' 			  => 	$_POST['department'],
 				'fk_city_id'			  => 	$_POST['cities'],
                 'fk_office_id'			=>  $_POST['offices'],
@@ -162,7 +161,7 @@ class Profile extends CI_Controller {
 				'passport'			   		=>  $_POST['passport'],
 				'company_mobile'		 	=>  $_POST['company_mobile'],
 				'company_email'		  		=>  $_POST['company_email'],
-				'date_of_joining'			=>  $this->profile_model->change_date_to_mysql_style($_POST['date_of_joining']),
+				'date_of_joining'			=>  date('Y-m-d',strtotime($_POST['date_of_joining'])),
 				'is_laptop_provided'	 	=>  $_POST['is_laptop_provided'],
 				'laptop_brand'		   		=>  $_POST['laptop_brand'],
 				'laptop_serial'		  		=>  $_POST['laptop_serial'],
@@ -213,8 +212,8 @@ class Profile extends CI_Controller {
 								`fk_engineer_id`			=	'".$new_user_id."',
 								`fk_user_id`  				=	'".$new_user_id."',
 								`fk_brand_id`				=	'".$_POST['training_equipment'][$key]."',
-								`start_date`				=	'".$this->profile_model->change_date_to_mysql_style($_POST['training_date_from'][$key])."',
-								`end_date`					=	'".$this->profile_model->change_date_to_mysql_style($_POST['training_date_to'][$key])."',
+								`start_date`				=	'".date('Y-m-d',strtotime($_POST['training_date_from'][$key]))."',
+								`end_date`					=	'".date('Y-m-d',strtotime($_POST['training_date_to'][$key]))."',
 								`location`					=	'".$_POST['training_location'][$key]."',
 								`bill_of_training`			=	'".$_POST['bill_of_training'][$key]."',
 								`expense`					=	'".$_POST['training_expence'][$key]."'
@@ -304,7 +303,7 @@ class Profile extends CI_Controller {
                 'mobile'		=> 	$_POST['mobile'],
 				'landline' 		=> 	$_POST['landline'],
 				'address'  		=> 	$_POST['address'],
-				'DOB'  			=> 	$this->profile_model->change_date_to_mysql_style($_POST['DOB']),/*
+				'DOB'  			=> 	date('Y-m-d',strtotime($_POST['DOB'])),/*
 				'fk_office_id'	=> 	$_POST['office'],
                 'department'	=> 	$_POST['department'],
                 'fk_city_id' 	=> 	$_POST['fk_city_id'],
@@ -334,7 +333,7 @@ class Profile extends CI_Controller {
                 'mobile'					=>  $_POST['mobile'],
 				'landline'					=> 	$_POST['landline'],
 				'address'					=> 	$_POST['address'],
-                'DOB'						=>  $this->profile_model->change_date_to_mysql_style($_POST['DOB']),
+                'DOB'						=>  date('Y-m-d',strtotime($_POST['DOB'])),
                 'department' 				=> 	$_POST['department'],
 				'fk_city_id'				=> 	$_POST['cities'],
                 'fk_office_id'				=>  $_POST['offices'],
@@ -344,7 +343,7 @@ class Profile extends CI_Controller {
 				'passport'					=>  $_POST['passport'],
 				'company_mobile'			=>  $_POST['company_mobile'],
 				'company_email'				=>  $_POST['company_email'],
-				'date_of_joining'			=>  $this->profile_model->change_date_to_mysql_style($_POST['date_of_joining']),
+				'date_of_joining'			=>  date('Y-m-d',strtotime($_POST['date_of_joining'])),
 				'is_laptop_provided'		=>  $_POST['is_laptop_provided'],
 				'laptop_brand'				=>  $_POST['laptop_brand'],
 				'laptop_serial'				=>  $_POST['laptop_serial'],
@@ -395,8 +394,8 @@ class Profile extends CI_Controller {
 								`fk_engineer_id`			=	'".$new_user_id."',
 								`fk_user_id`  				=	'".$new_user_id."',
 								`fk_brand_id`				=	'".$_POST['training_equipment'][$key]."',
-								`start_date`				=	'".$this->profile_model->change_date_to_mysql_style($_POST['training_date_from'][$key])."',
-								`end_date`					=	'".$this->profile_model->change_date_to_mysql_style($_POST['training_date_to'][$key])."',
+								`start_date`				=	'".date('Y-m-d',strtotime($_POST['training_date_from'][$key]))."',
+								`end_date`					=	'".date('Y-m-d',strtotime($_POST['training_date_to'][$key]))."',
 								`location`					=	'".$_POST['training_location'][$key]."',
 								`bill_of_training`			=	'".$_POST['bill_of_training'][$key]."',
 								`expense`					=	'".$_POST['training_expence'][$key]."'

@@ -690,7 +690,6 @@ class Sys extends CI_Controller {
     }
 	
 	public function insert_strategy() {
-		$this->load->model("profile_model");
 		$query ="INSERT INTO tbl_project_strategy SET 				  
 								`target_date`				=	'".date('Y-m-d',strtotime($_POST['target_date']))."',
 								`investment`				=	'".$_POST['investment']."',
@@ -730,7 +729,6 @@ class Sys extends CI_Controller {
     }
 	
 	public function disapprove_strategy($id) {
-		$this->load->model("profile_model");
 				$query ="UPDATE tbl_project_strategy SET 
 								`strategy_status`			=	'4'
 						WHERE 	`pk_project_strategy_id`	=	'".$id."'";
@@ -813,7 +811,6 @@ class Sys extends CI_Controller {
 
     public function delete_leave($id) {
 
-        $this->load->model("profile_model");
         $delete_allowed = '0';
         $lq 			= $this->db->query("select tbl_leaves.*,user.total_leaves from tbl_leaves
 		LEFT JOIN user ON tbl_leaves.fk_employee_id = user.id
@@ -1264,7 +1261,6 @@ class Sys extends CI_Controller {
 				}
 				else
 				{
-					$this->load->model('profile_model');
 					$start_date = strtotime($_POST['start_date']);
 					$end_date = strtotime($_POST['end_date']);
 					$datediff = $end_date - $start_date;
@@ -3474,7 +3470,7 @@ class Sys extends CI_Controller {
 			 $status_old = $instrument[0]['status'];
 			 $office_old = $instrument[0]['fk_office_id'];
 			 $main_equipment_old = $instrument[0]['main_equipment'];
-			 $this->load->model("profile_model");
+			 
 			 // Insert
 			 $query="INSERT INTO tbl_instruments_log SET 				  
 								`fk_client_id_old`		=	'".$customer_old."',
@@ -3562,8 +3558,6 @@ class Sys extends CI_Controller {
 	}
 	public function pef_insert()
 	{
-			
-			$this->load->model("profile_model");
 			 $query="insert  `tbl_pef` SET 	
 			  `fk_engineer_id`							='".$_POST['fk_engineer_id']."',
 			  `fk_evaluater_id`							='".$_POST['fk_evaluater_id']."',
@@ -4180,7 +4174,7 @@ class Sys extends CI_Controller {
 								`status`				=	'".$_POST['status']."',
 								`details`				=	'".$_POST['description']."'
 								";
-			  //echo $query;exit; $this->profile_model->change_date_to_mysql_style for dates important missing in above  by zaaid
+			  
 			  $dbres = $this->db->query($query);
 			  //
 			  
@@ -4213,7 +4207,7 @@ class Sys extends CI_Controller {
 								`status`				=	'".$_POST['status']."',
 								`details`				=	'".$_POST['description']."'
 								";
-			  //echo $query;exit; $this->profile_model->change_date_to_mysql_style for dates important missing in above  by zaaid
+			  
 			  $dbres = $this->db->query($query);
 			  //
 			  
@@ -4246,7 +4240,6 @@ class Sys extends CI_Controller {
 	{
 			$fk_complaint_id=$_POST['fk_complaint_id'];
 			//$fk_complaint_id=24;
-			 $this->load->model("profile_model");
 			$query="insert into tbl_qc_data SET 				  
 								`fk_complaint_id`		=	'".$_POST['fk_complaint_id']."',								
 								`calibration_data`		=	'".urlencode($_POST['calibration_data'])."',
@@ -4263,10 +4256,6 @@ class Sys extends CI_Controller {
 	
 	public function update_ts_report_supervisor()
 	{
-			 $this->load->model("profile_model");
-			 
-			 
-			 
 			 $query="UPDATE tbl_complaints SET ";		
 								
 								
@@ -6870,7 +6859,6 @@ print_r('</pre>');
     }
 	
 	public function add_part_received() {
-		  $this->load->model("profile_model");
 		  $date = date('Y-m-d H:i:s');
 		
 		  $dc_type 	=	"in";
@@ -6985,12 +6973,12 @@ print_r('</pre>');
 	}
 	public function spare_part_stock_entry_insert_new() {
 	/*
-		$this->load->model("profile_model");
+		
 		$invoice_date	=	"0000-00-00 00:00:00";
 		if ($_POST['invoice_date'] != "")
-			$invoice_date	=	$this->profile_model->change_date_to_mysql_style($_POST['invoice_date']);
+			$invoice_date	=	date('Y-m-d',strtotime($_POST['invoice_date']));
 		if ($_POST['date'] != "")
-			$date	=	$this->profile_model->change_date_to_mysql_style($_POST['date']);
+			$date	=	date('Y-m-d',strtotime($_POST['date']));
 		else $date = date('Y-m-d H:i:s');
 		$dbres = $this->db->query("UPDATE tbl_parts SET `order_status`='No Order Booked' WHERE pk_part_id = '".$_POST['part_number']."'");
 		
@@ -8835,8 +8823,8 @@ print_r('</pre>');
 	public function profile()
 	{
 		$userid=$this->session->userdata('userid');
-		$this->load->model('profile_model');
-		$profiledata = $this->profile_model->userdata($userid);
+		$this->load->model('complaint_model');
+		$profiledata = $this->complaint_model->userdata($userid);
         $this->load->view('sys/userprofile', array("profiledata" => $profiledata));
 	}
 	public function updateuserimage()
@@ -8845,8 +8833,8 @@ print_r('</pre>');
             //echo "sanaullah";exit;
         } else {
 			
-            $this->load->model("profile_model");
-            $get_users_lists = $this->profile_model->view_user_model($this->session->userdata('userid'));
+            $this->load->model("complaint_model");
+            $get_users_lists = $this->complaint_model->view_user_model($this->session->userdata('userid'));
             //echo $get_users_lists[0]["id"];exit;
 			if($get_users_lists[0]["image"]!="")
 			{
@@ -8895,8 +8883,8 @@ print_r('</pre>');
 		if($this->form_validation->run() == FALSE)
 		  {
 			  $userid=$this->session->userdata('userid');
-			  $this->load->model('profile_model');
-			  $profiledata = $this->profile_model->userdata($userid);
+			  $this->load->model('complaint_model');
+			  $profiledata = $this->complaint_model->userdata($userid);
 			  $this->load->view('sys/userprofile', array("profiledata" => $profiledata));
 		  }
 		else
@@ -8904,14 +8892,14 @@ print_r('</pre>');
 			  $data = array(
                 'password' => $_POST['password']
             	);
-			$this->load->model("profile_model");
-			$result = $this->profile_model->update_user($data);
+			$this->load->model("complaint_model");
+			$result = $this->complaint_model->update_user($data);
 			redirect(site_url() . 'sys/profile?msg_pass=success');
 		  }
 	}
 	public function get_users() {
-        $this->load->model("profile_model");
-        $get_users_lists = $this->profile_model->get_users_model();
+        $this->load->model("complaint_model");
+        $get_users_lists = $this->complaint_model->get_users_model();
         $this->load->view('sys/users', array("get_users_lists" => $get_users_lists));
     }
 	public function get_employees() {
@@ -8919,8 +8907,8 @@ print_r('</pre>');
 		{
 			show_404();
 		}
-		$this->load->model("profile_model");
-        $get_users_lists = $this->profile_model->get_all_employee_model();
+		$this->load->model("complaint_model");
+        $get_users_lists = $this->complaint_model->get_all_employee_model();
         $this->load->view('sys/employees', array("get_users_lists" => $get_users_lists));
     }
 	public function add_user() {
@@ -8943,13 +8931,13 @@ print_r('</pre>');
 		{
 			show_404();
 		}
-        $this->load->model("profile_model");
-        $get_employee_lists = $this->profile_model->get_employee_model($employee_id);
+        $this->load->model("complaint_model");
+        $get_employee_lists = $this->complaint_model->get_employee_model($employee_id);
         $this->load->view('sys/update_employee', array("get_employee_lists" => $get_employee_lists));
     }
 	public function run_update_employee($employee_id) {
 		
-		$this->load->model("profile_model");
+		$this->load->model("complaint_model");
 		$userrole = $_POST['userrole'];
 		$sap_supervisor = 0;
 		if ($userrole=="SAP Supervisor") {
@@ -8994,7 +8982,7 @@ print_r('</pre>');
 				'mobile_quote'				=>  $_POST['mobile_quote'],
 				'bike_number'				=>  $_POST['bike_number']
             );
-        $result = $this->profile_model->update_employee_model($data,$employee_id);
+        $result = $this->complaint_model->update_employee_model($data,$employee_id);
 		//update training and document
 		$new_user_id = $employee_id;
 
@@ -9042,8 +9030,8 @@ print_r('</pre>');
     }
 	//
 	public function insert_user() {
-        $this->load->model('profile_model');
-		$query = $this->profile_model->check_user();
+        $this->load->model('complaint_model');
+		$query = $this->complaint_model->check_user();
 		if($query)
 		  {
         	 $data=array('message'=>"User Already Exist");
@@ -9084,8 +9072,8 @@ print_r('</pre>');
             );
 			//if(isset($_POST['Active'])){  array_push($data, ('enabled' 	 => $_POST['Active'])); }
 			//print_r($data);exit;
-            $this->load->model("profile_model");
-            $result = $this->profile_model->insert_users($data);
+            $this->load->model("complaint_model");
+            $result = $this->complaint_model->insert_users($data);
             echo $this->db->insert_id();
 
             /*             * * ** */
@@ -9126,8 +9114,8 @@ print_r('</pre>');
                 'userrole' 		=> 	$_POST['userrole'],*/
 				'id'			=> 	$this->session->userdata('userid')
             );
-        $this->load->model("profile_model");
-        $result = $this->profile_model->update_user($data);
+        $this->load->model("complaint_model");
+        $result = $this->complaint_model->update_user($data);
         redirect(site_url() . "sys/profile?msg=success");
     }
 	
@@ -9179,8 +9167,8 @@ print_r('</pre>');
             );
 			//if(isset($_POST['Active'])){  array_push($data, ('enabled' 	 => $_POST['Active'])); }
 			//print_r($data);exit;
-            $this->load->model("profile_model");
-            $result = $this->profile_model->insert_users($data);
+            $this->load->model("complaint_model");
+            $result = $this->complaint_model->insert_users($data);
             $new_user_id = $this->db->insert_id();
 
            
