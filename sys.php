@@ -4803,7 +4803,7 @@ class Sys extends CI_Controller {
 
     	$query="update tbl_complaints SET status='Shifted', assign_to='".$this->input->post('assign_to')."', fk_office_id='".$s."' where pk_complaint_id='".$this->input->post('complaint_id')."'";
 		$dbres = $this->db->query($query);
-		redirect(site_url() . 'sys/shift_sys/'.$this->input->post('complaint_id')."?msg=success");
+		redirect(site_url() . 'sys/shift_complaint/'.$this->input->post('complaint_id')."?msg=success");
         
     }
 
