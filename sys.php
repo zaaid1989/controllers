@@ -5764,6 +5764,7 @@ class Sys extends CI_Controller {
 										`ts_number`  			=	'".$disp_no."',
 										`date`					=	'".date('Y-m-d H:i:s')."',
 										`last_ok_time`			=	'".date('Y-m-d H:i:s')."',
+										`sprf_date`			=	'".date('Y-m-d H:i:s')."',
 										`status`				= 	'Pending Registration',
 										`software_generated`	= 	'1',
 										`complaint_nature`		=	'complaint'
