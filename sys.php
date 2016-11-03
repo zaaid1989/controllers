@@ -1705,9 +1705,10 @@ class Sys extends CI_Controller {
     }
 	
 	public function delete_complaint($id) {
+		
 		$query="delete from  tbl_complaints  where `pk_complaint_id` =$id";
 			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'sys/director_view_complaints?msg_delete=success');
+              redirect(site_url() . 'sys/'.$_GET["redirect"].'?msg_delete=success');
     }
 	
 	public function delete_pm($id) {
@@ -1830,8 +1831,8 @@ class Sys extends CI_Controller {
 		if ($this->uri->segment(3) == "") show_404(); 
 		$complaint_id	=	$this->uri->segment(3);
 		if ($this->session->userdata('userid')!=""){
-			
-			$employee_territory		=	$this->session->userdata('territory');
+			//$employee_territory		=	$this->session->userdata('territory');
+			$employee_territory		=	explode(',',$this->session->userdata('territory'));
 			$employee_id			=	$this->session->userdata('userid');
 			$employee_role			=	$this->session->userdata('userrole');
 		}
@@ -1858,7 +1859,8 @@ class Sys extends CI_Controller {
 				}
 			}
 			elseif ($employee_role	==	"Supervisor"){
-				if ($office_id != $employee_territory) show_404();
+				//if ($office_id != $employee_territory) show_404();
+				if (! in_array($office_id,explode(',',$this->session->userdata('territory'))) ) show_404();
 				else {
 					$query="UPDATE tbl_comments SET `read_supervisor`='1' where `fk_complaint_id` ='".$complaint_id."'";
 					$query_db=$this->db->query($query);
@@ -1877,6 +1879,8 @@ class Sys extends CI_Controller {
 				$query_db=$this->db->query($query);
 			}
 		} 
+		//echo $this->session->userdata('username');
+		//print_r($employee_territory);
 		$this->load->view('sys/comments');
 	}
 	
@@ -1922,7 +1926,7 @@ class Sys extends CI_Controller {
 	
 	public function director_view_complaints()
 	{
-        if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
+        if($this->session->userdata('userrole')=='')
 		{
 			show_404();
 		}
@@ -1930,6 +1934,29 @@ class Sys extends CI_Controller {
         $get_complaint_list = $this->complaint_model->get_complaint_model();
 		$this->load->view('sys/director_view_complaints', array("get_complaint_list" => $get_complaint_list));
 	}
+	
+	public function complaints_closed()
+	{
+        if($this->session->userdata('userrole')=='')
+		{
+			show_404();
+		}
+		$this->load->model("complaint_model");
+        $get_complaint_list = $this->complaint_model->get_complaint_model();
+		$this->load->view('sys/complaints_closed', array("get_complaint_list" => $get_complaint_list));
+	}
+	
+	public function complaints_closed_engineer()
+	{
+        if($this->session->userdata('userrole')=='')
+		{
+			show_404();
+		}
+		$this->load->model("complaint_model");
+        $get_complaint_list = $this->complaint_model->get_complaint_model();
+		$this->load->view('sys/complaints_closed_engineer', array("get_complaint_list" => $get_complaint_list));
+	}
+	
 	public function director_view_pm()
 	{
         if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
