@@ -197,16 +197,18 @@ class Sys extends CI_Controller {
 	}
 	
 	public function ts_report_supervisor()
-	{
+	{	/*
 		$query="select `fk_office_id` from user where `id` ='".$this->session->userdata('userid')."'";
 		$query_db=$this->db->query($query);
-		$result=$query_db->result_array();
+		$result=$query_db->result_array(); */
 		////////////////////////////////////
 		$query="select `fk_office_id` from tbl_complaints where `pk_complaint_id` ='".$this->uri->segment(3)."'
 		AND `complaint_nature`='complaint'";
 		$query_db=$this->db->query($query);
-		$user_complaints=$query_db->result_array();			
-		if ($user_complaints[0]['fk_office_id']!=$result[0]['fk_office_id'])
+		$user_complaints=$query_db->result_array();	
+		
+		//if ($user_complaints[0]['fk_office_id']!=$result[0]['fk_office_id'])
+		if (! in_array($user_complaints[0]['fk_office_id'],explode(',',$this->session->userdata('territory'))) ) 
 		{
 			show_404();
 		}
@@ -281,10 +283,10 @@ class Sys extends CI_Controller {
 		$this->load->view('sys/ts_report_director');
 	}
 	public function pm_form() {
-		$query="select `fk_office_id` from user where `id` ='".$this->session->userdata('userid')."'";
+	/*	$query="select `fk_office_id` from user where `id` ='".$this->session->userdata('userid')."'";
 		$query_db=$this->db->query($query);
 		$result=$query_db->result_array();
-		$supervisor_office	=	$result[0]['fk_office_id'];
+		$supervisor_office	=	$result[0]['fk_office_id']; */
 		
 		$query="select `assign_to` from tbl_complaints where `pk_complaint_id` ='".$this->uri->segment(3)."'
 		AND `complaint_nature`='PM'";
@@ -302,7 +304,8 @@ class Sys extends CI_Controller {
 			show_404();
 		}
 		
-		if ($this->session->userdata('userrole')=='Supervisor' && $complaint_office != $supervisor_office)
+		//if ($this->session->userdata('userrole')=='Supervisor' && $complaint_office != $supervisor_office)
+		if ($this->session->userdata('userrole')=='Supervisor' && (! in_array($complaint_office,explode(',',$this->session->userdata('territory'))) ) )
 		{
 			show_404();
 		}
@@ -1576,7 +1579,8 @@ class Sys extends CI_Controller {
 		$query_db=$this->db->query($query);
 		$user_complaints=$query_db->result_array();
 		if (sizeof($user_complaints)>0) {
-			if ($user_complaints[0]['fk_office_id']!=$result[0]['fk_office_id'] && $this->session->userdata('userrole')=='Supervisor')
+			//if ($user_complaints[0]['fk_office_id']!=$result[0]['fk_office_id'] && $this->session->userdata('userrole')=='Supervisor')
+			if ($this->session->userdata('userrole')=='Supervisor' && (! in_array($user_complaints[0]['fk_office_id'],explode(',',$this->session->userdata('territory'))) ) )
 			{
 				show_404();
 			}
@@ -4575,7 +4579,8 @@ class Sys extends CI_Controller {
 		}
 		else $client_temp = $_POST['customer'];
 		 //$dbres2 = $this->db->query("select * from tbl_cities where pk_city_id = '".$_POST['city']."'");
-		 $dbres2 = $this->db->query("select * from user where id = '".$_POST['assign_to']."'");
+		 //$dbres2 = $this->db->query("select * from user where id = '".$_POST['assign_to']."'");
+		 $dbres2 = $this->db->query("select * from tbl_clients where pk_client_id = '".$client_temp."'");
 		 $office = $dbres2->result_array();
 		$data = array(
 						'ts_number' 					=> 	$_POST['ts_number'],
@@ -4687,7 +4692,10 @@ class Sys extends CI_Controller {
 		 //$dbres2 = $this->db->query("select * from user where id = '".$_POST['assign_to']."'");
 		 //$office = $dbres2->result_array();
 		 // I am adding these below after a long time as office should be according to the user complaint being assigned, adding office at the end of first block of query too
-		 $dbres2 = $this->db->query("select * from user where id = '".$_POST['assign_to']."'");
+		 // Now again I am changing the office according to customer as a user can have multiple offices
+		 //$dbres2 = $this->db->query("select * from user where id = '".$_POST['assign_to']."'");
+		 // NEW update, changing office according to the equipment as it is the id in the complaint submission too
+		 $dbres2 = $this->db->query("select fk_office_id from tbl_instruments where pk_instrument_id = '".$_POST['instrument']."'");
 		 $office = $dbres2->result_array();
 		$data = array(
 						'ts_number' 					=> 	$_POST['ts_number'],
@@ -4701,7 +4709,7 @@ class Sys extends CI_Controller {
 						'phone'							=>  $_POST['mobile'],
 						'problem_type'					=> 	$_POST['problem_type'],
 						'assign_to' 					=> 	$_POST['assign_to'],
-						'fk_office_id'		 			=> 	$office[0]['fk_office_id'],
+						'fk_office_id'		 			=> 	$_POST['office_hidden_id'],
 						
 						
 						'instrument_prob'				=> 	$_POST['instrument_prob'],
@@ -4745,12 +4753,18 @@ class Sys extends CI_Controller {
 		{
 			$newdelevrydate = date('Y-m-d',strtotime($_POST['call_date']));
 		}
+		$client_temp = '';
+		if (substr($_POST['customer'],0,1)=='o') {
+			$temp_office = explode('_',$_POST['customer']);
+			$client_temp = '-'.$temp_office[1];
+		}
+		else $client_temp = $_POST['customer'];
 		 //$dbres2 = $this->db->query("select * from tbl_cities where pk_city_id = '".$_POST['city']."'");
 		$data = array(
 						'ts_number' 					=> 	$_POST['ts_number'],
 						'caller_name'  					=> 	$_POST['caller_name'],
 						'date'							=> 	$newdelevrydate.' '.$_POST['call_time'],
-						'fk_customer_id'				=> 	$_POST['customer'],
+						'fk_customer_id'				=> 	$client_temp,
 						'fk_city_id'		 			=> 	$_POST['city'],
 						'problem_summary'				=>  $problem_summery,
 						'status'						=> 	"Pending Registration",
@@ -4819,16 +4833,18 @@ class Sys extends CI_Controller {
     public function shift_complaint_update() {
     	
     	$assign_to = $this->input->post('assign_to');
+		$s = $this->input->post('fk_office_id');
     	//echo "hi ".$this->input->post('complaint_id') . "\n";
-
+/*
     	$q 	=	"select fk_office_id from user WHERE id='" . $assign_to ."'";	
     	$r 	=		$this->db->query($q);
     	$result = 	$r->result_array();
     	$s 		=	$result[0]['fk_office_id'];
-
+*/
     	
 
     	$query="update tbl_complaints SET status='Shifted', assign_to='".$this->input->post('assign_to')."', fk_office_id='".$s."' where pk_complaint_id='".$this->input->post('complaint_id')."'";
+		//$query="update tbl_complaints SET status='Shifted', assign_to='".$this->input->post('assign_to')."' where pk_complaint_id='".$this->input->post('complaint_id')."'";
 		$dbres = $this->db->query($query);
 		redirect(site_url() . 'sys/shift_complaint/'.$this->input->post('complaint_id')."?msg=success");
         
@@ -4964,6 +4980,28 @@ class Sys extends CI_Controller {
 			echo '</option>';
 		}
         echo '</select>';
+	}
+	
+	public function teritory_based_on_engineer_ajax()
+	{
+		$userid=$this->input->post('userid');
+		$oq = $this->db->query("SELECT fk_office_id FROM user WHERE id ='".$userid."'");
+        $or = $oq->result_array();
+		$offices = explode (',',$or[0]['fk_office_id']);
+		echo '<label class="col-md-3 control-label">Office</label>
+                    <div class="col-md-6">';
+		echo '<select class="form-control" name="fk_office_id">';
+		foreach($offices as $office)
+		{
+			$oq = $this->db->query("SELECT * FROM tbl_offices WHERE pk_office_id='".$office['fk_office_id']."'");
+			$or = $oq->result_array();
+			echo '<option value="';
+			echo $or[0]["pk_office_id"];
+			echo '">';
+			echo $or[0]["office_name"];
+			echo '</option>';
+		}
+        echo '</select></div>';
 	}
 	//
 	public function vendor_based_on_product_ajax()
@@ -5166,11 +5204,12 @@ class Sys extends CI_Controller {
 		$nnm=$nn->result_array();
 		if($this->input->post('problem_type')=='equipment')
 		{
-        	$get_complaint_list = $this->db->query("select * from user where fk_office_id='".$nnm[0]['fk_office_id']."' AND userrole IN ('FSE','Supervisor') AND delete_status='0'  ORDER BY  `fk_office_id` ,  `userrole` ASC ");
+        	//$get_complaint_list = $this->db->query("select * from user where fk_office_id='".$nnm[0]['fk_office_id']."' AND userrole IN ('FSE','Supervisor') AND delete_status='0'  ORDER BY  `fk_office_id` ,  `userrole` ASC ");
+			$get_complaint_list = $this->db->query("select * from user where FIND_IN_SET_X('".$nnm[0]['fk_office_id']."',fk_office_id) AND userrole IN ('FSE','Supervisor') AND delete_status='0'  ORDER BY  `fk_office_id` ,  `userrole` ASC ");
 		}
 		else
 		{
-			$get_complaint_list = $this->db->query("select * from user where fk_office_id='".$nnm[0]['fk_office_id']."' AND userrole IN ('FSE','Salesman','Supervisor') AND delete_status='0'  ORDER BY  `fk_office_id` ,  `userrole` ASC ");
+			$get_complaint_list = $this->db->query("select * from user where FIND_IN_SET_X('".$nnm[0]['fk_office_id']."',fk_office_id) AND userrole IN ('FSE','Salesman','Supervisor') AND delete_status='0'  ORDER BY  `fk_office_id` ,  `userrole` ASC ");
 		}
 		$yu=$get_complaint_list->result_array();
 		echo '<select name="assign_to" class="form-control nnn input-xlarge" required>';
@@ -5295,7 +5334,7 @@ class Sys extends CI_Controller {
 			
 		
 		
-		$get_complaint_list = $this->db->query("select * from user where fk_office_id='".$office_id."' AND userrole IN ('FSE','Salesman','Supervisor')  AND delete_status='0' ORDER BY  `fk_office_id` ,  `userrole` ASC ");
+		$get_complaint_list = $this->db->query("select * from user where FIND_IN_SET_X('".$office_id."',fk_office_id) AND userrole IN ('FSE','Salesman','Supervisor')  AND delete_status='0' ORDER BY  `fk_office_id` ,  `userrole` ASC ");
 		$yu=$get_complaint_list->result_array();
 		echo '<select name="assign_to" class="form-control nnn" required>';
 		echo '<option value="">---Select---</option>';
@@ -5318,7 +5357,7 @@ class Sys extends CI_Controller {
 		//
 		
 		
-		$get_complaint_list = $this->db->query("select * from user where fk_office_id='".$dbresResult[0]['fk_office_id']."' AND userrole IN ('FSE','Supervisor')  AND delete_status='0' ORDER BY  `fk_office_id` ,  `userrole` ASC ");
+		$get_complaint_list = $this->db->query("select * from user where FIND_IN_SET_X('".$dbresResult[0]['fk_office_id']."',fk_office_id) AND userrole IN ('FSE','Supervisor')  AND delete_status='0' ORDER BY  `fk_office_id` ,  `userrole` ASC ");
 		$yu=$get_complaint_list->result_array();
 		echo '<select name="assign_to" class="form-control nnn" required>';
 		echo '<option value="">---Select---</option>';
@@ -5432,7 +5471,7 @@ class Sys extends CI_Controller {
 		//
 		
 		
-		$get_complaint_list = $this->db->query("select * from user where fk_office_id='".$dbresResult[0]['fk_office_id']."' AND userrole IN ('FSE','Salesman','Supervisor')  AND delete_status='0' ORDER BY  `fk_office_id` ,  `userrole` ASC ");
+		$get_complaint_list = $this->db->query("select * from user where FIND_IN_SET_X('".$dbresResult[0]['fk_office_id']."',fk_office_id) AND userrole IN ('FSE','Salesman','Supervisor')  AND delete_status='0' ORDER BY  `fk_office_id` ,  `userrole` ASC ");
 		$yu=$get_complaint_list->result_array();
 		echo '<select name="assign_to" class="form-control nnn" required>';
 		echo '<option value="">---Select---</option>';
@@ -5628,7 +5667,7 @@ class Sys extends CI_Controller {
 	public function slect_office_ajax_id()
 	{
 		$instrument_id			=	$this->input->post('instrument_id');
-		$rrr				=	"select tbl_instruments.*,tbl_offices.office_name 
+		$rrr				=	"select tbl_instruments.*,tbl_offices.office_name,tbl_offices.pk_office_id 
 								from tbl_instruments 
 								LEFT JOIN tbl_offices ON tbl_instruments.fk_office_id = tbl_offices.pk_office_id
 								where pk_instrument_id = '".$instrument_id."' ";
@@ -8984,7 +9023,7 @@ print_r('</pre>');
                 'DOB'					=>  date('Y-m-d',strtotime($_POST['DOB'])),
                 'department' 			  => 	$_POST['department'],
 				'fk_city_id'			  => 	$_POST['cities'],
-                'fk_office_id'			=>  $_POST['offices'],
+                'fk_office_id'			=>  implode(',',$_POST['offices']),
 				'userrole'				=>  $userrole,
 				'sap_supervisor'		=>  $sap_supervisor,
 				'office_designation'	  =>  $_POST['office_designation'],
@@ -9168,7 +9207,7 @@ print_r('</pre>');
                 'DOB'						=>  date('Y-m-d',strtotime($_POST['DOB'])),
                 'department' 				=> 	$_POST['department'],
 				'fk_city_id'				=> 	$_POST['cities'],
-                'fk_office_id'				=>  $_POST['offices'],
+                'fk_office_id'				=>  implode(',',$_POST['offices']),
 				'userrole'					=>  $userrole,
 				'sap_supervisor'			=>  $sap_supervisor,
 				'nic'						=>  $_POST['nic'],
