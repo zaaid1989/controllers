@@ -24,49 +24,82 @@ class Products extends CI_Controller {
 	}
 	// Retive All Sent Messages
 	
+	public function insert_permissions()
+	{
+		echo '<table>';
+		for ($i=1;$i<=6;$i++) {
+			
+		$fk_role_id	= $i; // 1 Admin (Admin),2 Supervisor (Supervisor),3 FSE (FSE),4 Salesman (Salesman),5 Secratery (secratery),6 SAP supervisor (Salesman)
+		$page = 'view_report'; // page link
+		$page_title = 'View Report'; // Add, Edit, Delete
+		$fk_page_id = 0;
+		$permission = 'view'; // delete
+		$permission_title = 'View'; // Add, Edit, Delete
+		$permission_group = 'Daily Reports'; // Group
+		$allowed = 0;
+		
+		if($fk_role_id	== 1) $allowed = 1; // Admin
+		if($fk_role_id	== 2) $allowed = 1; // Supervisor
+		if($fk_role_id	== 3) $allowed = 1; // FSE
+		if($fk_role_id	== 4) $allowed = 1; // Salesman
+		if($fk_role_id	== 5) $allowed = 1; // Secratery
+		if($fk_role_id	== 6) $allowed = 1; // Sales Supervisor
+		echo '<tr>
+			<td>'.$fk_role_id.'</td>
+			<td>'.$page.'</td>
+			<td>'.$fk_page_id.'</td>
+			<td>'.$permission.'</td>
+			<td>'.$page_title.'</td>
+			<td>'.$permission_title.'</td>
+			<td>'.$permission_group.'</td>
+			<td>'.$allowed.'</td>
+		</tr>';
+		if ($allowed == 1) {
+		$this->db->query("INSERT INTO `mypmaonl_pma_enterprize`.`tbl_permissions` (`pk_permission_id`, `fk_role_id`, `page`, `fk_page_id`, `permission`, `page_title`, `permission_title`, `permission_group`, `allowed`) VALUES (NULL, $fk_role_id, '$page', $fk_page_id, '$permission', '$page_title', '$permission_title', '$permission_group', $allowed) ON DUPLICATE KEY UPDATE `allowed`= $allowed");
+		}
+		}
+		echo '</table>';
+		exit();
+	}
 	
 	// Delete Compose Message.
 	public function add_complaint()
 	{
-		if($this->session->userdata('userrole')!='secratery')
-		{
-			show_404();
-		}
-        $this->load->view('sys/add_complaint');
+        $this->load->view('add_complaint');
 	}
 	public function brands()
 	{
+		//Irrelevant
         $this->load->model("products_model");
         $get_brands_list = $this->products_model->get_brands_model();
 		$this->load->view('sys/brands', array("get_brands_list" => $get_brands_list));
 	}
 	public function instruments_view()
 	{
+		//Irrelevant
         $this->load->model("products_model");
         $get_instruments_list = $this->products_model->get_instruments_model();
 		$this->load->view('sys/instruments_view', array("get_instruments_list" => $get_instruments_list));
 	}
 	public function parts_view()
 	{
+		//Irrelevant
         $this->load->model("products_model");
         $get_parts_list = $this->products_model->get_parts_model();
 		$this->load->view('sys/parts_view', array("get_parts_list" => $get_parts_list));
 	}
 	public function spare_part_registration()
 	{
-		$this->load->view('sys/spare_part_registration');
+		$this->load_view('spare_part_registration');
 	}
 	public function spare_part_stock_entry()
 	{
-		$this->load->view('sys/spare_part_stock_entry');
+		$this->load_view('spare_part_stock_entry');
 	}
 	
 	public function part_transfer_office()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-			$this->load->view('sys/part_transfer_office');
-		else
-			show_404();
+		$this->load_view('part_transfer_office');
 	}
 	
 	public function add_order()

@@ -43,6 +43,7 @@ class Login extends CI_Controller
 					'userid' => $query[0]["id"],
 					'userrole' => $query[0]["userrole"],
 					'territory' => $query[0]["fk_office_id"],
+					'fk_role_id' => $query[0]["fk_role_id"],
 					'is_logged_in' => true
 					);
 					$this->session->set_userdata($data);

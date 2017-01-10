@@ -26,267 +26,304 @@ class Sys extends CI_Controller {
 		redirect('sys/operator_view_complaints');
 	}
 	
-	public function test_cron()
+	public function test_query()
+	{
+		$query = $this->db->query("SELECT * FROM tbl_sub_menu WHERE pre = 'sys'");
+		$result = $query->result_array();
+		echo '<table>';
+		for ($i=1;$i<=6;$i++) {
+		$fk_role_id	= $i; // 1 Admin (Admin), 2 Supervisor (Supervisor), 3 FSE (FSE), 4 Salesman (Salesman), 5 Secratery (secratery), 6 SAP supervisor (Salesman)
+		foreach ($result AS $submenu) {
+			$page = $submenu['post'];
+			$fk_page_id = $submenu['pk_sub_menu_id'];
+			$permission = 'view';
+			$page_title = $submenu['sub_menu'];
+			$allowed = 0;
+			if($fk_role_id	== 1) $allowed = $submenu['Admin'];
+			if($fk_role_id	== 2) $allowed = $submenu['Supervisor'];
+			if($fk_role_id	== 3) $allowed = $submenu['FSE'];
+			if($fk_role_id	== 4) $allowed = $submenu['Salesman'];
+			if($fk_role_id	== 5) $allowed = $submenu['secratery'];
+			if($fk_role_id	== 6) $allowed = $submenu['Salesman'];
+			echo '<tr>
+				<td>'.$fk_role_id.'</td>
+				<td>'.$page.'</td>
+				<td>'.$fk_page_id.'</td>
+				<td>'.$permission.'</td>
+				<td>'.$page_title.'</td>
+				<td>'.$allowed.'</td>
+			</tr>';
+			//$this->db->query("INSERT INTO `mypmaonl_pma_enterprize`.`tbl_permissions` (`pk_permission_id`, `fk_role_id`, `page`, `fk_page_id`, `permission`, `page_title`, `allowed`) VALUES (NULL, $fk_role_id, '$page', $fk_page_id, '$permission', '$page_title', $allowed) ON DUPLICATE KEY UPDATE `allowed`= $allowed");
+		}
+		}
+		echo '</table>';
+		exit();
+	}
+	
+	public function insert_permissions()
+	{
+		echo '<table>';
+		for ($i=1;$i<=6;$i++) {
+			
+		$fk_role_id	= $i; // 1 Admin (Admin),2 Supervisor (Supervisor),3 FSE (FSE),4 Salesman (Salesman),5 Secratery (secratery),6 SAP supervisor (Salesman)
+		$page = 'add_product'; // page link
+		$fk_page_id = 48;
+		$permission = 'view'; // delete
+		$page_title = 'Add Product'; // Add, Edit, Delete
+		$permission_title = 'Add Product'; // Add, Edit, Delete
+		$permission_group = 'Products'; // Group
+		$allowed = 0;
+		
+		if($fk_role_id	== 1) $allowed = 1;
+		if($fk_role_id	== 2) $allowed = 0;
+		if($fk_role_id	== 3) $allowed = 0;
+		if($fk_role_id	== 4) $allowed = 0;
+		if($fk_role_id	== 5) $allowed = 0;
+		if($fk_role_id	== 6) $allowed = 0;
+		echo '<tr>
+			<td>'.$fk_role_id.'</td>
+			<td>'.$page.'</td>
+			<td>'.$fk_page_id.'</td>
+			<td>'.$permission.'</td>
+			<td>'.$page_title.'</td>
+			<td>'.$permission_title.'</td>
+			<td>'.$permission_group.'</td>
+			<td>'.$allowed.'</td>
+		</tr>';
+		$this->db->query("INSERT INTO `mypmaonl_pma_enterprize`.`tbl_permissions` (`pk_permission_id`, `fk_role_id`, `page`, `fk_page_id`, `permission`, `page_title`, `permission_title`, `permission_group`, `allowed`) VALUES (NULL, $fk_role_id, '$page', $fk_page_id, '$permission', '$page_title', '$permission_title', '$permission_group', $allowed) ON DUPLICATE KEY UPDATE `allowed`= $allowed");
+		}
+		echo '</table>';
+		exit();
+	}
+	
+	public function if_allowed($permission,$page)
+	{
+		$allowed	=	0;
+		$fk_role_id	=	$this->session->userdata('fk_role_id');
+		$pq		=	$this->db->query("SELECT * FROM tbl_permissions WHERE page = '$page' AND permission = '$permission' AND fk_role_id = '$fk_role_id'");
+		$pr		=	$pq->result_array();
+		if (sizeof($pr)>0)
+			$allowed	=	$pr[0]['allowed'];
+		if ($allowed == '0') return FALSE; else return TRUE;
+	}
+	
+	public function load_view($page)
+	{
+		if ($this->if_allowed('view',$page)) $this->load->view('sys/'.$page);
+		else $this->load->view('sys/404');
+	}
+	
+	public function update_permission()
 	{
 		echo "zaaid";
+		$page = $this->input->post('page');
+		$permission = $this->input->post('permission');
+		$fk_role_id = $this->input->post('role');
+		$operation = $this->input->post('operation');
+		
+		$fk_page_id = $this->input->post('fk_page_id');
+		$page_title = $this->input->post('page_title');
+		$permission_title = $this->input->post('permission_title');
+		$permission_group = $this->input->post('permission_group');
+		if ($operation == "insert") {
+			$allowed = 1;
+			$this->db->query("INSERT INTO `mypmaonl_pma_enterprize`.`tbl_permissions` (`pk_permission_id`, `fk_role_id`, `page`, `fk_page_id`, `permission`, `page_title`, `permission_title`, `permission_group`, `allowed`) VALUES (NULL, $fk_role_id, '$page', $fk_page_id, '$permission', '$page_title', '$permission_title', '$permission_group', $allowed)");
+		}
+		if ($operation == "delete") {
+			$this->db->query("DELETE FROM `mypmaonl_pma_enterprize`.`tbl_permissions` WHERE page = '$page' AND permission = '$permission' AND fk_role_id = '$fk_role_id'");
+		}
+	}
+	
+	public function manage_roles()
+	{
+		$this->load_view('manage_roles');
+	}
+	
+	
+	public function load_edit_view($page)
+	{
+		if ($this->if_allowed('edit',$page)) $this->load->view('sys/'.$page);
+		else show_404();
+	}
+	
+	public function test_cron()
+	{
+		//echo "zaaid";
 		$query = "INSERT INTO tbl_tagg SET x=0.1,y=0.2,text='cron'";
 		$dbres = $this->db->query($query);
 	}
 	
+	public function kits()
+	{
+		$this->load->view('sys/kits');
+	}
+	public function mreport()
+	{
+		$this->load_view('mreport');
+		//$data['errors'] = array('errors');
+		//$errors =  array('errors');
+		//$this->load->vars(array('errors' => 0))
+		//$this->set('errors', $errors);
+		//$data_part13['errors'][] = (object) array('errors');
+
+		//if ($this->if_allowed('view','mreport')) $this->load->view('sys/mreport',$data_part13);
+		//else show_404();
+	}
+	public function report_comments()
+	{
+		$this->load_view('report_comments');
+	}
+	public function view_report()
+	{
+		$this->load_view('view_report');
+	}
+	public function chart_test()
+	{
+		$this->load_view('chart_test');
+	}
+	
 	public function chart_territory_complaints()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/chart_territory_complaints');
+		$this->load_view('chart_territory_complaints');
 	}
 	
 	public function chart_territory_task_distribution()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/chart_territory_task_distribution');
+		$this->load_view('chart_territory_task_distribution');
 	}
 	
 	public function chart_real_time_territory_pm()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/chart_real_time_territory_pm');
+		$this->load_view('chart_real_time_territory_pm');
 	}
 	
 	public function chart_real_time_territory_report()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/chart_real_time_territory_report');
+		$this->load_view('chart_real_time_territory_report');
 	}
 	
 	public function chart_sap_projects_review_prod()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/chart_sap_projects_review_prod');
+		$this->load_view('chart_sap_projects_review_prod');
 	}
 	public function chart_sap_projects_review_biz()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/chart_sap_projects_review_biz');
+		$this->load_view('chart_sap_projects_review_biz');
 	}
 	public function chart_sap_territory_visit_review()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/chart_sap_territory_visit_review');
+		$this->load_view('chart_sap_territory_visit_review');
 	}
 	public function chart_sap_territory_visit_review_projects_customers()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/chart_sap_territory_visit_review_projects_customers');
+		$this->load_view('chart_sap_territory_visit_review_projects_customers');
 	}
 	public function chart_ongoing_projects_target_date()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/chart_ongoing_projects_target_date');
+		$this->load_view('chart_ongoing_projects_target_date');
 	}
 	/*Zohaib*/
 	public function leaves_overview_all()
 	{ 
-	     if($this->session->userdata('userrole')!='secratery' && $this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-				$this->load->view('sys/leaves_overview_all');
+		$this->load_view('leaves_overview_all');
 	}
 	
 	public function strategy_history()
 	{ 
-	     if($this->session->userdata('userrole')!='secratery' && $this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='Salesman')
-		{
-			show_404();
-		}
-				$this->load->view('sys/strategy_history');
+	    $this->load_view('strategy_history');
 	}
 	
 	public function mainpage_z()
 	{ 
-	
-	     if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		
-		$this->load->view('sys/mainpage_z');
+		$this->load_view('mainpage_z');
 	}
 	/*Zohaib*/
 	
 	public function fine()
 	{
-		if($this->session->userdata('userrole')!='secratery' && $this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='Supervisor')
-		{
-			show_404();
-		}
-		$this->load->view('sys/fine');
+		$this->load_view('fine');
 	}
 	public function warning_letter()
 	{
-		if($this->session->userdata('userrole')!='secratery' && $this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/warning_letter');
+		$this->load_view('warning_letter');
 	}
 	public function leaves_statistics()
 	{
-		if($this->session->userdata('userrole')!='secratery' && $this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/leaves_statistics');
+		$this->load_view('leaves_statistics');
 	}
 	
 	public function leaves_summary()
 	{
-		if($this->session->userdata('userrole')!='secratery' && $this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/leaves_summary');
+		$this->load_view('leaves_summary');
 	}
 	
 	public function pending_sprf()
 	{
-		if($this->session->userdata('userrole')=='Supervisor' || $this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
-		{
-			$this->load->view('sys/pending_sprf');
-		}
-		else
-		{
-			show_404();
-		}
-		
+		$this->load_view('pending_sprf');
 	}
 	
 	public function complaint_varification()
 	{
-		if($this->session->userdata('userrole')!='Supervisor')
-		{
-			show_404();
-		}
-		$this->load->view('sys/complaint_varification');
+		$this->load_view('complaint_varification');
 	}
 	
 	public function ts_report_supervisor()
-	{	/*
-		$query="select `fk_office_id` from user where `id` ='".$this->session->userdata('userid')."'";
-		$query_db=$this->db->query($query);
-		$result=$query_db->result_array(); */
-		////////////////////////////////////
+	{	
 		$query="select `fk_office_id` from tbl_complaints where `pk_complaint_id` ='".$this->uri->segment(3)."'
 		AND `complaint_nature`='complaint'";
 		$query_db=$this->db->query($query);
 		$user_complaints=$query_db->result_array();	
 		
-		//if ($user_complaints[0]['fk_office_id']!=$result[0]['fk_office_id'])
 		if (! in_array($user_complaints[0]['fk_office_id'],explode(',',$this->session->userdata('territory'))) ) 
 		{
 			show_404();
 		}
-		/*
-		if($this->session->userdata('userrole')!='Supervisor')
-		{
-			show_404();
-		}*/
-		$this->load->view('sys/ts_report_supervisor');
+		$this->load_view('ts_report_supervisor');
 	}
 	
 	public function sub_menu()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/sub_menu');
+		$this->load_view('sub_menu');
 	}
 	
 	public function edit_sub_menu()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/edit_sub_menu');
+		$this->load_view('edit_sub_menu');
 	}
 	
 	public function add_sub_menu()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/add_sub_menu');
+		$this->load_view('add_sub_menu');
 	}
 	
 	public function main_menu()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/main_menu');
+		$this->load_view('main_menu');
 	}
 	
 	public function edit_main_menu()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/edit_main_menu');
+		$this->load_view('edit_main_menu');
 	}
 	
 	public function add_main_menu()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/add_main_menu');
+		$this->load_view('add_main_menu');
 	}
 	
 	public function ts_report_director()
 	{
-		if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery' && $this->session->userdata('userrole')!='Supervisor' && $this->session->userdata('userrole')!='FSE')
-		{
-			show_404();
-		}
-		$this->load->view('sys/ts_report_director');
+		$this->load_view('ts_report_director');
 	}
 	public function pm_form() {
-	/*	$query="select `fk_office_id` from user where `id` ='".$this->session->userdata('userid')."'";
-		$query_db=$this->db->query($query);
-		$result=$query_db->result_array();
-		$supervisor_office	=	$result[0]['fk_office_id']; */
+		$page = 'pm_form';
+		$view_pm_all = FALSE;
+		$view_pm_territory = FALSE;
+		$view_pm_assigned = FALSE;
+		
+		if ($this->if_allowed('view_pm_all',$page))	$view_pm_all = TRUE;
+		if ($this->if_allowed('view_pm_territory',$page))	$view_pm_territory = TRUE;
+		if ($this->if_allowed('view_pm_assigned',$page))	$view_pm_assigned = TRUE;
 		
 		$query="select `assign_to` from tbl_complaints where `pk_complaint_id` ='".$this->uri->segment(3)."'
 		AND `complaint_nature`='PM'";
@@ -299,25 +336,17 @@ class Sys extends CI_Controller {
 		$user_complaintss=$query_db->result_array();
 		$complaint_office	=	$user_complaintss[0]['fk_office_id'];
 		
-		if ($this->session->userdata('userrole')=='FSE' && $user_complaints[0]['assign_to']!=$this->session->userdata('userid'))
+		if ($view_pm_assigned && !($view_pm_territory) && !($view_pm_all) && $user_complaints[0]['assign_to']!=$this->session->userdata('userid'))
 		{
 			show_404();
 		}
 		
-		//if ($this->session->userdata('userrole')=='Supervisor' && $complaint_office != $supervisor_office)
-		if ($this->session->userdata('userrole')=='Supervisor' && (! in_array($complaint_office,explode(',',$this->session->userdata('territory'))) ) )
+		if (($view_pm_territory) && !($view_pm_all) && (! in_array($complaint_office,explode(',',$this->session->userdata('territory'))) ) )
 		{
 			show_404();
 		}
 		
-		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor' || $this->session->userdata('userrole')=='secratery' || $this->session->userdata('userrole')=='Admin')
-		{	
-			$this->load->view('sys/pm_form');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('pm_form');
     }
 	public function s_pm_form() {
 		
@@ -328,68 +357,32 @@ class Sys extends CI_Controller {
 		if ($user_complaints[0]['assign_to']!=$this->session->userdata('userid'))
 		{
 			show_404();
-		}/*
-		if($this->session->userdata('userrole')=='Supervisor')
-		{	
-			$this->load->view('sys/s_pm_form');
 		}
-		else
-		{
-			show_404();
-		}*/
-		$this->load->view('sys/s_pm_form');
+		if ($this->if_allowed('view','pm_form')) $this->load->view('sys/s_pm_form');
+		else show_404();
     }
 	public function projects_statistics()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/projects_statistics');
+		$this->load_view('projects_statistics');
 	}
 	public function territory_statistics()
 	{
-		if($this->session->userdata('userrole')=='')
-		{
-			show_404();
-		}
-		$this->load->view('sys/territory_statistics');
+		$this->load_view('territory_statistics');
 	}
 	
 	public function technical_service_pvr()
 	{
-		/*
-		$query="select `assign_to` from tbl_complaints where `pk_complaint_id` ='".$this->uri->segment(3)."'
-		AND `complaint_nature`='complaint'";
-		$query_db=$this->db->query($query);
-		$user_complaints=$query_db->result_array();			
-		if ($user_complaints[0]['assign_to']!=$this->session->userdata('userid'))
-		{
-			show_404();
-		}
-		else*/if($this->session->userdata('userrole')=='Salesman')
-		{
-			show_404();
-		}
-		$this->load->view('sys/technical_service_pvr');
+		$this->load_view('technical_service_pvr');
 	}
 	
 	public function supervisor_assign_pm()
 	{
-		if($this->session->userdata('userrole')!='Supervisor' && $this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
-		{
-			show_404();
-		}
-		$this->load->view('sys/supervisor_assign_pm');
+		$this->load_view('supervisor_assign_pm');
 	}
 	
 	public function pm_statistics()
 	{
-		if($this->session->userdata('userrole')!='Supervisor' && $this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
-		{
-			show_404();
-		}
-		$this->load->view('sys/pm_statistics');
+		$this->load_view('pm_statistics');
 	}
 	
 	public function employee_asc()
@@ -397,6 +390,7 @@ class Sys extends CI_Controller {
 		
 		//$get_eng_dvr = $this->complaint_model->get_eng_asc_model();
 		//$this->load->view('sys/sap_asc', array("get_eng_dvr" => $get_eng_dvr));
+		/// Exactly same for following function employee_asc_tech
 		
 			$engineer = $this->session->userdata('userid');
 			$start_date = date('Y-m-d');
@@ -418,67 +412,96 @@ class Sys extends CI_Controller {
 				$dbres2 = $this->db->query("SELECT * FROM user where id = '".$engineer."' ");
 				$dbresResult2=$dbres2->result_array();
 				
-				$this->load->view('sys/employee_asc', array("get_eng_dvr" => $dbresResult,
+				if ($this->if_allowed('view','employee_asc'))
+					$this->load->view('sys/employee_asc', array("get_eng_dvr" => $dbresResult,
 																"eng_id" 	 => $engineer,
 																"userrole"   => $dbresResult2['0']['userrole']));
+				else show_404();
 			
 			
 	}
+	
+	public function employee_asc_tech()
+	{
+		
+		//$get_eng_dvr = $this->complaint_model->get_eng_asc_model();
+		//$this->load->view('sys/sap_asc', array("get_eng_dvr" => $get_eng_dvr)); 
+		
+			$engineer = $this->session->userdata('userid');
+			$start_date = date('Y-m-d');
+			$end_date = date('Y-m-d', strtotime('-30 days'));
+			if(isset($_POST['engineer'])){
+				$engineer = $_POST['engineer'];
+			}
+				$dbres = $this->db->query("SELECT tbl_dvr.*,
+				COALESCE(tbl_offices.office_name) AS office_name,
+				COALESCE(tbl_clients.client_name) AS client_name,
+				COALESCE(tbl_area.area) AS area
+				FROM tbl_dvr 
+				LEFT JOIN tbl_offices ON tbl_dvr.fk_customer_id = tbl_offices.client_option
+				LEFT JOIN tbl_clients ON tbl_dvr.fk_customer_id=tbl_clients.pk_client_id 
+				LEFT JOIN tbl_area ON tbl_clients.fk_area_id=tbl_area.pk_area_id 
+				where tbl_dvr.fk_engineer_id = '".$engineer."' AND CAST(tbl_dvr.`date` AS DATE) between '".$end_date."' AND '".$start_date."' 
+				order by tbl_dvr.date DESC");
+				$dbresResult=$dbres->result_array();
+				$dbres2 = $this->db->query("SELECT * FROM user where id = '".$engineer."' ");
+				$dbresResult2=$dbres2->result_array();
+				
+				if ($this->if_allowed('view','employee_asc_tech'))
+					$this->load->view('sys/employee_asc', array("get_eng_dvr" => $dbresResult,
+																"eng_id" 	 => $engineer,
+																"userrole"   => $dbresResult2['0']['userrole']));
+				else show_404();
+			
+			
+	}
+	
 	public function products()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/products');
+		$this->load_view('products');
 	}
 	public function categories()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/categories');
+		$this->load_view('categories');
 	}
 	public function add_product()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/add_product');
+		$this->load_view('add_product');
 	}
 	public function add_category()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/add_category');
+		if ($this->if_allowed('view','categories')) $this->load->view('sys/add_category');
+		else show_404();
 	}
 	
 	public function delete_strategy($id)
 	{
-		$dbres = $this->db->query("DELETE FROM tbl_project_strategy WHERE pk_project_strategy_id = $id");
-		if (isset($_GET['proj']))
-			redirect(site_url() . 'sys/strategy_history/'. $_GET['proj']);
-		else
-			redirect(site_url() . 'sys/business_data');
+		if ($this->if_allowed('delete','strategy_history')) {
+			$dbres = $this->db->query("DELETE FROM tbl_project_strategy WHERE pk_project_strategy_id = $id");
+			if (isset($_GET['proj']))
+				redirect(site_url() . 'sys/strategy_history/'. $_GET['proj']);
+			else
+				redirect(site_url() . 'sys/business_data');
+		}
+		else show_404();
 	}
 	
 	public function delete_asc($id)
 	{
-		$dbres = $this->db->query("DELETE FROM tbl_customer_sap_bridge WHERE pk_customer_sap_bridge_id = $id");
-		if (isset($_GET['cust']))
-			redirect(site_url() . 'sys/edit_customer/'. $_GET['cust']);
-		else
-		redirect(site_url() . 'sys/acs?msg_del=success');
+		if ($this->if_allowed('delete','acs')) {
+			$dbres = $this->db->query("DELETE FROM tbl_customer_sap_bridge WHERE pk_customer_sap_bridge_id = $id");
+			if (isset($_GET['cust']))
+				redirect(site_url() . 'sys/edit_customer/'. $_GET['cust']);
+			else
+			redirect(site_url() . 'sys/acs?msg_del=success');
+		}
+		else show_404();
 	}
 	
 	// Retive All Sent Messages
 	
 	public function acs() {
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
+		if ($this->if_allowed('view','acs'))
 		{	
 			$this->load->model("complaint_model");
 			$get_acs_lists = $this->complaint_model->get_acs_model();
@@ -490,61 +513,33 @@ class Sys extends CI_Controller {
 		}
     }
 	public function news() {
-        if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery' )
-		{
-			show_404();
-		}
-        $this->load->view('sys/news');
+        $this->load_view('news');
     }
 	public function add_news() {
-        if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
-		{
-			show_404();
-		}
-        $this->load->view('sys/add_news');
+        $this->load_view('add_news');
     }
 	
 	public function cities() {
-        if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('sys/cities');
+        $this->load_view('cities');
     }
 	public function areas() {
-        if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('sys/areas');
+        $this->load_view('areas');
     }
 	public function add_city() {
-        if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('sys/add_city');
+        if ($this->if_allowed('view','cities')) $this->load->view('sys/add_city');
+		else show_404();
     }
 	public function add_area() {
-        if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('sys/add_area');
+        if ($this->if_allowed('view','areas')) $this->load->view('sys/add_area');
+		else show_404();
     }
 	public function update_city() {
-        if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('sys/update_city');
+        if ($this->if_allowed('view','cities')) $this->load->view('sys/update_city');
+		else show_404();
     }
 	public function update_area() {
-        if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('sys/update_area');
+        if ($this->if_allowed('view','areas')) $this->load->view('sys/update_area');
+		else show_404();
     }
 	
 	public function update_city_insert() {
@@ -565,19 +560,11 @@ class Sys extends CI_Controller {
     }
 	
 	public function add_strategy() {
-        if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='Salesman')
-		{
-			show_404();
-		}
-        $this->load->view('sys/add_strategy');
+        $this->load_view('add_strategy');
     }
 	
 	public function edit_strategy() {
-        if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('sys/edit_strategy');
+        $this->load_view('edit_strategy');
     }
 	
 	public function update_submenu() {
@@ -687,10 +674,62 @@ class Sys extends CI_Controller {
     }
 	
 	public function delete_policy($policy_id) {
-		
+		if ($this->if_allowed('delete','policies')) {
 			  $dbres = $this->db->query("DELETE FROM tbl_policies WHERE pk_policy_id='".$policy_id."'");
               redirect(site_url() . 'sys/policies?delete_msg=success');
+		}
+		else show_404();
     }
+	
+	public function insert_report_comments() {
+		$fk_user_id	=	$this->session->userdata('userid');//to be used in query
+		$date 		=	date('Y-m-d H:i:s');
+		$ts			=	0;
+		if (isset($_POST['ts'])) $ts = 1;
+		foreach ($_POST['fk_project_id'] as $key=> $value) {
+			$month = $_POST['month'][$key];
+			$fk_project_id = $_POST['fk_project_id'][$key];
+			$report_comments = trim(addslashes($_POST['report_comments'][$key]));
+			if ($report_comments != "") {
+			$query="insert INTO `tbl_report_comments` SET 	
+				  `fk_user_id`		='".$fk_user_id."',
+				  `fk_project_id`	='".$fk_project_id."',
+				  `month`			='".$month."',
+				  `report_user`		='".$fk_user_id."',
+				  `report_comments`	='".$report_comments."',
+				  `ts`				='".$ts."',
+				  `date`			='".$date."' 
+				  ON DUPLICATE KEY UPDATE 
+				  `report_comments`	='".$report_comments."',
+				  `fk_user_id`		='".$fk_user_id."',
+				  `report_user`		='".$fk_user_id."',
+				  `date`	='".$date."'";
+				  
+				  //echo $query;
+				  //echo "<hr/>";
+			$dbres = $this->db->query($query);
+			}
+		}
+		//exit();
+			  $this->session->set_flashdata('note',$_POST['portlet']);
+              redirect($_POST['redirect_url'].'#'.$_POST['div']);
+    }
+	
+	public function add_report_comment() {
+		$current_date	= 	date('Y-m-d H:i:s');
+		$employee_id	=	$this->session->userdata('userid');
+		$comment  		=	$_POST['comment'];
+		$report_user	=	$_POST['report_user'];
+		
+		$query="insert IGNORE into tbl_report_comments SET 				
+								`date`						=	'".$current_date."',
+								`fk_user_id`  				=	'".$employee_id."',
+								`report_user`  				=	'".$report_user."',
+								`report_comments`			=	'".urlencode($comment)."'
+							  ";
+		$dbres = $this->db->query($query);
+		redirect($_POST['redirect_url']);
+	}
 	
 	public function insert_strategy() {
 		$query ="INSERT INTO tbl_project_strategy SET 				  
@@ -813,100 +852,104 @@ class Sys extends CI_Controller {
     }
 
     public function delete_leave($id) {
+		if ($this->if_allowed('delete','all_leaves')) {
+			$delete_allowed = '0';
+			$lq 			= $this->db->query("select tbl_leaves.*,user.total_leaves from tbl_leaves
+			LEFT JOIN user ON tbl_leaves.fk_employee_id = user.id
+			where pk_leave_id ='".$id."'");
+			$lr 				= $lq->result_array();
 
-        $delete_allowed = '0';
-        $lq 			= $this->db->query("select tbl_leaves.*,user.total_leaves from tbl_leaves
-		LEFT JOIN user ON tbl_leaves.fk_employee_id = user.id
-		where pk_leave_id ='".$id."'");
-        $lr 				= $lq->result_array();
-
-        $current_month	=	date('m');
-        $current_year	=	date('Y');
-        $leave_date = strtotime($lr[0]['start_date']);
-		
-		$leave_fine_id	=	$lr[0]['fk_fine_id'];
-		
-		if ($leave_fine_id!=0) {
-			// Delete Fine
-			$query="delete from tbl_fine where pk_fine_id = '".$leave_fine_id."'";
-			$dbres = $this->db->query($query);
-		}
-
-        if($current_month < 7)
-        {
-
-            $last_year = $current_year - 1;
-            $start_date = strtotime($last_year.'-07-01');
-            $end_date = strtotime($current_year.'-06-30');
-            if($leave_date >= $start_date && $leave_date <= $end_date)
-                $delete_allowed = '1';
-
-        } else {
-
-            $next_year = $current_year + 1;
-            $start_date = strtotime($current_year.'-07-01');
-            $end_date = strtotime($next_year.'-06-30');
-            if($leave_date >= $start_date && $leave_date <= $end_date)
-                $delete_allowed = '1';
-
-        }
-
-        ///////////////////////////////////////////////////////////////
-
-        if($delete_allowed == '1') {
-
-			// $dbres = $this->db->query("select * from user where id ='" . $lr[0]['fk_employee_id'] . "'");
-            // $res = $dbres->result_array();
-            $total_leaves = $lr[0]['total_leaves'];
+			$current_month	=	date('m');
+			$current_year	=	date('Y');
+			$leave_date = strtotime($lr[0]['start_date']);
 			
-			if($lr[0]['leave_type']=='1')
-			{
-				$leaves_total = $total_leaves - 0.5;
-				//echo $leaves_total;exit;
+			$leave_fine_id	=	$lr[0]['fk_fine_id'];
+			
+			if ($leave_fine_id!=0) {
+				// Delete Fine
+				$query="delete from tbl_fine where pk_fine_id = '".$leave_fine_id."'";
+				$dbres = $this->db->query($query);
 			}
-			else
+
+			if($current_month < 7)
 			{
-				$start_date = strtotime($lr[0]['start_date']);
-				$end_date = strtotime($lr[0]['end_date']);
-				///////////// Old Code /////////////////
-				$datediff = $end_date - $start_date;
-				$mydiffrence = floor($datediff / (60 * 60 * 24));
-				$sub_leaves = $mydiffrence + 1;
-				///////////// Old Code /////////////////
-				///////////// New Code ////////////////
+
+				$last_year = $current_year - 1;
+				$start_date = strtotime($last_year.'-07-01');
+				$end_date = strtotime($current_year.'-06-30');
+				if($leave_date >= $start_date && $leave_date <= $end_date)
+					$delete_allowed = '1';
+
+			} else {
+
+				$next_year = $current_year + 1;
+				$start_date = strtotime($current_year.'-07-01');
+				$end_date = strtotime($next_year.'-06-30');
+				if($leave_date >= $start_date && $leave_date <= $end_date)
+					$delete_allowed = '1';
+
+			}
+
+			///////////////////////////////////////////////////////////////
+
+			if($delete_allowed == '1') {
+
+				// $dbres = $this->db->query("select * from user where id ='" . $lr[0]['fk_employee_id'] . "'");
+				// $res = $dbres->result_array();
+				$total_leaves = $lr[0]['total_leaves'];
 				
-				$countd = 0;
-				$sd = $start_date;
-				$ed	= $end_date;
-				while(date('Y-m-d', $sd) <= date('Y-m-d', $ed)){ //<= rather < so that end date is inclusive
-				  $countd += date('N', $sd) <= 6 ? 1 : 0; // <= rather only < so that saturday is counted as well
-				  $sd = strtotime("+1 day", $sd);
+				if($lr[0]['leave_type']=='1')
+				{
+					$leaves_total = $total_leaves - 0.5;
+					//echo $leaves_total;exit;
 				}
-				$sub_leaves = $countd;
-				
-				//////////// New Code /////////////////
-				$leaves_total = $total_leaves - $sub_leaves;
-				//echo 'sanullah';exit;
+				else
+				{
+					$start_date = strtotime($lr[0]['start_date']);
+					$end_date = strtotime($lr[0]['end_date']);
+					///////////// Old Code /////////////////
+					$datediff = $end_date - $start_date;
+					$mydiffrence = floor($datediff / (60 * 60 * 24));
+					$sub_leaves = $mydiffrence + 1;
+					///////////// Old Code /////////////////
+					///////////// New Code ////////////////
+					
+					$countd = 0;
+					$sd = $start_date;
+					$ed	= $end_date;
+					while(date('Y-m-d', $sd) <= date('Y-m-d', $ed)){ //<= rather < so that end date is inclusive
+					  $countd += date('N', $sd) <= 6 ? 1 : 0; // <= rather only < so that saturday is counted as well
+					  $sd = strtotime("+1 day", $sd);
+					}
+					$sub_leaves = $countd;
+					
+					//////////// New Code /////////////////
+					$leaves_total = $total_leaves - $sub_leaves;
+					//echo 'sanullah';exit;
+				}
+				$dbres_upt = $this->db->query("update user set total_leaves = $leaves_total where id ='" . $lr[0]['fk_employee_id'] . "'");
+				//$res_upt = $dbres_upt->result_array();
 			}
-            $dbres_upt = $this->db->query("update user set total_leaves = $leaves_total where id ='" . $lr[0]['fk_employee_id'] . "'");
-            //$res_upt = $dbres_upt->result_array();
-        }
 
-        //////////////////////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////
 
-        $query="delete from  tbl_leaves  where `pk_leave_id` =$id";
-        $dbres = $this->db->query($query);
+			$query="delete from  tbl_leaves  where `pk_leave_id` =$id";
+			$dbres = $this->db->query($query);
 
-        redirect(site_url() . 'sys/all_leaves?msg_delete=success');
+			redirect(site_url() . 'sys/all_leaves?msg_delete=success');
+		}
+		else show_404();
     }
 	
 	public function delete_temporary_leave($id) {
 
+		if ($this->if_allowed('delete','pending_leaves')) {
+			$query="delete from  tbl_temporary_leaves  where `pk_temporary_leave_id` =$id";
+			$dbres = $this->db->query($query);
 
-        $query="delete from  tbl_temporary_leaves  where `pk_temporary_leave_id` =$id";
-        $dbres = $this->db->query($query);
-
-        redirect(site_url() . 'sys/pending_leaves?msg_delete=success');
+			redirect(site_url() . 'sys/pending_leaves?msg_delete=success');
+		}
+		else show_404();
     }
 	
 	
@@ -1563,13 +1606,27 @@ class Sys extends CI_Controller {
 	
 	public function all_fines() {
 		
-		$this->load->view("sys/all_fines");
+		$this->load_view("all_fines");
     }
+/*
 	public function all_warning_letters() {
-		
+		// Irrelevant
 		$this->load->view("sys/all_warning_letters");
     }
+*/
 	public function assign_pm() {
+		
+		$page = 'supervisor_assign_pm';
+		$assign_pm_all = FALSE;
+		$assign_pm_territory = FALSE;
+		//$view_pm_assigned = FALSE;
+		
+		if ($this->if_allowed('assign_pm_all',$page))	$assign_pm_all = TRUE;
+		if ($this->if_allowed('assign_pm_territory',$page))	$assign_pm_territory = TRUE;
+		
+		if( !($assign_pm_all) && !($assign_pm_territory)) {
+			show_404();
+		}
 		
 		$query="select `fk_office_id` from user where `id` ='".$this->session->userdata('userid')."'";
 		$query_db=$this->db->query($query);
@@ -1580,19 +1637,19 @@ class Sys extends CI_Controller {
 		$user_complaints=$query_db->result_array();
 		if (sizeof($user_complaints)>0) {
 			//if ($user_complaints[0]['fk_office_id']!=$result[0]['fk_office_id'] && $this->session->userdata('userrole')=='Supervisor')
-			if ($this->session->userdata('userrole')=='Supervisor' && (! in_array($user_complaints[0]['fk_office_id'],explode(',',$this->session->userdata('territory'))) ) )
+			if ($assign_pm_territory && !($assign_pm_all)  && 
+					(! in_array($user_complaints[0]['fk_office_id'],explode(',',$this->session->userdata('territory'))) ) )
 			{
 				show_404();
 			}
 		}
-		if($this->session->userdata('userrole')!='Supervisor' && $this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
+		
 		$this->load->view("sys/assign_pm");
     }
 	public function update_fine($id) {
-		if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
+		$explanation_call_admin = FALSE;
+		if ($this->if_allowed('explanation_call_admin','update_fine'))	$explanation_call_admin = TRUE;
+		if(!($explanation_call_admin))
 		{
 			$query="select `fk_employee_id` from tbl_fine where `pk_fine_id` ='".$this->uri->segment(3)."'";
 			$query_db=$this->db->query($query);
@@ -1604,38 +1661,27 @@ class Sys extends CI_Controller {
 		}
 		$this->load->view("sys/update_fine");
     }
+/*
 	public function update_warning_letter($id) {
+		// Irrelevant
 		$this->load->view("sys/update_warning_letter");
     }
-	
+*/
 	public function update_news() {
-        if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
-		{
-			show_404();
-		}
-        $this->load->view('sys/update_news');
+        if ($this->if_allowed('view','add_news')) $this->load->view('sys/update_news');
+		else show_404();
     }
 	public function sap_statistics() {
-        if($this->session->userdata('userrole')!='Salesman')
-		{
-			show_404();
-		}
-        $this->load->view('sys/sap_statistics');
+        $this->load_view('sap_statistics');
     }
 	
 	public function update_product() {
-        if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('sys/update_product');
+        if ($this->if_allowed('view','add_product')) $this->load->view('sys/update_product');
+		else show_404();
     }
 	public function update_category() {
-        if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('sys/update_categories');
+		if ($this->if_allowed('view','categories')) $this->load->view('sys/update_category');
+		else show_404();
     }
 	
 	public function update_category_insert() {
@@ -1657,72 +1703,95 @@ class Sys extends CI_Controller {
               redirect(site_url() . 'sys/update_news/'.$_POST['pk_news_id'].'?msg=success');
     }
 	public function delete_news($id) {
-		$query="delete from  tbl_news  where `pk_news_id` =$id";
-			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'sys/news?msg_delete=success');
+		if ($this->if_allowed('delete','news')) {
+			$query="delete from  tbl_news  where `pk_news_id` =$id";
+				  $dbres = $this->db->query($query);
+				  redirect(site_url() . 'sys/news?msg_delete=success');
+		}
+		else show_404();
     }
 	public function delete_vendor($id) {
 		//$query="delete from  tbl_vendors  where `pk_vendor_id` =$id";
-		$query="update  tbl_vendors SET `status`='1' where `pk_vendor_id` =$id";
-		$dbres = $this->db->query($query);
-		//
-		$query2="delete from  tbl_vendor_category_bridge  where `fk_vendor_id` =$id";
-		$dbres2 = $this->db->query($query2);
-		//
-		$query3="delete from  tbl_vendor_product_bridge  where `fk_vendor_id` =$id";
-		$dbres3 = $this->db->query($query3);
-		//
-		redirect(site_url() . 'sys/vendors?msg_delete=success');
+		if ($this->if_allowed('delete','vendors')) {
+			$query="update  tbl_vendors SET `status`='1' where `pk_vendor_id` =$id";
+			$dbres = $this->db->query($query);
+			//
+			$query2="delete from  tbl_vendor_category_bridge  where `fk_vendor_id` =$id";
+			$dbres2 = $this->db->query($query2);
+			//
+			$query3="delete from  tbl_vendor_product_bridge  where `fk_vendor_id` =$id";
+			$dbres3 = $this->db->query($query3);
+			//
+			redirect(site_url() . 'sys/vendors?msg_delete=success');
+		}
+		else show_404();
     }
 	
 	public function delete_category($id) {
-		$query="update  tbl_category  
-				SET 	
-			   `status`				='1'
-				where `pk_category_id` =$id";
-			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'sys/categories?msg_delete=success');
+		if ($this->if_allowed('delete','categories')) {
+			$query="update  tbl_category  
+					SET 	
+				   `status`				='1'
+					where `pk_category_id` =$id";
+				  $dbres = $this->db->query($query);
+				  redirect(site_url() . 'sys/categories?msg_delete=success');
+		}
+		else show_404();
     }
 	
 	public function delete_city($id) {
-		$query="update  tbl_cities  
-				SET 	
-			   `status`				='1'
-				where `pk_city_id` =$id";
-			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'sys/cities?msg_delete=success');
+		if ($this->if_allowed('delete','cities')) {
+			$query="update  tbl_cities  
+					SET 	
+				   `status`				='1'
+					where `pk_city_id` =$id";
+				  $dbres = $this->db->query($query);
+				  redirect(site_url() . 'sys/cities?msg_delete=success');
+		}
+		else show_404();
     }
 	public function delete_area($id) {
-		$query="delete from  tbl_area 
-				where `pk_area_id` =$id";
-			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'sys/areas?msg_delete=success');
+		if ($this->if_allowed('delete','areas')) {
+			$query="delete from  tbl_area 
+					where `pk_area_id` =$id";
+				  $dbres = $this->db->query($query);
+				  redirect(site_url() . 'sys/areas?msg_delete=success');
+		}
+		else show_404();
     }
 	
 	public function delete_product($id) {
-		$query="update  tbl_products 
-				SET 	
-			   `status`				='1'
-				where `pk_product_id` =$id";
-			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'sys/products?msg_delete=success');
+		if ($this->if_allowed('delete','products')) {
+			$query="update  tbl_products 
+					SET 	
+				   `status`				='1'
+					where `pk_product_id` =$id";
+				  $dbres = $this->db->query($query);
+				  redirect(site_url() . 'sys/products?msg_delete=success');
+		}
+		else show_404();
     }
 	
 	public function delete_complaint($id) {
-		
-		$query="delete from  tbl_complaints  where `pk_complaint_id` =$id";
-			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'sys/'.$_GET["redirect"].'?msg_delete=success');
+		if ($this->if_allowed('delete','director_view_complaints')) {
+			$query="delete from  tbl_complaints  where `pk_complaint_id` =$id";
+				  $dbres = $this->db->query($query);
+				  redirect(site_url() . 'sys/'.$_GET["redirect"].'?msg_delete=success');
+		}
+		else show_404();
     }
 	
 	public function delete_pm($id) {
-		$query="delete from  tbl_complaints  where `pk_complaint_id` =$id";
-			  $dbres = $this->db->query($query);
-              redirect(site_url() . 'sys/director_view_pm?msg_delete=success');
+		if ($this->if_allowed('delete','director_view_pm')) {
+			$query="delete from  tbl_complaints  where `pk_complaint_id` =$id";
+				  $dbres = $this->db->query($query);
+				  redirect(site_url() . 'sys/director_view_pm?msg_delete=success');
+		}
+		else show_404();
     }
 	
 	public function business_data() {
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
+		if ($this->if_allowed('view','business_data'))
 		{
 			$this->load->model("complaint_model");
 			$business_data = $this->complaint_model->get_business_data_model();
@@ -1735,7 +1804,7 @@ class Sys extends CI_Controller {
     }
 	
 	public function deleted_business_data() {
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
+		if ($this->if_allowed('view','deleted_business_data'))
 		{
 			$this->load->model("complaint_model");
 			$business_data = $this->complaint_model->get_deleted_business_data_model();
@@ -1748,7 +1817,7 @@ class Sys extends CI_Controller {
     }
 	
 	public function pending_business_data() {
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
+		if ($this->if_allowed('view','pending_business_data'))
 		{
 			$this->load->model("complaint_model");
 			$business_data = $this->complaint_model->get_pending_business_data_model();
@@ -1761,51 +1830,37 @@ class Sys extends CI_Controller {
     }
 	
 	public function add_acs() {
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('add_acs');
+		if ($this->if_allowed('view','add_acs'))
+			$this->load->view('add_acs');
     }
 	
 	public function vendor_registration() {
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('sys/vendor_registration');
+        $this->load_view('vendor_registration');
     }
 	
 	public function equipment_registration() {
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('sys/equipment_registration');
+		$this->load_view('equipment_registration');
     }
 	
 	public function policies() {
-        $this->load->view('policies');
+        if ($this->if_allowed('view','policies')) $this->load->view('policies');
+		else show_404();
     }
 	public function forms() {
-        $this->load->view('forms');
+        if ($this->if_allowed('view','forms')) $this->load->view('forms');
+		else show_404();
     }
 	public function forms_pm() {
-        $this->load->view('forms_pm');
+        if ($this->if_allowed('view','forms_pm')) $this->load->view('forms_pm');
+		else show_404();
     }
 	public function tssop() {
-		if($this->session->userdata('userrole')=='Salesman')
-		{
-			show_404();
-		}
-        $this->load->view('tssop');
+		if ($this->if_allowed('view','tssop')) $this->load->view('tssop');
+		else show_404();
     }
 	public function salessop() {
-		if($this->session->userdata('userrole')=='FSE')
-		{
-			show_404();
-		}
-        $this->load->view('salessop');
+		if ($this->if_allowed('view','salessop')) $this->load->view('salessop');
+		else show_404();
     }
 	
 	public function insert_acs() {
@@ -1819,15 +1874,11 @@ class Sys extends CI_Controller {
 	// Delete Compose Message.
 	public function add_complaint()
 	{
-		if($this->session->userdata('userrole')!='secratery' && $this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/add_complaint');
+		$this->load_view('add_complaint');
 	}
 	public function add_complaint_half()
 	{
-        $this->load->view('sys/add_complaint_half');
+        $this->load_view('add_complaint_half');
 	}
 	
 	public function comments() {
@@ -1846,6 +1897,14 @@ class Sys extends CI_Controller {
 		$query_db=$this->db->query($query);
 		$result=$query_db->result_array(); */
 		////////////////////////////////////
+		$page = 'director_view_complaints';
+		$view_all_complaints = FALSE;
+		$view_territory_complaints = FALSE;
+		$view_assigned_complaints = FALSE;
+		
+		if ($this->if_allowed('view_complaints_all',$page))	$view_all_complaints = TRUE;
+		if ($this->if_allowed('view_complaints_territory',$page))	$view_territory_complaints = TRUE;
+		if ($this->if_allowed('view_complaints_assigned',$page))	$view_assigned_complaints = TRUE;
 		
 		$query="select `fk_office_id`,`assign_to` from tbl_complaints where `pk_complaint_id` ='".$complaint_id."'";
 		$query_db=$this->db->query($query);
@@ -1855,14 +1914,14 @@ class Sys extends CI_Controller {
 		else { 
 			$assign_to	=	$user_complaint[0]['assign_to'];
 			$office_id	=	$user_complaint[0]['fk_office_id'];
-			if ($employee_role	==	"FSE" || $employee_role	==	"Salesman" ){
-				if ($assign_to != $employee_id) show_404();
+			//if ($employee_role	==	"FSE" || $employee_role	==	"Salesman" ){ commenting as after making permission based next if condition is enough
+				if (!($view_territory_complaints) && !($view_all_complaints) && $assign_to != $employee_id) show_404();
 				else {
 					$query="UPDATE tbl_comments SET `read_employee`='1' where `fk_complaint_id` ='".$complaint_id."'";
 					$query_db=$this->db->query($query);
 				}
-			}
-			elseif ($employee_role	==	"Supervisor"){
+			/*} */
+			if (($view_territory_complaints) && !($view_all_complaints)){
 				//if ($office_id != $employee_territory) show_404();
 				if (! in_array($office_id,explode(',',$this->session->userdata('territory'))) ) show_404();
 				else {
@@ -1874,19 +1933,21 @@ class Sys extends CI_Controller {
 					}
 				} 
 			}
-			elseif ($employee_role	==	"Admin"){
+			elseif ($view_all_complaints) { // && $employee_role	==	"Admin"){ As no sense of secratery for other companies
 				$query="UPDATE tbl_comments SET `read_director`='1' where `fk_complaint_id` ='".$complaint_id."'";
 				$query_db=$this->db->query($query);
 			}
-			elseif ($employee_role	==	"secratery"){
+			/*
+			elseif ($view_all_complaints && $employee_role	==	"secratery"){
 				$query="UPDATE tbl_comments SET `read_secratery`='1' where `fk_complaint_id` ='".$complaint_id."'";
 				$query_db=$this->db->query($query);
-			}
+			}*/
 		} 
 		//echo $this->session->userdata('username');
 		//print_r($employee_territory);
 		$this->load->view('sys/comments');
 	}
+	
 	
 	public function add_comment() {
 		$current_date	= 	date('Y-m-d H:i:s');
@@ -1921,16 +1982,23 @@ class Sys extends CI_Controller {
 	}
 	public function add_customer()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-        $this->load->view('sys/add_customer');
+        $this->load_view('add_customer');
 	}
 	
 	public function director_view_complaints()
 	{
-        if($this->session->userdata('userrole')=='')
+        if($this->session->userdata('fk_role_id')=='')
+		{
+			show_404();
+		}
+		$this->load->model("complaint_model");
+        $get_complaint_list = $this->complaint_model->get_complaint_model();
+		$this->load->view('sys/director_view_complaints', array("get_complaint_list" => $get_complaint_list));
+	}
+	
+	public function view_complaints_sup()
+	{
+        if($this->session->userdata('fk_role_id')=='')
 		{
 			show_404();
 		}
@@ -1941,7 +2009,18 @@ class Sys extends CI_Controller {
 	
 	public function complaints_closed()
 	{
-        if($this->session->userdata('userrole')=='')
+        if($this->session->userdata('fk_role_id')=='')
+		{
+			show_404();
+		}
+		$this->load->model("complaint_model");
+        $get_complaint_list = $this->complaint_model->get_complaint_model();
+		$this->load->view('sys/complaints_closed', array("get_complaint_list" => $get_complaint_list));
+	}
+	
+	public function complaints_closed_sup()
+	{
+        if($this->session->userdata('fk_role_id')=='')
 		{
 			show_404();
 		}
@@ -1952,7 +2031,7 @@ class Sys extends CI_Controller {
 	
 	public function complaints_closed_engineer()
 	{
-        if($this->session->userdata('userrole')=='')
+        if($this->session->userdata('fk_role_id')=='')
 		{
 			show_404();
 		}
@@ -1963,20 +2042,12 @@ class Sys extends CI_Controller {
 	
 	public function director_view_pm()
 	{
-        if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
-		{
-			show_404();
-		}
-		$this->load->view('sys/director_view_pm');
+		$this->load_view('director_view_pm');
 	}
 
 	public function update_pm()
 	{
-        if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/update_pm');
+        $this->load_view('update_pm');
 	} 
 
 	public function update_pm_insert() {
@@ -1988,9 +2059,10 @@ class Sys extends CI_Controller {
 			  $dbres = $this->db->query($query);
               redirect(site_url() . 'sys/update_pm/'.$_POST['pk_complaint_id'].'?msg=success');
     }
-	
+/*	
 	public function operator_view_complaints()
 	{
+		// Irrelevant
 		if($this->session->userdata('userrole')!='secratery' && $this->session->userdata('userrole')!='Admin')
 		{
 			show_404();
@@ -2002,67 +2074,46 @@ class Sys extends CI_Controller {
 		else
 			$this->load->view('sys/operator_view_complaints', array("get_complaint_list" => $get_complaint_list));
 	}
+*/
 	public function view_half_complaints()
 	{
-		if($this->session->userdata('userrole')!='secratery' && $this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/view_half_complaints');
+		$this->load_view('view_half_complaints');
 	}
 	public function add_complaint_registration()
 	{
-		if($this->session->userdata('userrole')!='secratery' && $this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/add_complaint_registration');
+		$this->load_view('add_complaint_registration');
 	}
 	
 	public function supervisor_dvr()
 	{
-		if($this->session->userdata('userrole')!='Supervisor')
-		{
-			show_404();
-		}
+		
 		$this->load->model("complaint_model");
         $get_sup_dvr = $this->complaint_model->get_sup_dvr_model();
-		$this->load->view('sys/supervisor_dvr', array("get_sup_dvr" => $get_sup_dvr));
+		if ($this->if_allowed('view','supervisor_dvr'))
+			$this->load->view('sys/supervisor_dvr', array("get_sup_dvr" => $get_sup_dvr));
+		else show_404();
 	}
 	public function supervisor_vs()
 	{
-		if($this->session->userdata('userrole')!='Supervisor')
-		{
-			show_404();
-		}
-		$this->load->view('sys/supervisor_vs');
+		$this->load_view('supervisor_vs');
 	}
+/*
 	public function engineer_dvr()
 	{
+		// Irrelevant
 		$this->load->model("complaint_model");
         $get_eng_dvr = $this->complaint_model->get_eng_dvr_model();
 		$this->load->view('sys/engineer_dvr', array("get_eng_dvr" => $get_eng_dvr));
 	}
-	
+*/	
 	public function admin_dvr_form()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
-		{
-			$this->load->view('sys/admin_dvr_form');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('admin_dvr_form');
 	}
 	
 	public function create_pef()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/create_pef');
+		$this->load_view('create_pef');
 	}
 	public function pef_schedule_insert()
 	{
@@ -2111,29 +2162,26 @@ class Sys extends CI_Controller {
 	}
 	public function employee_view_pef()
 	{
-		$this->load->view('sys/employee_view_pef');
+		$this->load_view('employee_view_pef');
 	}
 	public function pef_employee()
 	{
+		// Irrelevant
 		$this->load->view('sys/pef_employee');
 	}
 	public function director_view_pef()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/director_view_pef');
+		$this->load_view('director_view_pef');
 	}
 	
 	public function engineer_dvr_form()
 	{
 		//echo $this->session->userdata('userrole');exit;
-		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor'  || $this->session->userdata('userrole')=='Salesman')
+		if ($this->if_allowed('view','engineer_dvr_form'))
 		{
 			$this->load->model("complaint_model");
-        $get_eng_dvr = $this->complaint_model->get_eng_dvr_model();
-		$this->load->view('sys/engineer_dvr_form', array("get_eng_dvr" => $get_eng_dvr));
+			$get_eng_dvr = $this->complaint_model->get_eng_dvr_model();
+			$this->load->view('sys/engineer_dvr_form', array("get_eng_dvr" => $get_eng_dvr));
 		}
 		else
 		{
@@ -2142,31 +2190,16 @@ class Sys extends CI_Controller {
 	}
 	public function leave_form()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
-		{
-			$this->load->view('sys/leave_form');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('leave_form');
 	}
 	public function leave_form_t()
 	{
-		$this->load->view('sys/leave_form_t');
-		/*if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
-		{
-			
-		}
-		else
-		{
-		show_404();
-		}*/
+		$this->load_view('leave_form_t');
 	}
 	
 	public function update_leave_form()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
+		if ($this->if_allowed('view','all_leaves'))
 		{
 			$this->load->view('sys/update_leave_form');
 		}
@@ -2178,53 +2211,31 @@ class Sys extends CI_Controller {
 	
 	public function all_leaves()
 	{
-		//if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
-		if($this->session->userdata('userrole')!='')
-		{
-			$this->load->view('sys/all_leaves');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('all_leaves');
 	}
 	
 	public function submitted_leaves()
 	{
-		//if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
-		if($this->session->userdata('userrole')!='')
-		{
-			$this->load->view('sys/submitted_leaves');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('submitted_leaves');
 	}
 	
 	public function disapprove_leave($id)
 	{
-		//if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
-		$myquery=" UPDATE tbl_temporary_leaves SET `status`='1' WHERE `pk_temporary_leave_id` =  '".$id."'";
-		$ty22=$this->db->query($myquery);
-		redirect(site_url() . 'sys/pending_leaves?msg_disapproved=success');
+		if ($this->if_allowed('view','pending_leaves')) {
+			$myquery=" UPDATE tbl_temporary_leaves SET `status`='1' WHERE `pk_temporary_leave_id` =  '".$id."'";
+			$ty22=$this->db->query($myquery);
+			redirect(site_url() . 'sys/pending_leaves?msg_disapproved=success');
+		}
 	}
 	
 	public function pending_leaves()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
-		{
-			$this->load->view('sys/pending_leaves');
-		}
-		else
-		{
-		show_404();
-		}
+			$this->load_view('pending_leaves');
 	}
 	
 	public function resset_all_employees_leaves()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
+		if ($this->if_allowed('reset_leaves','all_leaves'))
 		{
 			$year = date('Y');
 			$year = $year - 1;
@@ -2244,36 +2255,38 @@ class Sys extends CI_Controller {
 		}
 	}
 	
-	
+/*	
 	public function sap_dvr()
 	{
+		// Irrelevant
 		$this->load->model("complaint_model");
         $get_eng_dvr = $this->complaint_model->get_eng_dvr_model();
 		$this->load->view('sys/sap_dvr', array("get_eng_dvr" => $get_eng_dvr));
 	}
+*/
 	public function sap_dvr_form()
 	{
-		if($this->session->userdata('userrole')!='Salesman')
-		{
-			show_404();
+		if ($this->if_allowed('view','sap_dvr_form')) {
+			$this->load->model("complaint_model");
+			$get_eng_dvr = $this->complaint_model->get_eng_dvr_model();
+			$this->load->view('sys/sap_dvr_form', array("get_eng_dvr" => $get_eng_dvr));
 		}
-		$this->load->model("complaint_model");
-        $get_eng_dvr = $this->complaint_model->get_eng_dvr_model();
-		$this->load->view('sys/sap_dvr_form', array("get_eng_dvr" => $get_eng_dvr));
+		else show_404();
 	}
 	public function sap_asc()
 	{
-		if($this->session->userdata('userrole')!='Salesman')
-		{
-			show_404();
+		if ($this->if_allowed('view','sap_asc')) {
+			$this->load->model("complaint_model");
+			$get_eng_dvr = $this->complaint_model->get_eng_asc_model();
+			$this->load->view('sys/sap_asc', array("get_eng_dvr" => $get_eng_dvr));
 		}
-		$this->load->model("complaint_model");
-        $get_eng_dvr = $this->complaint_model->get_eng_asc_model();
-		$this->load->view('sys/sap_asc', array("get_eng_dvr" => $get_eng_dvr));
+		else show_404();
 	}
 	//
+/*
 	public function all_employee_dvr_vs_y()
 	{
+		// Irrelevant
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
 			$this->load->view('sys/all_employee_dvr_vs_y');
@@ -2283,20 +2296,15 @@ class Sys extends CI_Controller {
 		show_404();
 		}
 	}
+*/
 	public function all_employee_dvr_vs()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
-		{
-			$this->load->view('sys/all_employee_dvr_vs');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('all_employee_dvr_vs');
 	}
-	
+/*	
 	public function all_employee_dvr()
 	{
+		// Irrelevant
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
 			$this->load->view('sys/all_employee_dvr');
@@ -2306,10 +2314,12 @@ class Sys extends CI_Controller {
 		show_404();
 		}
 	}
+*/
 	//
-	//
+/*
 	public function all_employee_vs()
 	{
+		// Irrelevant
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
 			$this->load->view('sys/all_employee_vs');
@@ -2319,33 +2329,22 @@ class Sys extends CI_Controller {
 		show_404();
 		}
 	}
+*/
 	public function dc()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
-		{
-			$this->load->view('sys/dc');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('dc');
 	}
 	public function dc_print()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
-		{
+		if ($this->if_allowed('view','dc'))
 			$this->load->view('sys/dc_print');
-		}
-		else
-		{
-		show_404();
-		}
+		else show_404();
 	}
 	
 	//
 	public function engineer_asc()
 	{
-		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor')
+		if ($this->if_allowed('view','engineer_asc'))
 		{
 			$this->load->model("complaint_model");
         	$get_eng_dvr = $this->complaint_model->get_eng_asc_model();
@@ -2358,7 +2357,7 @@ class Sys extends CI_Controller {
 	}
 	public function engineer_statistics() {
 		
-		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor')
+		if ($this->if_allowed('view','engineer_statistics'))
 		{
 			$this->load->model("complaint_model");
         	$get_eng_dvr = $this->complaint_model->get_eng_asc_model();
@@ -2370,19 +2369,11 @@ class Sys extends CI_Controller {
 		}
     }
 	public function director_statistics() {
-		
-		if($this->session->userdata('userrole')=='Admin')
-		{
-			$this->load->view('sys/director_statistics');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('director_statistics');
     }
 	public function engineer_vs()
 	{
-		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor')
+		if ($this->if_allowed('view','engineer_vs'))
 		{
 			// $this->load->model("complaint_model");
         	// $get_eng_vs = $this->complaint_model->get_eng_vs_model();
@@ -2420,7 +2411,7 @@ class Sys extends CI_Controller {
 	
 	public function engineer_vs_new()
 	{
-		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor' || $this->session->userdata('userrole')=='Admin' )
+		if ($this->if_allowed('view','engineer_vs'))
 		{
 			$this->load->model("complaint_model");
         	$get_eng_vs = $this->complaint_model->get_eng_vs_model();
@@ -2434,32 +2425,31 @@ class Sys extends CI_Controller {
 	
 	public function sap_vs()
 	{
-		if($this->session->userdata('userrole')!='Salesman')
+		if ($this->if_allowed('view','sap_vs'))
+		{
+			$this->load->model("complaint_model");
+			$get_eng_vs = $this->complaint_model->get_eng_vs_model();
+			$this->load->view('sys/sap_vs', array("get_eng_vs" => $get_eng_vs));
+		}
+		else
 		{
 			show_404();
 		}
-		$this->load->model("complaint_model");
-        $get_eng_vs = $this->complaint_model->get_eng_vs_model();
-		$this->load->view('sys/sap_vs', array("get_eng_vs" => $get_eng_vs));
 	}
+/*
 	public function sap_dvr_history()
 	{
+		// Irrelevant
 		if($this->session->userdata('userrole')!='Salesman')
 		{
 			show_404();
 		}
 		$this->load->view('sys/sap_dvr_history');
 	}
+*/
 	public function engineer_dvr_history()
 	{
-		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor')
-		{
-			$this->load->view('sys/engineer_dvr_history');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('engineer_dvr_history');
 	}
 	public function get_date_dvr()
 	{
@@ -2569,9 +2559,10 @@ class Sys extends CI_Controller {
 		  }
 	
 	}
-	
+/*
 	public function get_date_dvr_from_form_sbumit()
 	{
+		// Irrelevant
 		$start_mydate=$this->input->post('start_mydate');
 		$end_mydate=$this->input->post('end_mydate');
 		$engineer=$this->input->post('engineer');
@@ -2585,10 +2576,12 @@ class Sys extends CI_Controller {
 														));
 	
 	}
-	
+*/
 	// Date VS for Admin
+/*
 	public function get_date_vs_for_admin()
 	{
+		// Irrelevant
 		$start_mydate=$this->input->post('start_mydate');
 		$end_mydate=$this->input->post('end_mydate');
 		$engineer=$this->input->post('engineer');
@@ -2602,7 +2595,7 @@ class Sys extends CI_Controller {
 														));
 	
 	}
-	
+*/
 	//Engineer Vs for Admin
 	public function get_egn_vs_ajax_for_admin()
 	{
@@ -2713,8 +2706,10 @@ class Sys extends CI_Controller {
 	}
 	//
 	// Date DVR for admin
+/*
 	public function get_date_dvr_for_admin()
 	{
+		// Irrelevant
 		$start_mydate=$this->input->post('start_mydate');
 		$end_mydate=$this->input->post('end_mydate');
 		$engineer=$this->input->post('engineer');
@@ -2728,9 +2723,11 @@ class Sys extends CI_Controller {
 														));
 	
 	}
+*/
 	//
 	public function get_egn_dvr_ajax()
 	{
+		//irrelevant
 		$engineer_id	=	$this->input->post('engineer_id');
 		$this->load->model("complaint_model");
         $get_sup_dvr = $this->complaint_model->get_single_eng_dvr_model($engineer_id, 'tbl_dvr');
@@ -2828,6 +2825,7 @@ class Sys extends CI_Controller {
 	//single engineer DVR for admin
 	public function get_egn_dvr_ajax_for_admin()
 	{
+		//irrelevant
 		$engineer_id	=	$this->input->post('engineer_id');
 		$this->load->model("complaint_model");
         $get_sup_dvr = $this->complaint_model->get_single_eng_dvr_model($engineer_id, 'tbl_dvr');
@@ -2933,8 +2931,10 @@ class Sys extends CI_Controller {
 		  }
 	}
 	//
+/*
 	public function supervisor_my_complaints()
 	{
+		// Irrelevant
 		if($this->session->userdata('userrole')!='Supervisor')
 		{
 			show_404();
@@ -2943,42 +2943,27 @@ class Sys extends CI_Controller {
         $get_complaint_list = $this->complaint_model->get_supervisor_complaint_model();
 		$this->load->view('sys/supervisor_my_complaints', array("get_complaint_list" => $get_complaint_list));
 	}
+*/
 	public function supervisor_pm()
 	{
-		if($this->session->userdata('userrole')=='Supervisor' || $this->session->userdata('userrole')=='secratery')
-		{
-			//$this->load->model("complaint_model");
-			//$get_complaint_list = $this->complaint_model->get_supervisor_pm_model();
-			//$this->load->view('sys/supervisor_pm', array("get_complaint_list" => $get_complaint_list));
-			$this->load->view('sys/supervisor_pm');
-		}
-		else
-		{
-			show_404();
-		}
-        
+		$this->load_view('supervisor_pm');
 	}
 	public function supervisor_pm_completed()
 	{
-		if($this->session->userdata('userrole')!='Supervisor')
-		{
-			show_404();
-		}
-		$this->load->view('sys/supervisor_pm_completed');
+		$this->load_view('supervisor_pm_completed');
 	}
 	public function sap_projects()
 	{
-        if($this->session->userdata('userrole')!='Salesman')
-		{
-			show_404();
+        if ($this->if_allowed('view','sap_projects')) {
+			$this->load->model("complaint_model");
+			$get_sap_projects = $this->complaint_model->get_sap_projects();
+			$this->load->view('sys/sap_projects', array("get_sap_projects" => $get_sap_projects));
 		}
-		$this->load->model("complaint_model");
-        $get_sap_projects = $this->complaint_model->get_sap_projects();
-		$this->load->view('sys/sap_projects', array("get_sap_projects" => $get_sap_projects));
+		else show_404();
 	}
 	public function engineer_projects()
 	{
-        if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor')
+        if ($this->if_allowed('view','engineer_projects'))
 		{
 			$this->load->model("complaint_model");
         	$get_engineer_projects = $this->complaint_model->get_sap_projects();
@@ -2992,17 +2977,17 @@ class Sys extends CI_Controller {
 	
 	public function engineer_view_complaints()
 	{
-		if($this->session->userdata('userrole')!='FSE' && $this->session->userdata('userrole')!='Supervisor')
+		if ($this->if_allowed('view','engineer_view_complaints'))
 		{
-			show_404();
+			$this->load->model("complaint_model");
+			$get_complaint_list = $this->complaint_model->get_engineer_complaints_model();
+			$this->load->view('sys/engineer_view_complaints', array("get_complaint_list" => $get_complaint_list));
 		}
-        $this->load->model("complaint_model");
-        $get_complaint_list = $this->complaint_model->get_engineer_complaints_model();
-		$this->load->view('sys/engineer_view_complaints', array("get_complaint_list" => $get_complaint_list));
+		else show_404();
 	}
 	public function customers_view()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
+		if ($this->if_allowed('view','customers_view'))
 		{
 			$this->load->model("complaint_model");
 			$get_customers_list = $this->complaint_model->get_customer_view_model();
@@ -3015,24 +3000,24 @@ class Sys extends CI_Controller {
 	}
 	public function edit_customer($client_id)
 	{
-		if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
+		if ($this->if_allowed('edit_customer','customers_view'))
 		{
-			show_404();
+			$this->load->model("complaint_model");
+			$get_customers_list = $this->complaint_model->get_customer_edit_model($client_id);
+			$this->load->view('sys/edit_customer', array("get_customers_list" => $get_customers_list));
 		}
-        $this->load->model("complaint_model");
-        $get_customers_list = $this->complaint_model->get_customer_edit_model($client_id);
-		$this->load->view('sys/edit_customer', array("get_customers_list" => $get_customers_list));
+		else show_404();
 	}
 	
 	public function engineer_view_pm()
 	{
-		if($this->session->userdata('userrole')!='FSE' && $this->session->userdata('userrole')!='Supervisor')
+		if ($this->if_allowed('view','engineer_view_pm'))
 		{
-			show_404();
+			$this->load->model("complaint_model");
+			$get_complaint_list = $this->complaint_model->get_engineer_pm_model();
+			$this->load->view('sys/engineer_view_pm', array("get_complaint_list" => $get_complaint_list));
 		}
-        $this->load->model("complaint_model");
-        $get_complaint_list = $this->complaint_model->get_engineer_pm_model();
-		$this->load->view('sys/engineer_view_pm', array("get_complaint_list" => $get_complaint_list));
+		else show_404();
 	}
 	public function insert_customer()
 	{
@@ -3085,57 +3070,47 @@ class Sys extends CI_Controller {
 	}
 	public function add_business_project()
 	{
-		if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
-		{
-			show_404();
-		}
-			$this->load->view('sys/add_business_project');
+			$this->load_view('add_business_project');
 	}
 	
 	public function add_policy()
 	{
-		if($this->session->userdata('userrole')!='Admin')
+		if ($this->if_allowed('add_policy','policies'))
 		{
-			show_404();
-		}
 			$this->load->view('sys/add_policy');
+		}
+		else show_404();
 	}
 	
 	public function edit_policy()
 	{
-		if($this->session->userdata('userrole')!='Admin')
+		if ($this->if_allowed('add_policy','policies'))
 		{
-			show_404();
-		}
 			$this->load->view('sys/edit_policy');
+		}
+		else show_404();
 	}
 	
 	public function vendors()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-			$this->load->view('sys/vendors');
+		$this->load_view('vendors');
 	}
 	
 	public function equipments()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-			$this->load->view('sys/equipments');
+		$this->load_view('equipments');
 	}
-	
+/*
 	public function kits()
 	{
+		// Irrelevant
 		if($this->session->userdata('userrole')!='Admin')
 		{
 			show_404();
 		}
 			$this->load->view('sys/kits');
 	}
+*/
 	
 	/* Changes by Zohaib */
 	/*public function order_entry()
@@ -3187,51 +3162,36 @@ class Sys extends CI_Controller {
 	
 	public function aux_equipments()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-			$this->load->view('sys/aux_equipments');
+			$this->load_view('aux_equipments');
 	}
 	
 	public function aux_equipment_registration()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
+		if ($this->if_allowed('add_aux_equipment','aux_equipments'))
 			$this->load->view('sys/aux_equipment_registration');
+		else show_404();
 	}
 	
 	public function aux_equipment_registration_new()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
+		if ($this->if_allowed('add_aux_equipment','aux_equipments'))
 			$this->load->view('sys/aux_equipment_registration_new');
+		else show_404();
 	}
 	
 	public function equipments_under_warranty()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-			$this->load->view('sys/equipments_under_warranty');
+			$this->load_view('equipments_under_warranty');
 	}
 	
 	public function equipments_statistics()
 	{
-		if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
-		{
-			show_404();
-		}
-			$this->load->view('sys/equipments_statistics');
+			$this->load_view('equipments_statistics');
 	}
-	
+/*
 	public function admin_dvr()
 	{
+		// Irrelevant
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
 			$this->load->view('sys/admin_dvr');
@@ -3241,112 +3201,58 @@ class Sys extends CI_Controller {
 		show_404();
 		}
 	}
-	
+*/	
 	public function admin_dvr_new()
 	{
 		
-			$this->load->view('sys/admin_dvr_new');
+			$this->load_view('admin_dvr_new');
 		
 	}
 	
 	public function sap_dvr_history_new()
 	{
-		if($this->session->userdata('userrole')=='Salesman')
-		{
-			$this->load->view('sys/sap_dvr_history_new');
-		}
-		else
-		{
-		show_404();
-		}
+		//$this->load->view('sys/sap_dvr_history_new');
+		$this->load_view('sap_dvr_history_new');
 	}
 	
 	public function monthly_report()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' || $this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor' || $this->session->userdata('userrole')=='Salesman')
-		{
-			$this->load->view('sys/monthly_report');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('monthly_report');
 	}
 	
 	public function equipment_audit()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/equipment_audit');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('equipment_audit');
 	}
 	
 	public function product_audit()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/product_audit');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('product_audit');
 	}
 	
 	public function complaint_statistics()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/complaint_statistics');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('complaint_statistics');
 	}
 	
 	public function spare_parts_changed_report()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/spare_parts_changed_report');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('spare_parts_changed_report');
 	}
 	
 	public function parts_received_report()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/parts_received_report');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('parts_received_report');
 	}
 	
 	public function spare_parts_swap_report()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/spare_parts_swap_report');
-		}
-		else
-		{
-		show_404();
-		}
+		$this->load_view('spare_parts_swap_report');
 	}
-	
+/*	
 	public function complaint_statistics_new()
 	{
+		// Irrelevant
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
 		{
 			$this->load->view('sys/complaint_statistics_new');
@@ -3356,9 +3262,11 @@ class Sys extends CI_Controller {
 		show_404();
 		}
 	}
-	
+*/
+/*
 	public function admin_vs()
 	{
+		// Irrelevant
 		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
 		{
 			$this->load->view('sys/admin_vs');
@@ -3368,13 +3276,14 @@ class Sys extends CI_Controller {
 		show_404();
 		}
 	}
+*/
 	public function update_business_project($business_project_id)
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' || $this->session->userdata('userrole')=='Salesman')
+		if ($this->if_allowed('view','add_business_project'))
 		{
-        $this->load->model("complaint_model");
-        $get_business_projects_list = $this->complaint_model->get_update_business_project_model($business_project_id);
-		$this->load->view('sys/update_business_project', array("get_business_projects_list" => $get_business_projects_list));
+			$this->load->model("complaint_model");
+			$get_business_projects_list = $this->complaint_model->get_update_business_project_model($business_project_id);
+			$this->load->view('sys/update_business_project', array("get_business_projects_list" => $get_business_projects_list));
 		}
 		else
 		{
@@ -3384,41 +3293,44 @@ class Sys extends CI_Controller {
 	
 	public function update_equipment()
 	{
-		if($this->session->userdata('userrole')!='Admin')
+		if ($this->if_allowed('view','equipment_registration'))
+		{
+			$this->load->view('sys/update_equipment');
+		}
+		else
 		{
 			show_404();
 		}
-		$this->load->view('sys/update_equipment');
 	}
 	
 	public function update_aux_equipment()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/update_aux_equipment');
+		if ($this->if_allowed('add_aux_equipment','aux_equipments'))
+			$this->load->view('sys/update_aux_equipment');
+		else show_404();
 	}
 	
 	public function update_equipment_location()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/update_equipment_location');
+		$this->load_view('update_equipment_location');
 	}
 
     public function delete_equipment($id) {
-        $query="delete from  tbl_instruments  where `pk_instrument_id` =$id";
-        $dbres = $this->db->query($query);
-        redirect(site_url() . 'sys/equipments?msg_delete=success');
+		if ($this->if_allowed('delete','equipments')) {
+			$query="delete from  tbl_instruments  where `pk_instrument_id` =$id";
+			$dbres = $this->db->query($query);
+			redirect(site_url() . 'sys/equipments?msg_delete=success');
+		}
+		else show_404();
     }
 	
 	public function delete_aux_equipment($id) {
-        $query="delete from  tbl_instruments  where `pk_instrument_id` =$id";
-        $dbres = $this->db->query($query);
-        redirect(site_url() . 'sys/aux_equipments?msg_delete=success');
+		if ($this->if_allowed('delete','aux_equipments')) {
+			$query="delete from  tbl_instruments  where `pk_instrument_id` =$id";
+			$dbres = $this->db->query($query);
+			redirect(site_url() . 'sys/aux_equipments?msg_delete=success');
+		}
+		else show_404();
     }
 	
 	public function update_equipment_insert()
@@ -3531,34 +3443,25 @@ class Sys extends CI_Controller {
 	
 	public function details_business_project($business_project_id)
 	{
-		if($this->session->userdata('userrole')!='')
-		{
-		$this->load->view('sys/details_business_project');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('details_business_project');
 	}
 	public function update_vs_project($vs_id)
 	{
-		if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery' )
-		{
-			show_404();
+		if ($this->if_allowed('update_dvr_vs','admin_dvr_new')) {
+			$this->load->model("complaint_model");
+			$get_update_vs_project_list = $this->complaint_model->get_update_vs_project($vs_id);
+			$this->load->view('sys/update_vs_project', array("get_update_vs_project_list" => $get_update_vs_project_list));
 		}
-		$this->load->model("complaint_model");
-        $get_update_vs_project_list = $this->complaint_model->get_update_vs_project($vs_id);
-		$this->load->view('sys/update_vs_project', array("get_update_vs_project_list" => $get_update_vs_project_list));
+		else show_404();
 	}
 	public function update_dvr_project($vs_id)
 	{
-		if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery' )
-		{
-			show_404();
+		if ($this->if_allowed('update_dvr_vs','admin_dvr_new')) {
+			$this->load->model("complaint_model");
+			$get_update_dvr_project_list = $this->complaint_model->get_update_dvr_project($vs_id);
+			$this->load->view('sys/update_dvr_project', array("get_update_dvr_project_list" => $get_update_dvr_project_list));
 		}
-		$this->load->model("complaint_model");
-        $get_update_dvr_project_list = $this->complaint_model->get_update_dvr_project($vs_id);
-		$this->load->view('sys/update_dvr_project', array("get_update_dvr_project_list" => $get_update_dvr_project_list));
+		else show_404();
 	}
 	public function insert_business_project()
 	{
@@ -3741,18 +3644,21 @@ class Sys extends CI_Controller {
 	}
 	public function delete_business_project($id)
 	{
-		$query="update business_data SET 
-								`result`							= 	'".$_POST['result']."',
-								`delete_date`						= 	'".date('Y-m-d H:i:s')."',
-								`status`							=	'1'
-								where pk_businessproject_id			= 	'".$id."'
-							  ";
-			  //echo $query;exit;
-			  $dbres = $this->db->query($query);
-		if (isset($_GET['cust']))
-			redirect(site_url() . 'sys/edit_customer/'. $_GET['cust']);
-		else
-		redirect(site_url() . 'sys/business_data?del=success');
+		if ($this->if_allowed('delete','business_data')) {
+			$query="update business_data SET 
+									`result`							= 	'".$_POST['result']."',
+									`delete_date`						= 	'".date('Y-m-d H:i:s')."',
+									`status`							=	'1'
+									where pk_businessproject_id			= 	'".$id."'
+								  ";
+				  //echo $query;exit;
+				  $dbres = $this->db->query($query);
+			if (isset($_GET['cust']))
+				redirect(site_url() . 'sys/edit_customer/'. $_GET['cust']);
+			else
+			redirect(site_url() . 'sys/business_data?del=success');
+		}
+		else show_404();
 	}
 	
 	public function restore_business_project($id)
@@ -3966,24 +3872,30 @@ class Sys extends CI_Controller {
 	
 	public function delete_dvr($id)
 	{
-		$dbres = $this->db->query("DELETE FROM tbl_dvr WHERE pk_dvr_id = $id");
-		if(isset($_GET['engineer']) && isset($_GET['start_mydate']) && isset($_GET['end_mydate'])) {
-				redirect(site_url() . 'sys/admin_dvr_new?delete_msg=success&engineer='.$_GET['engineer'].'&start_mydate='.$_GET['start_mydate'].'&end_mydate='.$_GET['end_mydate']);
-			}
-			else {
-            redirect(site_url() . 'sys/update_dvr_project/'.$id.'?delete_msg=success');
-			}
+		if ($this->if_allowed('delete','admin_dvr_new')) {
+			$dbres = $this->db->query("DELETE FROM tbl_dvr WHERE pk_dvr_id = $id");
+			if(isset($_GET['engineer']) && isset($_GET['start_mydate']) && isset($_GET['end_mydate'])) {
+					redirect(site_url() . 'sys/admin_dvr_new?delete_msg=success&engineer='.$_GET['engineer'].'&start_mydate='.$_GET['start_mydate'].'&end_mydate='.$_GET['end_mydate']);
+				}
+				else {
+				redirect(site_url() . 'sys/update_dvr_project/'.$id.'?delete_msg=success');
+				}
+		}
+		else show_404();
 	}
 	
 	public function delete_vs($id)
 	{
-		$dbres = $this->db->query("DELETE FROM tbl_vs WHERE pk_vs_id = $id");
-		if(isset($_GET['engineer']) && isset($_GET['start_mydate']) && isset($_GET['end_mydate'])) {
-				redirect(site_url() . 'sys/admin_dvr_new?delete_msgvs=success&engineer='.$_GET['engineer'].'&start_mydate='.$_GET['start_mydate'].'&end_mydate='.$_GET['end_mydate']);
-			}
-			else {
-            redirect(site_url() . 'sys/update_vs_project/'.$id.'?delete_msgvs=success');
-			}
+		if ($this->if_allowed('delete','admin_dvr_new')) {
+			$dbres = $this->db->query("DELETE FROM tbl_vs WHERE pk_vs_id = $id");
+			if(isset($_GET['engineer']) && isset($_GET['start_mydate']) && isset($_GET['end_mydate'])) {
+					redirect(site_url() . 'sys/admin_dvr_new?delete_msgvs=success&engineer='.$_GET['engineer'].'&start_mydate='.$_GET['start_mydate'].'&end_mydate='.$_GET['end_mydate']);
+				}
+				else {
+				redirect(site_url() . 'sys/update_vs_project/'.$id.'?delete_msgvs=success');
+				}
+		}
+		else show_404();
 	}
 	public function edit_vs_business($vs_id)
 	{
@@ -4345,18 +4257,18 @@ class Sys extends CI_Controller {
 			  //
 			redirect(site_url() . 'sys/technical_service_pvr/'.$_POST['complaint_id']);
 	}
+	/*
 	public function supervisor_view_complaints()
 	{
+		// irrelevant
 		if($this->session->userdata('userrole')!='Supervisor')
 		{
 			show_404();
 		}
 		$this->load->view('sys/supervisor_view_complaints');
-	}
+	}*/
 	public function update_ts_report()
 	{
-			 
-			 
 			 $query="UPDATE tbl_complaints SET ";
 			 if ($_POST['reporting_date']!=""){				  
 						$query.="`reporting_date`								=	'".date('Y-m-d',strtotime($_POST['reporting_date']))."',";
@@ -4671,7 +4583,7 @@ class Sys extends CI_Controller {
 					  </tr>				  
 					</table>';
 			mail($to, $subject, $body, $headers);
-            redirect(site_url() . 'sys/operator_view_complaints?msg=success');
+            redirect(site_url() . 'sys/director_view_complaints?msg=success');
 	  }
 	//complete complaint registration
 	public function complete_complaint_resgistration() {
@@ -4822,12 +4734,10 @@ class Sys extends CI_Controller {
 	  }
 	// Delete Single Message.
 	
-		public function shift_complaint() {
-        if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
-		{
-			show_404();
-		}
-        $this->load->view('sys/shift_complaint');
+	public function shift_complaint() {
+        if ($this->if_allowed('shift_complaint','director_view_complaints'))
+			$this->load->view('sys/shift_complaint');
+		else show_404();
     }
 
     public function shift_complaint_update() {
@@ -5943,20 +5853,20 @@ class Sys extends CI_Controller {
 		$gh=$this->db->query($qu);
 		redirect(site_url() . 'sys/supervisor_sprf/'.$_POST['complaint_id'].'?msgcp=success');
 	}
-	
+	/*
 	public function operator_view_dc()
 	{
+		// Irrelevant
 		$this->load->model("complaint_model");
         $get_complaint_list = $this->complaint_model->get_operator_view_dc_model();
 		$this->load->view('sys/operator_view_dc', array("get_complaint_list" => $get_complaint_list));
 	}
+	*/
 	public function update_vendor()
 	{
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
-		$this->load->view('sys/update_vendor');
+		if ($this->if_allowed('view','vendor_registration'))
+			$this->load->view('sys/update_vendor');
+		else show_404();
 	}
 	
 	public function update_print_count_ajax()
@@ -6465,128 +6375,74 @@ class Sys extends CI_Controller {
 	}
 	
 	/***************************** FUNCTIONS FROM PRODUCTS CONTROLLER products_controller  ****************************/
-
+/*
 	public function instruments_view()
-	{
+	{// Irrelevant
         $this->load->model("complaint_model");
         $get_instruments_list = $this->complaint_model->get_instruments_model();
-		$this->load->view('sys/instruments_view', array("get_instruments_list" => $get_instruments_list));
+		$this->load->view('sys/instruments_view', array("get_instruments_list" => $get_instruments_list)); // Irrelevant
 	}
 	public function parts_view()
 	{
+		// Irrelevant
         $this->load->model("complaint_model");
         $get_parts_list = $this->complaint_model->get_parts_model();
-		$this->load->view('sys/parts_view', array("get_parts_list" => $get_parts_list));
+		$this->load->view('sys/parts_view', array("get_parts_list" => $get_parts_list)); // Irrelevant
 	}
+*/
 	public function spare_part_registration()
 	{
-		$this->load->view('sys/spare_part_registration');
+		$this->load_view('spare_part_registration');
 	}
 	public function spare_part_stock_entry()
 	{
-		$this->load->view('sys/spare_part_stock_entry');
+		$this->load_view('spare_part_stock_entry');
 	}
 	
 	public function part_transfer_office()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-			$this->load->view('sys/part_transfer_office');
-		else
-			show_404();
+		$this->load_view('part_transfer_office');
 	}
 	
 	public function add_order()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/add_order');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('add_order');
 	}
 	
 	public function update_order()
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/update_order');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('update_order');
 	}
 	
 	
 	public function orders()
 	{
-		
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/orders');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('orders');
 	}
 	
 	public function parts_ordered()
 	{
-		
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/parts_ordered');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('parts_ordered');
 	}
 	
 	public function parts_received()
 	{
-		
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/parts_received');
-		}
-		else
-		{
-			show_404();
-		}
+		if ($this->if_allowed('view','spare_parts_changed_report')) $this->load->view('sys/parts_received');
+		else show_404();
 	}
 	
 	public function ledger()
 	{
-		
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/ledger');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('ledger');
 	}
 	
 	public function warranty_claims()
 	{
-		
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/warranty_claims');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('warranty_claims');
 	}
-	
+/*	
 	public function test_product()
-	{
+	{// Irrelevant
 		if($this->session->userdata('userrole')=='Admin')
 		{
 			$this->load->view('sys/test_product');
@@ -6596,93 +6452,50 @@ class Sys extends CI_Controller {
 			show_404();
 		}
 	}
-	
+*/	
 	public function parts_against_sprf()
 	{
-		
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/parts_against_sprf');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('parts_against_sprf');
 	}
 	
 	public function dc_in()
 	{
-		
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/dc_in');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('dc_in');
 	}
 	
 	public function dc_print_in()
 	{
-		
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/dc_print_in');
-		}
-		else
-		{
-			show_404();
-		}
+		if ($this->if_allowed('view','dc_in')) $this->load->view('sys/dc_print_in');
+		else show_404();
 	}
 	
 	public function stock_list()
 	{
-		
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/stock_list');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('stock_list');
 	}
 	
 	public function stock_list_new()
 	{
-		
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' )
-		{
-			$this->load->view('sys/stock_list_new');
-		}
-		else
-		{
-			show_404();
-		}
+		if ($this->if_allowed('view','stock_list')) $this->load->view('sys/stock_list_new');
+		else show_404();
 	}
 	
 	public function spare_parts()
 	{
-		
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery' || $this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor')
-		{
-			$this->load->view('sys/spare_parts');
-		}
-		else
-		{
-			show_404();
-		}
+		$this->load_view('spare_parts');
 	}
 	public function update_part()
 	{
-		$this->load->view('sys/update_part');
+		$this->load_view('update_part');
 	}
 	public function delete_part($id)
 	{
-		//$dbres = $this->db->query("DELETE FROM tbl_parts WHERE pk_part_id = $id");
-		$dbres = $this->db->query("update tbl_parts SET delete_status='1' where pk_part_id = $id ");
-		redirect(site_url() . 'sys/spare_parts?msg=del');
+		if ($this->if_allowed('delete','spare_parts')) {
+			//$dbres = $this->db->query("DELETE FROM tbl_parts WHERE pk_part_id = $id");
+			$dbres = $this->db->query("update tbl_parts SET delete_status='1' where pk_part_id = $id ");
+			redirect(site_url() . 'sys/spare_parts?msg=del');
+		}
+		else show_404();
 	}
 	
 	public function order_booked($id)
@@ -6736,11 +6549,13 @@ print_r('</pre>');
 	
 	public function delete_sprf($id)
 	{
-		$dbres = $this->db->query("DELETE FROM tbl_sprf WHERE pk_sprf_id = $id");
-		if (isset($_GET['complaint_id']))
-			redirect(site_url() . 'sys/sprf/'.$_GET['complaint_id'].'?msg=del');
-		else
-			redirect(site_url() . 'sys/parts_against_sprf?msg=del');
+		if ($this->if_allowed('delete','parts_against_sprf')) {
+			$dbres = $this->db->query("DELETE FROM tbl_sprf WHERE pk_sprf_id = $id");
+			if (isset($_GET['complaint_id']))
+				redirect(site_url() . 'sys/sprf/'.$_GET['complaint_id'].'?msg=del');
+			else
+				redirect(site_url() . 'sys/parts_against_sprf?msg=del');
+		} else show_404();
 	}
 	/*public function delete_complaint($id)
 	{
@@ -6750,35 +6565,44 @@ print_r('</pre>');
 	
 	public function delete_order($id)
 	{
-		$query="UPDATE tbl_orders SET `status` = '0' WHERE pk_order_id = $id";
-		$dbres = $this->db->query($query);
-		redirect(site_url() . 'sys/parts_ordered?delete=success');
+		if ($this->if_allowed('delete','parts_ordered')) {
+			$query="UPDATE tbl_orders SET `status` = '0' WHERE pk_order_id = $id";
+			$dbres = $this->db->query($query);
+			redirect(site_url() . 'sys/parts_ordered?delete=success');
+		}
+		else show_404();
 	}
 	
 	public function approve_dc()
 	{
+		if ($this->if_allowed('approve_dc','spare_part_stock_entry')) {
 		$query="UPDATE tbl_stock SET `in_status` = 'approved' WHERE in_status = 'pending_approval' AND dc_type = 'in'";
 		$dbres = $this->db->query($query);
 		redirect(site_url() . 'sys/spare_part_stock_entry?dc=success');
+		}
+		else show_404();
 	}
 	
 	public function delete_stock($id)
 	{
-		$query = $this->db->query("SELECT fk_sprf_id from tbl_stock WHERE pk_stock_id = $id");
-		$stock = $query->result_array();
-		$dbres = $this->db->query("DELETE FROM tbl_stock WHERE pk_stock_id = $id");
-		//echo (sizeof($stock));
-		//exit();
-		$sprf_id = 0;
-		if (sizeof($stock)>0) $sprf_id = $stock[0]['fk_sprf_id'];
-		//exit();
-		if ($sprf_id !== 0) {
-			$sprfq = $this->db->query("DELETE FROM tbl_sprf WHERE pk_sprf_id = '".$sprf_id."'");
+		if ($this->if_allowed('delete','spare_part_stock_entry')) {
+			$query = $this->db->query("SELECT fk_sprf_id from tbl_stock WHERE pk_stock_id = $id");
+			$stock = $query->result_array();
+			$dbres = $this->db->query("DELETE FROM tbl_stock WHERE pk_stock_id = $id");
+			//echo (sizeof($stock));
+			//exit();
+			$sprf_id = 0;
+			if (sizeof($stock)>0) $sprf_id = $stock[0]['fk_sprf_id'];
+			//exit();
+			if ($sprf_id !== 0) {
+				$sprfq = $this->db->query("DELETE FROM tbl_sprf WHERE pk_sprf_id = '".$sprf_id."'");
+			}
+			if (isset($_GET['part']))
+				redirect(site_url() . 'sys/ledger?part='.$_GET['part'].'&delete=success');
+			else
+			redirect(site_url() . 'sys/spare_part_stock_entry?delete=success');
 		}
-		if (isset($_GET['part']))
-			redirect(site_url() . 'sys/ledger?part='.$_GET['part'].'&delete=success');
-		else
-		redirect(site_url() . 'sys/spare_part_stock_entry?delete=success');
+		else show_404();
 	}
 	
 	public function spare_part_order_insert() {
@@ -7481,7 +7305,7 @@ print_r('</pre>');
 	
 	public function sprf($complaint_id)
 	{
-		if($this->session->userdata('userrole')=='FSE' || $this->session->userdata('userrole')=='Supervisor' || $this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='secratery')
+		if($this->if_allowed('view','sprf'))
 		{
 			$this->load->model("complaint_model");
 			$get_complaint_list = $this->complaint_model->get_complaint_data($complaint_id);
@@ -7495,7 +7319,7 @@ print_r('</pre>');
 	}
 	public function supervisor_sprf($complaint_id)
 	{
-		if($this->session->userdata('userrole')=='Admin' || $this->session->userdata('userrole')=='Supervisor' || $this->session->userdata('userrole')=='secratery')
+		if($this->if_allowed('view','supervisor_sprf'))
 		{
 			$this->load->model("complaint_model");
 			$get_complaint_list = $this->complaint_model->get_complaint_data($complaint_id);
@@ -7609,7 +7433,7 @@ print_r('</pre>');
             $this->load->model("complaint_model");
             $result = $this->complaint_model->insert_complaint($data);
             echo $this->db->insert_id();
-            redirect(site_url() . 'sys/operator_view_complaints?msg=success');
+            redirect(site_url() . 'sys/director_view_complaints?msg=success');
 	  }
 	// Delete Single Message.
 	
@@ -7631,11 +7455,14 @@ print_r('</pre>');
 	}
 	public function supervisor_mark_completed()
 	{
+		if($this->if_allowed('approve_pm','pm_form')) {
 		$updat_query="UPDATE tbl_complaints SET status			=	'Completed',
 												finish_time	=	'".date('Y-m-d H:i:s')."'
 						 WHERE pk_complaint_id='" . $_POST['complaint_id'] . "'";
             $query=$this->db->query($updat_query);
 			redirect(site_url() . 'sys/pm_form/'.$_POST['complaint_id'].'?msg_mark_comp=success');
+		}
+		else show_404();
 	}
 	public function director_change_status()
 	{
@@ -7647,7 +7474,7 @@ print_r('</pre>');
 		}
 		else {
 			$updat_query="UPDATE tbl_complaints SET 
-												status			=	'".$_POST['status']."'
+												status			=	'".$_POST['status']."',
 												finish_time			=	'".date('Y-m-d H:i:s')."'
 						 						WHERE pk_complaint_id='" . $_POST['complaint_id'] . "'";
 			$query=$this->db->query($updat_query);
@@ -7656,7 +7483,7 @@ print_r('</pre>');
 											 fk_complaint_id ='".$_POST['complaint_id']."', fk_employee_id='".$this->session->userdata('userid')."'");
 			if(isset($_POST['ts_report_director']))
 			{
-				redirect(site_url() . 'sys/ts_report_director/'.$_POST['complaint_id'].'?msg_change_status=success');
+				redirect(site_url() . 'sys/technical_service_pvr/'.$_POST['complaint_id'].'?msg_change_status=success');
 			}
 			else
 			{
@@ -7666,9 +7493,12 @@ print_r('</pre>');
 	
 	public function supervisor_mark_pending()
 	{
+		if($this->if_allowed('approve_pm','pm_form')) {
 		$updat_query="UPDATE tbl_complaints SET status			=	'Pending' WHERE pk_complaint_id='" . $_POST['complaint_id'] . "'";
             $query=$this->db->query($updat_query);
 			redirect(site_url() . 'sys/pm_form/'.$_POST['complaint_id'].'?msg_mark_pend=success');
+		}
+		else show_404();
 	}
 	
 	public function pm_form_other_details_insert()
@@ -8868,15 +8698,20 @@ print_r('</pre>');
 	}
 	public function delete_fine($id)
 	{
-		$query="delete from tbl_fine 
-								where pk_fine_id			= 	'".$id."'
-							  ";
-			  //echo $query;exit;
-			  $dbres = $this->db->query($query);
-		redirect(site_url() . 'sys/all_fines?del=success');
+		if ($this->if_allowed('delete','all_fines')) {
+			$query="delete from tbl_fine 
+									where pk_fine_id			= 	'".$id."'
+								  ";
+				  //echo $query;exit;
+				  $dbres = $this->db->query($query);
+			redirect(site_url() . 'sys/all_fines?del=success');
+		}
+		else show_404();
 	}
+/*
 	public function delete_warning_letter($id)
 	{
+		// Irrelevant
 		$query="delete from tbl_warning_letters 
 								where pk_warning_letter_id			= 	'".$id."'
 							  ";
@@ -8884,6 +8719,7 @@ print_r('</pre>');
 			  $dbres = $this->db->query($query);
 		redirect(site_url() . 'sys/all_warning_letters?del=success');
 	}
+*/
 	
 	
 	/*********************** FUNCTIONS FROM PROFILE CONTROLLER profile_controller ******************/
@@ -8893,6 +8729,7 @@ print_r('</pre>');
 		$this->load->model('complaint_model');
 		$profiledata = $this->complaint_model->userdata($userid);
         $this->load->view('sys/userprofile', array("profiledata" => $profiledata));
+		// haven't changed load view function as it does not require user role in this function
 	}
 	public function updateuserimage()
 	{
@@ -8929,15 +8766,20 @@ print_r('</pre>');
 	public function delete_user($id)
 	{
 		//$dbres = $this->db->query("delete from user where id = $id");
-		$termination_date = date("Y-m-d H:i");
-		$dbres = $this->db->query("update user SET delete_status='1',termination_date='$termination_date' where id = $id ");
-		redirect(site_url() . 'sys/get_employees?msg_del=success');
+		if ($this->if_allowed('delete','get_employees')) {
+			$termination_date = date("Y-m-d H:i");
+			$dbres = $this->db->query("update user SET delete_status='1',termination_date='$termination_date' where id = $id ");
+			redirect(site_url() . 'sys/get_employees?msg_del=success');
+		}
+		else show_404();
 	}
 	public function recover_user($id)
 	{
 		//$dbres = $this->db->query("delete from user where id = $id");
-		$dbres = $this->db->query("update user SET delete_status='0' where id = $id ");
-		redirect(site_url() . 'sys/get_employees?msg_rec=success');
+		if ($this->if_allowed('restore_employee','get_users')) {
+			$dbres = $this->db->query("update user SET delete_status='0' where id = $id ");
+			redirect(site_url() . 'sys/get_employees?msg_rec=success');
+		} else show_404();
 	}
 	public function changepassword()
 	{
@@ -8967,40 +8809,37 @@ print_r('</pre>');
 	public function get_users() {
         $this->load->model("complaint_model");
         $get_users_lists = $this->complaint_model->get_users_model();
-        $this->load->view('sys/users', array("get_users_lists" => $get_users_lists));
+		if ($this->if_allowed('view','get_users'))
+			$this->load->view('sys/users', array("get_users_lists" => $get_users_lists));
+		else show_404();
     }
 	public function get_employees() {
-        if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
-		}
 		$this->load->model("complaint_model");
         $get_users_lists = $this->complaint_model->get_all_employee_model();
-        $this->load->view('sys/employees', array("get_users_lists" => $get_users_lists));
+		if ($this->if_allowed('view','get_employees'))
+			$this->load->view('sys/employees', array("get_users_lists" => $get_users_lists));
+		else show_404();
     }
+/*
 	public function add_user() {
+		// Irrelevant
 		if($this->session->userdata('userrole')!='Admin')
 		{
 			show_404();
 		}
         $this->load->view('sys/add_user');
     }
-	
+*/	
 	public function add_employee() {
-		if($this->session->userdata('userrole')!='Admin' && $this->session->userdata('userrole')!='secratery')
-		{
-			show_404();
-		}
-        $this->load->view('sys/add_employee');
+        $this->load_view('add_employee');
     }
 	public function update_employee($employee_id) {
-		if($this->session->userdata('userrole')!='Admin')
-		{
-			show_404();
+		if ($this->if_allowed('view','get_employees')) {
+			$this->load->model("complaint_model");
+			$get_employee_lists = $this->complaint_model->get_employee_model($employee_id);
+			$this->load->view('sys/update_employee', array("get_employee_lists" => $get_employee_lists));
 		}
-        $this->load->model("complaint_model");
-        $get_employee_lists = $this->complaint_model->get_employee_model($employee_id);
-        $this->load->view('sys/update_employee', array("get_employee_lists" => $get_employee_lists));
+		else show_404();
     }
 	public function run_update_employee($employee_id) {
 		
@@ -9280,6 +9119,212 @@ print_r('</pre>');
         
 	  
     }
+	
+	public function calculate_da($fk_employee_id,$last_of_month) {
+		$allowance_previous_month = "N/A";
+		$first_of_month = date('Y-m-01',strtotime($last_of_month));
+		$dbres_query = "SELECT * FROM tbl_dvr WHERE (fk_engineer_id = '$fk_employee_id' 
+						 AND CAST(`date` AS DATE) BETWEEN '$first_of_month' AND '$last_of_month' AND (`fk_customer_id` REGEXP  '^[0-9]+\\.?[0-9]*$' OR `outstation` = '1') )
+						 GROUP BY DATE";
+		$dbres = $this->db->query($dbres_query);
+		$dbresResult=$dbres->result_array();
+		 //
+		$sunday_visits_this_month		=	0;
+		$non_sunday_visits_this_month	=	0;
+		 //
+		foreach ($dbresResult as $eng_dvr ) {
+			$mynewdate = date('D',strtotime($eng_dvr['date']));
+			if($mynewdate=='Sun')
+			  $sunday_visits_this_month++;
+			elseif($mynewdate!='Sun')
+			  $non_sunday_visits_this_month++;
+		}
+		$maxqu = $this->db->query("SELECT * FROM user where id='$fk_employee_id'  ORDER BY  `fk_office_id` ,  `userrole` ASC ");
+		$maxvall=$maxqu->result_array();
+		$specific_amount_1 = $maxvall[0]['specific_amount'];
+
+		$daily_allownce_of_this_month 	= ($non_sunday_visits_this_month* $specific_amount_1)+($sunday_visits_this_month * $specific_amount_1);
+		$allowance_previous_month 		= ' ('.$non_sunday_visits_this_month.', '.$sunday_visits_this_month.') ';
+		$allowance_previous_month .= $daily_allownce_of_this_month;
+		return $allowance_previous_month;
+	}
+	
+	public function visits_in_month($fk_employee_id,$month) {
+		$start_date 	= 	$month.'-01';
+		$end_date		= 	$month.'-31';
+		
+		$dq = $this->db->query("SELECT * FROM tbl_dvr 
+								WHERE (fk_engineer_id = '$fk_employee_id' AND CAST(`date` AS DATE) BETWEEN '$start_date' AND '$end_date'
+								AND  (`fk_customer_id` REGEXP  '^[0-9]+\\.?[0-9]*$' OR `outstation` = '1') )
+								GROUP BY DATE, fk_customer_id
+						 ");
+		$dr = $dq->result_array();
+		return sizeof($dr);
+	}
+	public function average_visits_hours_work($fk_employee_id,$month) {
+	$average_visits_hours_work = array();
+	$average_visits_per_day = 0;
+	$month_visits = 0;
+	$start_date 	= 	$month.'-01';
+	$end_date		= 	$month.'-31';
+	$dbres = $this->db->query("SELECT * FROM tbl_dvr where fk_engineer_id = '".$fk_employee_id."' AND CAST(`date` AS DATE) BETWEEN '".$start_date."' AND '".$end_date."' order by date DESC");
+    $dbresResult=$dbres->result_array();
+   //
+   $count_total_this_month=0;
+   $count_office_this_month=0;
+   $sunday_visits_this_month=0;
+   $non_sunday_visits_this_month=0;
+   //
+   $offices_mas_hour_result=0;
+   $mas_hour_result=0;
+   $count_total=0;
+   $count_office=0;
+   //
+   foreach ($dbresResult as $eng_dvr ) {
+		$count_total_this_month	= $count_total_this_month+1;
+		$mynewdate = date('D',strtotime($eng_dvr['date']));
+		if($mynewdate=='Sun') $sunday_visits_this_month++;
+		elseif($mynewdate!='Sun') $non_sunday_visits_this_month++;
+				  
+		if(substr($eng_dvr['fk_customer_id'],0,1)=='o') $count_office_this_month = $count_office_this_month+1;
+		  
+		  /*calculating hours*/
+		$str_tim=explode(':',$eng_dvr['start_time']);
+		$str_hour=$str_tim[0]*60;
+		$str_mint=$str_hour + $str_tim[1];
+		//
+		$end_tim=explode(':',$eng_dvr['end_time']);
+		$end_hour=$end_tim[0]*60;
+		$end_mint=$end_hour + $end_tim[1];
+		//
+		$hours_mi=$str_mint- $end_mint;
+		$hours= $hours_mi/60;
+		$positive_hours=abs($hours);
+		$mas_hour_result=$mas_hour_result + $positive_hours;
+		$count_total= $count_total+1;
+						
+		if(substr($eng_dvr['fk_customer_id'],0,1)=='o') {
+			$str_tim=explode(':',$eng_dvr['start_time']);
+			$str_hour=$str_tim[0]*60;
+			$str_mint=$str_hour + $str_tim[1];
+			//
+			$end_tim=explode(':',$eng_dvr['end_time']);
+			$end_hour=$end_tim[0]*60;
+			$end_mint=$end_hour + $end_tim[1];
+			//
+			$hours_mi=$str_mint- $end_mint;
+			$hours_offices= $hours_mi/60;
+			$offices_positive_hours		=abs($hours_offices);
+			$offices_mas_hour_result	=$offices_mas_hour_result + $offices_positive_hours;
+			$count_office = $count_office+1;								
+		}
+		  
+   }
+	$count_visits=$count_total - $count_office;
+	$count_visits_this_month	=	$count_total_this_month - $count_office_this_month;	
+	//calculate open days using group by query as it will return only unique Dates.
+	// AND fk_customer_id REGEXP '^[0-9]+\\.?[0-9]*$' 
+	$dbres_query = "SELECT * FROM tbl_dvr where fk_engineer_id = '".$fk_employee_id."' 
+				   AND CAST(`date` AS DATE) BETWEEN '".$start_date."' AND '".$end_date."' group by date order by date DESC";
+
+	$dbres = $this->db->query($dbres_query);
+	$divider = $dbres->num_rows();
+	$month_visits = $this->visits_in_month($fk_employee_id,$month);
+	if($divider>0) $average_visits_per_day = round($month_visits/$divider, 2);//. ' Visits' ;//. ' Visits/Day'; //month_visits rather count_visits_this_month
+	else $average_visits_per_day = 0;
+
+	$average_visits_hours_work[0] =	$average_visits_per_day;
+	$average_visits_hours_work[3] =	$month_visits;
+	/*********** Hours Per Day *****************/
+	$average_hours_per_day = 0;
+		if($divider>0) {
+				$office_plus_filed_hours = round($mas_hour_result/$divider, 2);
+				$average_hours_per_day = $office_plus_filed_hours . " Hours";
+		}
+	$offices_hours = 0;
+	$field_hours = 0;
+	if($divider>0)
+	{
+		$offices_hours=  round($offices_mas_hour_result/$divider, 2);
+		$field_hours = $office_plus_filed_hours-$offices_hours;
+	}
+	$average_visits_hours_work[1] = $offices_hours;
+	$average_visits_hours_work[2]  = $field_hours;
+	
+	return $average_visits_hours_work;
+	}
+	
+	public function average_ts_pm_hours($fk_employee_id,$month) {
+		$average_ts_pm_hours = array();
+		$average_pm_hours_sub =  0;
+		$average_pm_hours_fin =  0;
+		$average_ts_hours_sub =  0;
+		$average_ts_hours_fin =  0;
+		$temp = 0;
+		$start_date 	= 	$month.'-01';
+		$end_date		= 	$month.'-31';
+		$qu_int_sc	="select * from tbl_complaints where assign_to='".$fk_employee_id."' AND (status='Completed' OR status='Closed') ";
+		if (TRUE) {$qu_int_sc .=" AND CAST(`date` AS DATE) BETWEEN '".$start_date."' AND '".$end_date."' ORDER BY date ASC";}
+		$qh_int_sc	=$this->db->query($qu_int_sc);
+		$res_int_sc = $qh_int_sc->result_array();
+		if(sizeof($res_int_sc)>0)
+		{
+			$total_pm_hours_sub = 0;
+			$total_pm_hours_fin = 0;
+			$count_pm = 0;
+			$total_ts_hours_sub = 0;
+			$total_ts_hours_fin = 0;
+			$count_ts = 0;
+			$i=0;
+			foreach($res_int_sc as $interval)
+			{
+				if ($interval['complaint_nature'] == 'complaint')
+					$solution_date = date('Y-m-d',strtotime($interval["solution_date"])).' '.date('H:i:s',strtotime($interval["solution_time"]));
+				else 
+					$solution_date = date('Y-m-d H:i:s',strtotime($interval["solution_date"]));
+				$to_time= strtotime($solution_date);
+				$from_time = strtotime($interval['date']);
+				$end_time = strtotime($interval['finish_time']);
+				
+				if ($interval['complaint_nature'] == 'complaint') {
+					$count_ts++;
+					$total_ts_hours_sub += round(abs($to_time - $from_time) / 3600,2);//.', '; // + added extra in this equation on 29 November 2016
+					$total_ts_hours_fin += round(abs($end_time - $to_time) / 3600,2);
+					 $temp += round(abs($to_time - $from_time)/ 60,2);
+				}
+				else {
+					$count_pm++;
+					$total_pm_hours_sub += round(abs($to_time - $from_time) / 3600,2);//.', '; // + added extra in this equation on 29 November 2016
+					$total_pm_hours_fin += round(abs($end_time - $to_time) / 3600,2);
+				}
+				$i++;
+			}
+			if($count_pm!=0) $average_pm_hours_sub =  round($total_pm_hours_sub/$count_pm,2);//.' Hours';
+			if($count_pm!=0) $average_pm_hours_fin =  round($total_pm_hours_fin/$count_pm,2);
+			if($count_ts!=0) $average_ts_hours_sub =  round($total_ts_hours_sub/$count_ts,2);
+			if($count_ts!=0) $average_ts_hours_fin =  round($total_ts_hours_fin/$count_ts,2);
+			//$average_ts_hours_sub = $temp;
+		}
+		
+		$average_ts_pm_hours[0] = $average_pm_hours_sub;
+		$average_ts_pm_hours[1] = $average_pm_hours_fin;
+		$average_ts_pm_hours[2] = $average_ts_hours_sub;
+		$average_ts_pm_hours[3] = $average_ts_hours_fin;
+		return $average_ts_pm_hours;
+	}
+	
+	function nicetime_two_parameters($start_date, $end_date)
+	{
+		$time_difference = "";
+		$diff = abs(strtotime($end_date) - strtotime($start_date));
+		$years = floor($diff / (365*60*60*24));
+		$months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+		$days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+		$hours = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24)/ (60*60));
+		$minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60)/ (60));
+		$time_difference = (($years > 0) ? $years.' year'.(($years > 1 ? 's ' : '')) : '').(($months > 0) ? (($months == 1) ? ' '.$months.' month' : ' '.$months.' months' ) : '').(($days > 0) ? (($days == 1) ? ' '.$days.' day' : ' '.$days.' days' ) : '').(($hours > 0) ? (($hours == 1) ? ' '.$hours.' hour' : ' '.$hours.' hours' ) : '').(($minutes > 0) ? (($minutes == 1) ? ' '.$minutes.' minute' : ' '.$minutes.' minutes' ) : '');
+		return $time_difference;
+	}
 	
 }
 
